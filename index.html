@@ -1,563 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BLUE CHORD TAPE</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #0a0a0c;
-      --surface: #111116;
-      --card-bg: #13131a;
-      --border: #1e1e2e;
-      --blue: #3a7bd5;
-      --blue-glow: #4a8be5;
-      --cyan: #00d4ff;
-      --purple: #7b5ea7;
-      --amber: #e8a020;
-      --green: #00c97a;
-      --text: #c8c8d8;
-      --text-dim: #5a5a7a;
-      --text-bright: #e8e8f8;
-    }
-
-    html, body {
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
-      overflow-x: hidden;
-    }
-
-    /* ── scanline overlay ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
-      pointer-events: none;
-      z-index: 1000;
-    }
-
-    /* ── noise grain ── */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: -50%;
-      width: 200%;
-      height: 200%;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      opacity: 0.35;
-      z-index: 999;
-      animation: grain 0.5s steps(2) infinite;
-    }
-
-    @keyframes grain {
-      0%   { transform: translate(0,0); }
-      25%  { transform: translate(-1%,-2%); }
-      50%  { transform: translate(1%, 1%); }
-      75%  { transform: translate(-2%, 1%); }
-      100% { transform: translate(1%, -1%); }
-    }
-
-    /* ── page layout ── */
-    .page {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 60px 24px 48px;
-    }
-
-    /* ── background ambient glow ── */
-    .bg-glow {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(120px);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .bg-glow-1 {
-      width: 600px; height: 400px;
-      top: -100px; left: -150px;
-      background: radial-gradient(ellipse, rgba(58,123,213,0.12) 0%, transparent 70%);
-    }
-    .bg-glow-2 {
-      width: 500px; height: 500px;
-      bottom: 0; right: -100px;
-      background: radial-gradient(ellipse, rgba(123,94,167,0.10) 0%, transparent 70%);
-    }
-
-    /* ── header ── */
-    header {
-      text-align: center;
-      margin-bottom: 64px;
-      position: relative;
-    }
-
-    .logo-badge {
-      display: inline-block;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.35em;
-      color: var(--cyan);
-      border: 1px solid rgba(0,212,255,0.3);
-      padding: 4px 14px;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-    }
-
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: clamp(36px, 8vw, 80px);
-      letter-spacing: 0.08em;
-      line-height: 1;
-      color: var(--text-bright);
-      text-shadow:
-        0 0 20px rgba(58,123,213,0.5),
-        0 0 60px rgba(58,123,213,0.25),
-        0 0 120px rgba(58,123,213,0.1);
-      position: relative;
-    }
-
-    .logo span {
-      color: var(--blue-glow);
-    }
-
-    .logo-sub {
-      font-size: clamp(10px, 2vw, 13px);
-      letter-spacing: 0.5em;
-      color: var(--text-dim);
-      margin-top: 12px;
-      text-transform: uppercase;
-    }
-
-    .divider {
-      width: 200px;
-      height: 1px;
-      margin: 28px auto 0;
-      background: linear-gradient(90deg, transparent, var(--blue), var(--cyan), var(--blue), transparent);
-      position: relative;
-    }
-
-    .divider::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 5px;
-      background: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan);
-    }
-
-    /* ── cards grid ── */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      width: 100%;
-      max-width: 1100px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s ease, border-color 0.3s ease;
-      cursor: pointer;
-      text-decoration: none;
-      display: block;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
-    }
-
-    .card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-      transition: left 0.6s ease;
-      pointer-events: none;
-    }
-
-    .card:hover::after {
-      left: 150%;
-    }
-
-    /* per-card accent colors */
-    .card-404 { --accent: var(--amber); --accent-dim: rgba(232,160,32,0.08); }
-    .card-seq  { --accent: var(--cyan);  --accent-dim: rgba(0,212,255,0.08); }
-    .card-chop { --accent: var(--green); --accent-dim: rgba(0,201,122,0.08); }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow:
-        0 0 0 1px var(--accent),
-        0 8px 40px rgba(0,0,0,0.5),
-        inset 0 0 60px var(--accent-dim);
-    }
-
-    .card:hover::before {
-      opacity: 1;
-      background: radial-gradient(ellipse at 50% 0%, var(--accent-dim) 0%, transparent 70%);
-    }
-
-    /* top stripe */
-    .card-stripe {
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .card:hover .card-stripe { opacity: 1; }
-
-    .card-inner {
-      padding: 32px 28px 28px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .card-id {
-      font-size: 10px;
-      letter-spacing: 0.3em;
-      color: var(--text-dim);
-      margin-bottom: 6px;
-    }
-
-    .card-name {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 24px;
-      letter-spacing: 0.06em;
-      color: var(--text-bright);
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-
-    .card:hover .card-name {
-      color: var(--accent);
-      text-shadow: 0 0 16px var(--accent);
-    }
-
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover .card-icon {
-      border-color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-dim), inset 0 0 12px var(--accent-dim);
-    }
-
-    .card-icon svg {
-      width: 22px;
-      height: 22px;
-      fill: none;
-      stroke: var(--text-dim);
-      stroke-width: 1.5;
-      transition: stroke 0.3s ease;
-    }
-
-    .card:hover .card-icon svg { stroke: var(--accent); }
-
-    .card-desc {
-      font-size: 13px;
-      line-height: 1.7;
-      color: var(--text-dim);
-      margin-bottom: 28px;
-      min-height: 60px;
-    }
-
-    /* led dots */
-    .card-leds {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 24px;
-    }
-
-    .led {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .led.active {
-      background: var(--accent);
-      box-shadow: 0 0 6px var(--accent);
-      animation: blink 2s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
-    }
-
-    .led.active:nth-child(2) { animation-delay: 0.4s; }
-    .led.active:nth-child(3) { animation-delay: 0.8s; }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .card-status {
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      color: var(--accent);
-      opacity: 0.6;
-    }
-
-    .launch-btn {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      color: var(--bg);
-      background: var(--accent);
-      border: none;
-      padding: 10px 22px;
-      cursor: pointer;
-      transition: box-shadow 0.3s ease, transform 0.15s ease;
-      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-    }
-
-    .launch-btn:hover {
-      box-shadow: 0 0 20px var(--accent), 0 0 40px rgba(0,0,0,0.4);
-      transform: scale(1.04);
-    }
-
-    /* ── waveform decoration ── */
-    .waveform {
-      width: 100%;
-      max-width: 1100px;
-      margin: 48px 0 32px;
-      opacity: 0.18;
-      overflow: hidden;
-    }
-
-    .waveform svg {
-      width: 100%;
-      height: 40px;
-    }
-
-    /* ── footer ── */
-    footer {
-      text-align: center;
-      font-size: 11px;
-      letter-spacing: 0.25em;
-      color: var(--text-dim);
-    }
-
-    footer a {
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    footer a:hover { color: var(--cyan); }
-
-    .footer-rule {
-      width: 80px;
-      height: 1px;
-      background: var(--border);
-      margin: 0 auto 16px;
-    }
-
-    /* ── responsive ── */
-    @media (max-width: 680px) {
-      .page { padding: 40px 16px 36px; }
-      header { margin-bottom: 44px; }
-      .cards { grid-template-columns: 1fr; gap: 16px; }
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#5d7a8c",
+              "denim-blue": "#5d7a8c",
+              "background-light": "#eff3f5",
+              "background-dark": "#1a1d1f",
+              "muted-red": "#b04a32",
+              "muted-teal": "#4a7c7a",
+              "muted-brown": "#6d544a",
+            },
+            fontFamily: {
+              "sans": ["Inter", "system-ui", "-apple-system", "sans-serif"],
+              "display": ["Inter", "system-ui", "-apple-system", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px"},
+          },
+        },
+      }</script>
+<style>
+        .ruled-line {
+            border-bottom: 1px solid rgba(230, 76, 25, 0.1);
+        }
+        .typewriter {
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: -0.02em;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
     }
   </style>
-</head>
-<body>
-  <div class="bg-glow bg-glow-1"></div>
-  <div class="bg-glow bg-glow-2"></div>
-
-  <div class="page">
-    <header>
-      <div class="logo-badge">MUSIC TOOLS / HUB v1.0</div>
-      <h1 class="logo">BLUE&nbsp;<span>CHORD</span>&nbsp;TAPE</h1>
-      <p class="logo-sub">Browser-Based Music Production Suite</p>
-      <div class="divider"></div>
-    </header>
-
-    <div class="cards">
-
-      <!-- BCT-404 -->
-      <a class="card card-404" href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener">
-        <div class="card-stripe"></div>
-        <div class="card-inner">
-          <div class="card-header">
-            <div>
-              <div class="card-id">UNIT-01 / PERCUSSION</div>
-              <div class="card-name">BCT-404</div>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="10" width="4" height="4" rx="0.5"/>
-                <rect x="10" y="10" width="4" height="4" rx="0.5"/>
-                <rect x="17" y="10" width="4" height="4" rx="0.5"/>
-                <rect x="3" y="16" width="4" height="4" rx="0.5"/>
-                <rect x="10" y="16" width="4" height="4" rx="0.5"/>
-                <rect x="17" y="16" width="4" height="4" rx="0.5"/>
-                <line x1="3" y1="4" x2="21" y2="4"/>
-                <line x1="12" y1="4" x2="12" y2="8"/>
-              </svg>
-            </div>
-          </div>
-          <p class="card-desc">
-            Step sequencer drum machine. Build beats with pad-based sample triggering, velocity layers, and pattern chaining.
-          </p>
-          <div class="card-leds">
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led"></div>
-            <div class="led"></div>
-          </div>
-          <div class="card-footer">
-            <span class="card-status">ONLINE</span>
-            <button class="launch-btn" onclick="event.preventDefault(); window.open('https://sp404-drum-machine.vercel.app','_blank')">LAUNCH</button>
-          </div>
-        </div>
-      </a>
-
-      <!-- BCT-SEQ -->
-      <a class="card card-seq" href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener">
-        <div class="card-stripe"></div>
-        <div class="card-inner">
-          <div class="card-header">
-            <div>
-              <div class="card-id">UNIT-02 / SEQUENCER</div>
-              <div class="card-name">BCT-SEQ</div>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <polyline points="2,12 6,5 10,15 14,8 18,12 22,9"/>
-                <line x1="2" y1="19" x2="22" y2="19"/>
-              </svg>
-            </div>
-          </div>
-          <p class="card-desc">
-            Multi-track sampler sequencer. Arrange, loop, and layer audio samples across a timeline with precision control.
-          </p>
-          <div class="card-leds">
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led"></div>
-          </div>
-          <div class="card-footer">
-            <span class="card-status">ONLINE</span>
-            <button class="launch-btn" onclick="event.preventDefault(); window.open('https://sampler-sequencer.vercel.app','_blank')">LAUNCH</button>
-          </div>
-        </div>
-      </a>
-
-      <!-- BCT-CHOP -->
-      <a class="card card-chop" href="https://chop-sampler.vercel.app" target="_blank" rel="noopener">
-        <div class="card-stripe"></div>
-        <div class="card-inner">
-          <div class="card-header">
-            <div>
-              <div class="card-id">UNIT-03 / SAMPLER</div>
-              <div class="card-name">BCT-CHOP</div>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <line x1="4" y1="12" x2="20" y2="12"/>
-                <path d="M8 7 L8 17"/>
-                <path d="M12 5 L12 19"/>
-                <path d="M16 8 L16 16"/>
-                <path d="M4 9 L4 15"/>
-                <path d="M20 10 L20 14"/>
-                <line x1="2" y1="4" x2="6" y2="4"/>
-                <line x1="3" y1="2" x2="5" y2="6"/>
-              </svg>
-            </div>
-          </div>
-          <p class="card-desc">
-            Chop &amp; slice sampler. Import audio, mark chop points, assign slices to pads, and trigger in real-time.
-          </p>
-          <div class="card-leds">
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led active"></div>
-            <div class="led active"></div>
-          </div>
-          <div class="card-footer">
-            <span class="card-status">ONLINE</span>
-            <button class="launch-btn" onclick="event.preventDefault(); window.open('https://chop-sampler.vercel.app','_blank')">LAUNCH</button>
-          </div>
-        </div>
-      </a>
-
-    </div>
-
-    <!-- waveform decoration -->
-    <div class="waveform" aria-hidden="true">
-      <svg viewBox="0 0 1100 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <polyline
-          stroke="#3a7bd5"
-          stroke-width="1"
-          fill="none"
-          points="0,20 20,20 25,8 30,32 35,8 40,32 45,12 50,28 55,15 60,25 65,20 80,20 85,5 90,35 95,5 100,35 105,10 110,30 115,18 120,22 125,20 145,20 150,10 155,30 160,15 165,25 170,20 185,20 190,6 195,34 200,6 205,34 210,11 215,29 220,17 225,23 230,20 250,20 255,9 260,31 265,14 270,26 275,20 290,20 295,7 300,33 305,7 310,33 315,12 320,28 325,16 330,24 335,20 355,20 360,10 365,30 370,16 375,24 380,20 395,20 400,5 405,35 410,13 415,27 420,20 440,20 445,11 450,29 455,17 460,23 465,20 480,20 485,8 490,32 495,8 500,32 505,12 510,28 515,18 520,22 525,20 545,20 550,6 555,34 560,14 565,26 570,20 585,20 590,9 595,31 600,15 605,25 610,20 630,20 635,10 640,30 645,16 650,24 655,20 670,20 675,7 680,33 685,11 690,29 695,20 715,20 720,8 725,32 730,12 735,28 740,20 755,20 760,6 765,34 770,14 775,26 780,20 800,20 805,11 810,29 815,17 820,23 825,20 840,20 845,5 850,35 855,9 860,31 865,20 885,20 890,10 895,30 900,16 905,24 910,20 925,20 930,8 935,32 940,14 945,26 950,20 970,20 975,7 980,33 985,11 990,29 995,20 1010,20 1015,6 1020,34 1025,15 1030,25 1035,20 1055,20 1060,9 1065,31 1070,17 1075,23 1080,20 1100,20"
-        />
-      </svg>
-    </div>
-
-    <footer>
-      <div class="footer-rule"></div>
-      <p>&copy; BlueChordTape 2026 &nbsp;&mdash;&nbsp; All tools run in-browser. No install required.</p>
-    </footer>
-  </div>
-</body>
-</html>
+<style>body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.04;
+            z-index: 50;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .ruled-line {
+            border-bottom: 1.5px solid rgba(93, 122, 140, 0.4);
+        }
+        .typewriter {
+            font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+            letter-spacing: 0.1em;
+        }</style></head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen selection:bg-primary/20 font-sans">
+<div class="max-w-screen-md mx-auto px-6 py-12 flex flex-col min-h-screen">
+<!-- Header Section -->
+<header class="mb-16 text-center">
+<div class="flex items-center justify-between mb-8">
+<span class="material-symbols-outlined text-denim-blue/60">menu</span>
+<h1 class="text-xl font-bold tracking-[0.2em] uppercase typewriter text-denim-blue">BLUE CHORD TAPE</h1>
+<span class="material-symbols-outlined text-denim-blue/60">person</span>
+</div>
+<div class="ruled-line w-full mb-2"></div>
+<div class="flex justify-between text-[10px] uppercase tracking-[0.2em] font-bold text-denim-blue/70 py-1.5">
+<span>Ref. Vol 01</span>
+<span>Liner Notes</span>
+<span>No. 2026-BCT</span>
+</div>
+<div class="ruled-line w-full"></div>
+</header>
+<!-- Main Content: Modular Units -->
+<main class="flex-grow space-y-12">
+<!-- Unit 01: BCT-404 -->
+<section class="group">
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="flex-1 space-y-3">
+<p class="text-[10px] uppercase tracking-widest text-denim-blue font-bold">Ref. No. 001 — High Fidelity</p>
+<h2 class="text-3xl font-bold tracking-tight text-denim-blue">BCT-404</h2>
+<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm">
+                            Linear sampler module. Integrated grit and warmth. Designed for the dusty textures of early morning sessions.
+                        </p>
+<div class="pt-4">
+<a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener" class="inline-block text-[10px] font-bold uppercase tracking-widest border-2 border-denim-blue/30 px-5 py-2 hover:bg-denim-blue hover:text-white transition-all duration-300 bg-denim-blue/5">
+                                Launch →
+                            </a>
+</div>
+</div>
+<div class="w-full md:w-48 aspect-square bg-muted-red/5 rounded-lg border border-primary/10 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover mix-blend-multiply opacity-80" data-alt="Close up of a vintage analog sampler dial" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD81ebwFhLU1NQTp9VsjX75S4ZaavnlH1CxjV0j_4S2RF5rzL2j_oRdPNcOWUhIkODibc_jZMmIWi5UdshL2xi-0M2ZIkytuOyJmkLd2xetl9JOvSDLHdHNP_AOwR0DeHYJF_LuVdFXXlwuzCLSohQ0YgI09pqUi77hQcJdFNCXrAci63eDV4W4lEAgxyyBsFercYdgySXgd330qGG5eLA0e30GkDJKS937YsU0GR8PQOAZq3fPWu3D0Rp3sFBY029F_tbJcHirc_g')"></div>
+</div>
+</div>
+<div class="ruled-line w-full mt-12"></div>
+</section>
+<!-- Unit 02: BCT-SEQ -->
+<section class="group">
+<div class="flex flex-col md:flex-row-reverse gap-8 items-start">
+<div class="flex-1 space-y-3 md:text-right md:flex md:flex-col md:items-end">
+<p class="text-[10px] uppercase tracking-widest text-denim-blue font-bold">Ref. No. 002 — Temporal Control</p>
+<h2 class="text-3xl font-bold tracking-tight text-denim-blue">BCT-SEQ</h2>
+<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm">
+                            Step-based analog sequencer. Faded teal finish. Eight tracks of rhythmic uncertainty and swing.
+                        </p>
+<div class="pt-4">
+<a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener" class="inline-block text-[10px] font-bold uppercase tracking-widest border-2 border-denim-blue/30 px-5 py-2 hover:bg-denim-blue hover:text-white transition-all duration-300 bg-denim-blue/5">
+                                Launch →
+                            </a>
+</div>
+</div>
+<div class="w-full md:w-48 aspect-square bg-muted-teal/5 rounded-lg border border-primary/10 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover mix-blend-multiply opacity-80" data-alt="Abstract view of musical equipment buttons and lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJekPmdvN3tfJ8jq3AC0Slvzr7PSadXwVFo4yvu47yZ9IRaFVOXuzy_xSTsREnsFr8sibfSde-NBTmRwQk6_hCmaocMq6mgOuNdobZjKZCzzpQZ637tl2IeHXQmTHf7a75oHxgo8XY_h2iz-K1SXlhCUch86wDFNsFUm53IPvksDsb1Rwv_0ticfGK5hcMxQQSgB-Kl5a5frpnxEcAwv6fN6POAG6bj5U07ddLKVy0MTY7KUPCHiQv6fkbXlhuujUSAiEO1omqgvE')"></div>
+</div>
+</div>
+<div class="ruled-line w-full mt-12"></div>
+</section>
+<!-- Unit 03: BCT-CHOP -->
+<section class="group">
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="flex-1 space-y-3">
+<p class="text-[10px] uppercase tracking-widest text-denim-blue font-bold">Ref. No. 003 — Harmonic Destruction</p>
+<h2 class="text-3xl font-bold tracking-tight text-denim-blue">BCT-CHOP</h2>
+<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm">
+                            Signal mutilator and bit-crusher. Warm brown chassis. Captures the essence of magnetic tape degradation.
+                        </p>
+<div class="pt-4">
+<a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener" class="inline-block text-[10px] font-bold uppercase tracking-widest border-2 border-denim-blue/30 px-5 py-2 hover:bg-denim-blue hover:text-white transition-all duration-300 bg-denim-blue/5">
+                                Launch →
+                            </a>
+</div>
+</div>
+<div class="w-full md:w-48 aspect-square bg-muted-brown/5 rounded-lg border border-primary/10 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover mix-blend-multiply opacity-80" data-alt="Macro photo of a rusty cassette tape reel" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwmKFBSrzzCIQijpjCYHN47UrrHAaMcdxmHxQguui2zBdNcHSXLecJPeKGeqDZn71as3q3vJgkm-afBIrhbJ_N8CRqsyf1MdlmvoZaqiV37or5gifgcvQ2c9chmCcZC8rQmupI81abeTCn01nntLFTUkB5PU44y6eLp7umJeTlVrw9Bt4BtNmLqWPAbC1MC57WQxj6P6mVOUudm61C1-eFHIZFZZMtNL3gqUSs8d-UVOe7h2CfovVQeli9Lh68HiPg5xHKAG7-xIg')"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Section -->
+<footer class="mt-24 mb-12">
+<div class="ruled-line w-full mb-6"></div>
+<div class="flex justify-between items-center typewriter text-[9px] font-bold tracking-[0.3em] uppercase text-denim-blue/60"><div class="flex gap-4 text-denim-blue">
+<span>Side A</span>
+<span>•</span>
+<span>2026</span>
+</div>
+<div class="flex gap-4 items-center text-denim-blue">
+<span class="material-symbols-outlined text-sm">pause</span>
+<span>High Fidelity</span>
+</div></div>
+</footer>
+</div>
+<!-- Navigation Bar (Repurposed as floating controller) -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-[#fcfbf9]/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-denim-blue/10 rounded-xl px-8 py-4 flex justify-between items-center shadow-lg shadow-black/5">
+<a class="text-denim-blue hover:scale-110 transition-transform" href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener" title="BCT-404">
+<span class="material-symbols-outlined text-2xl">play_arrow</span>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener" title="BCT-SEQ">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">auto_stories</span>
+</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="https://chop-sampler.vercel.app" target="_blank" rel="noopener" title="BCT-CHOP">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</a>
+</nav>
+</body></html>
