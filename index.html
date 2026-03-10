@@ -76,7 +76,18 @@
   </header>
 
   <!-- Editorial Divider -->
-  <div class="w-full h-[2px] bg-primary mb-12"></div>
+  <div class="w-full h-[2px] bg-primary mb-0"></div>
+
+  <!-- Video Section -->
+  <div class="relative w-full mb-12" style="padding-bottom:56.25%">
+    <iframe
+      class="absolute inset-0 w-full h-full"
+      src="https://www.youtube.com/embed/ExWKjZrCyQQ?autoplay=1&mute=1&loop=1&playlist=ExWKjZrCyQQ&controls=0&showinfo=0&rel=0"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
 
   <!-- Tool List -->
   <main class="flex flex-col gap-0">
@@ -125,49 +136,70 @@
 
   </main>
 
-  <!-- Video Section -->
-  <section class="mt-16 md:mt-24">
-    <div class="w-full h-px bg-slate-200 dark:bg-slate-800 mb-0"></div>
-    <div class="relative w-full" style="padding-bottom:56.25%">
-      <iframe
-        class="absolute inset-0 w-full h-full"
-        src="https://www.youtube.com/embed/ExWKjZrCyQQ?autoplay=1&mute=1&loop=1&playlist=ExWKjZrCyQQ&controls=0&showinfo=0&rel=0"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
+  <!-- Contact Section -->
+  <section class="mt-16 md:mt-24 border-t border-slate-200 dark:border-slate-800 pt-10">
+    <div class="flex flex-col md:flex-row justify-between gap-8">
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 mb-4">— Contact —</p>
+        <a href="mailto:haktyoo@gmail.com"
+           class="text-sm tracking-wide text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">
+          haktyoo@gmail.com
+        </a>
+      </div>
+      <div class="flex gap-6 md:gap-8 text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 items-end">
+        <a class="hover:text-primary transition-colors" href="https://www.instagram.com/bluechordtape" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a class="hover:text-primary transition-colors" href="https://www.threads.net/@bluechordtape" target="_blank" rel="noopener noreferrer">Threads</a>
+        <a class="hover:text-primary transition-colors" href="https://www.youtube.com/@bluechordtape" target="_blank" rel="noopener noreferrer">Youtube</a>
+      </div>
     </div>
-    <div class="w-full h-px bg-slate-200 dark:bg-slate-800 mt-0"></div>
   </section>
 
-  <!-- Footer -->
-  <footer class="mt-16 md:mt-24 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-t border-slate-200 dark:border-slate-800 pt-8">
-    <div class="flex gap-6 md:gap-8 text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-      <a class="hover:text-primary transition-colors" href="https://www.instagram.com/bluechordtape" target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a class="hover:text-primary transition-colors" href="https://www.threads.net/@bluechordtape" target="_blank" rel="noopener noreferrer">Threads</a>
-      <a class="hover:text-primary transition-colors" href="https://www.youtube.com/@bluechordtape" target="_blank" rel="noopener noreferrer">Youtube</a>
-    </div>
-  </footer>
+  <!-- Guestbook Section -->
+  <section class="mt-16 md:mt-20 border-t border-slate-200 dark:border-slate-800 pt-10 pb-16">
+    <p class="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 mb-8">— Leave a Message —</p>
+
+    <form id="guestbook-form" action="https://formspree.io/f/haktyoo@gmail.com" method="POST"
+          class="flex flex-col gap-4 max-w-lg">
+      <input
+        type="text" name="name" placeholder="NAME" required
+        class="bg-transparent border-b border-slate-300 dark:border-slate-700 py-2 text-sm tracking-wide placeholder:text-slate-400 placeholder:tracking-widest placeholder:uppercase placeholder:text-xs outline-none focus:border-primary transition-colors text-slate-800 dark:text-slate-200"
+      />
+      <textarea
+        name="message" placeholder="MESSAGE" required rows="4"
+        class="bg-transparent border-b border-slate-300 dark:border-slate-700 py-2 text-sm tracking-wide placeholder:text-slate-400 placeholder:tracking-widest placeholder:uppercase placeholder:text-xs outline-none focus:border-primary transition-colors resize-none text-slate-800 dark:text-slate-200"
+      ></textarea>
+      <div class="pt-2">
+        <button type="submit"
+          class="text-xs uppercase tracking-[0.3em] text-primary border border-primary px-6 py-2 hover:bg-primary hover:text-white transition-colors">
+          Send
+        </button>
+      </div>
+    </form>
+
+    <p id="guestbook-success" class="hidden text-xs uppercase tracking-[0.3em] text-primary pt-6">
+      메시지가 전달됐습니다
+    </p>
+  </section>
 
 </div>
 
-<!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4 pointer-events-none">
-  <nav class="flex items-center gap-1 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full px-3 py-2 shadow-2xl pointer-events-auto">
-    <a class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg" href="#">
-      <span class="material-symbols-outlined">home</span>
-    </a>
-    <a class="flex h-12 w-12 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
-      <span class="material-symbols-outlined">search</span>
-    </a>
-    <a class="flex h-12 w-12 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
-      <span class="material-symbols-outlined">settings_input_component</span>
-    </a>
-    <a class="flex h-12 w-12 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
-      <span class="material-symbols-outlined">person</span>
-    </a>
-  </nav>
-</div>
+<script>
+  document.getElementById('guestbook-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.classList.add('hidden');
+        document.getElementById('guestbook-success').classList.remove('hidden');
+      }
+    } catch(_) {}
+  });
+</script>
 
 </body>
 </html>
