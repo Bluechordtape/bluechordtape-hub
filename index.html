@@ -1,171 +1,158 @@
 <!DOCTYPE html>
-<html class="light" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BLUE CHORD TAPE | Studio Tools</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#5d7a8c",
-              "denim-blue": "#5d7a8c",
-              "background-light": "#eff3f5",
-              "background-dark": "#1a1d1f",
-              "muted-red": "#b04a32",
-              "muted-teal": "#4a7c7a",
-              "muted-brown": "#6d544a",
-            },
-            fontFamily: {
-              "sans": ["Inter", "system-ui", "-apple-system", "sans-serif"],
-              "display": ["Inter", "system-ui", "-apple-system", "sans-serif"],
-              "mono": ["JetBrains Mono", "monospace"]
-            },
-            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px"},
-          },
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#1a3aff",
+          "background-light": "#F9F7F4",
+          "background-dark": "#221610",
         },
-      }</script>
+        fontFamily: {
+          "display": ["Public Sans", "sans-serif"]
+        },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+      },
+    },
+  }
+</script>
 <style>
-        .ruled-line {
-            border-bottom: 1px solid rgba(230, 76, 25, 0.1);
-        }
-        .typewriter {
-            font-family: 'Courier New', Courier, monospace;
-            letter-spacing: -0.02em;
-        }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-<style>body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.04;
-            z-index: 50;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-        .ruled-line {
-            border-bottom: 1.5px solid rgba(93, 122, 140, 0.4);
-        }
-        .typewriter {
-            font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
-            letter-spacing: 0.1em;
-        }</style></head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen selection:bg-primary/20 font-sans">
-<div class="max-w-screen-md mx-auto px-6 py-12 flex flex-col min-h-screen">
-<!-- Header Section -->
-<header class="mb-16 text-center">
-<div class="flex items-center justify-between mb-8">
-<span class="material-symbols-outlined text-denim-blue/60">menu</span>
-<h1 class="text-xl font-bold tracking-[0.2em] uppercase typewriter text-denim-blue">BLUE CHORD TAPE</h1>
-<span class="material-symbols-outlined text-denim-blue/60">person</span>
+  body {
+    font-family: 'Public Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: max(884px, 100dvh);
+  }
+  .tape-logo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .reel {
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid #1a3aff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reel::after {
+    content: '';
+    width: 3px;
+    height: 3px;
+    background-color: #1a3aff;
+    border-radius: 50%;
+  }
+  .connector {
+    width: 8px;
+    height: 1.5px;
+    background-color: #1a3aff;
+  }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
+
+<div class="relative flex min-h-screen w-full flex-col max-w-5xl mx-auto px-4 sm:px-6 py-10 md:py-24 pb-32">
+
+  <!-- Logo Section -->
+  <header class="mb-8">
+    <div class="tape-logo mb-6">
+      <div class="reel"></div>
+      <div class="connector"></div>
+      <div class="reel"></div>
+    </div>
+    <h1 class="text-slate-900 dark:text-slate-100 tracking-tighter text-[clamp(2rem,10vw,5rem)] font-bold leading-[0.9] uppercase w-full">
+      Blue Chord Tape
+    </h1>
+  </header>
+
+  <!-- Editorial Divider -->
+  <div class="w-full h-[2px] bg-primary mb-12"></div>
+
+  <!-- Tool List -->
+  <main class="flex flex-col gap-0">
+
+    <!-- Tool Row 001 -->
+    <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer"
+       class="group flex items-center justify-between py-6 md:py-8 border-b border-slate-200 dark:border-slate-800 hover:bg-primary/5 transition-colors">
+      <div class="flex items-baseline gap-4 md:gap-12">
+        <span class="text-primary font-medium text-sm md:text-base tracking-widest shrink-0">001</span>
+        <h2 class="text-lg sm:text-xl md:text-3xl font-light tracking-tight text-slate-800 dark:text-slate-200">
+          BCT-404 <span class="text-slate-400 dark:text-slate-600 mx-1 md:mx-2">/</span> DRUM MACHINE
+        </h2>
+      </div>
+      <div class="text-primary transform transition-transform group-hover:translate-x-2 shrink-0 ml-4">
+        <span class="material-symbols-outlined text-3xl font-light">arrow_right_alt</span>
+      </div>
+    </a>
+
+    <!-- Tool Row 002 -->
+    <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer"
+       class="group flex items-center justify-between py-6 md:py-8 border-b border-slate-200 dark:border-slate-800 hover:bg-primary/5 transition-colors">
+      <div class="flex items-baseline gap-4 md:gap-12">
+        <span class="text-primary font-medium text-sm md:text-base tracking-widest shrink-0">002</span>
+        <h2 class="text-lg sm:text-xl md:text-3xl font-light tracking-tight text-slate-800 dark:text-slate-200">
+          BCT-SEQ <span class="text-slate-400 dark:text-slate-600 mx-1 md:mx-2">/</span> SEQUENCER
+        </h2>
+      </div>
+      <div class="text-primary transform transition-transform group-hover:translate-x-2 shrink-0 ml-4">
+        <span class="material-symbols-outlined text-3xl font-light">arrow_right_alt</span>
+      </div>
+    </a>
+
+    <!-- Tool Row 003 -->
+    <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer"
+       class="group flex items-center justify-between py-6 md:py-8 border-b border-slate-200 dark:border-slate-800 hover:bg-primary/5 transition-colors">
+      <div class="flex items-baseline gap-4 md:gap-12">
+        <span class="text-primary font-medium text-sm md:text-base tracking-widest shrink-0">003</span>
+        <h2 class="text-lg sm:text-xl md:text-3xl font-light tracking-tight text-slate-800 dark:text-slate-200">
+          BCT-CHOP <span class="text-slate-400 dark:text-slate-600 mx-1 md:mx-2">/</span> CHOP SAMPLER
+        </h2>
+      </div>
+      <div class="text-primary transform transition-transform group-hover:translate-x-2 shrink-0 ml-4">
+        <span class="material-symbols-outlined text-3xl font-light">arrow_right_alt</span>
+      </div>
+    </a>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-16 md:mt-24 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-t border-slate-200 dark:border-slate-800 pt-8">
+    <div class="flex gap-6 md:gap-8 text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+      <a class="hover:text-primary transition-colors" href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="hover:text-primary transition-colors" href="#" target="_blank" rel="noopener noreferrer">Threads</a>
+      <a class="hover:text-primary transition-colors" href="#" target="_blank" rel="noopener noreferrer">Youtube</a>
+    </div>
+  </footer>
+
 </div>
-<div class="ruled-line w-full mb-2"></div>
-<div class="flex justify-between text-[10px] uppercase tracking-[0.2em] font-bold text-denim-blue/70 py-1.5">
-<span>Ref. Vol 01</span>
-<span>Liner Notes</span>
-<span>No. 2026-BCT</span>
+
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-4 pointer-events-none">
+  <nav class="flex items-center gap-1 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full px-3 py-2 shadow-2xl pointer-events-auto">
+    <a class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg" href="#">
+      <span class="material-symbols-outlined">home</span>
+    </a>
+    <a class="flex h-12 w-12 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+      <span class="material-symbols-outlined">search</span>
+    </a>
+    <a class="flex h-12 w-12 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+      <span class="material-symbols-outlined">settings_input_component</span>
+    </a>
+    <a class="flex h-12 w-12 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+      <span class="material-symbols-outlined">person</span>
+    </a>
+  </nav>
 </div>
-<div class="ruled-line w-full"></div>
-</header>
-<!-- Main Content: Modular Units -->
-<main class="flex-grow space-y-12">
-<!-- Unit 01: BCT-404 -->
-<section class="group">
-<div class="flex flex-col md:flex-row gap-8 items-start">
-<div class="flex-1 space-y-3">
-<p class="text-[10px] uppercase tracking-widest text-denim-blue font-bold">Ref. No. 001 — High Fidelity</p>
-<h2 class="text-3xl font-bold tracking-tight text-denim-blue">BCT-404</h2>
-<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm">
-                            Linear sampler module. Integrated grit and warmth. Designed for the dusty textures of early morning sessions.
-                        </p>
-<div class="pt-4">
-<a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener" class="inline-block text-[10px] font-bold uppercase tracking-widest border-2 border-denim-blue/30 px-5 py-2 hover:bg-denim-blue hover:text-white transition-all duration-300 bg-denim-blue/5">
-                                Launch →
-                            </a>
-</div>
-</div>
-<div class="w-full md:w-48 aspect-square bg-muted-red/5 rounded-lg border border-primary/10 overflow-hidden">
-<div class="w-full h-full bg-center bg-cover mix-blend-multiply opacity-80" data-alt="Close up of a vintage analog sampler dial" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD81ebwFhLU1NQTp9VsjX75S4ZaavnlH1CxjV0j_4S2RF5rzL2j_oRdPNcOWUhIkODibc_jZMmIWi5UdshL2xi-0M2ZIkytuOyJmkLd2xetl9JOvSDLHdHNP_AOwR0DeHYJF_LuVdFXXlwuzCLSohQ0YgI09pqUi77hQcJdFNCXrAci63eDV4W4lEAgxyyBsFercYdgySXgd330qGG5eLA0e30GkDJKS937YsU0GR8PQOAZq3fPWu3D0Rp3sFBY029F_tbJcHirc_g')"></div>
-</div>
-</div>
-<div class="ruled-line w-full mt-12"></div>
-</section>
-<!-- Unit 02: BCT-SEQ -->
-<section class="group">
-<div class="flex flex-col md:flex-row-reverse gap-8 items-start">
-<div class="flex-1 space-y-3 md:text-right md:flex md:flex-col md:items-end">
-<p class="text-[10px] uppercase tracking-widest text-denim-blue font-bold">Ref. No. 002 — Temporal Control</p>
-<h2 class="text-3xl font-bold tracking-tight text-denim-blue">BCT-SEQ</h2>
-<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm">
-                            Step-based analog sequencer. Faded teal finish. Eight tracks of rhythmic uncertainty and swing.
-                        </p>
-<div class="pt-4">
-<a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener" class="inline-block text-[10px] font-bold uppercase tracking-widest border-2 border-denim-blue/30 px-5 py-2 hover:bg-denim-blue hover:text-white transition-all duration-300 bg-denim-blue/5">
-                                Launch →
-                            </a>
-</div>
-</div>
-<div class="w-full md:w-48 aspect-square bg-muted-teal/5 rounded-lg border border-primary/10 overflow-hidden">
-<div class="w-full h-full bg-center bg-cover mix-blend-multiply opacity-80" data-alt="Abstract view of musical equipment buttons and lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJekPmdvN3tfJ8jq3AC0Slvzr7PSadXwVFo4yvu47yZ9IRaFVOXuzy_xSTsREnsFr8sibfSde-NBTmRwQk6_hCmaocMq6mgOuNdobZjKZCzzpQZ637tl2IeHXQmTHf7a75oHxgo8XY_h2iz-K1SXlhCUch86wDFNsFUm53IPvksDsb1Rwv_0ticfGK5hcMxQQSgB-Kl5a5frpnxEcAwv6fN6POAG6bj5U07ddLKVy0MTY7KUPCHiQv6fkbXlhuujUSAiEO1omqgvE')"></div>
-</div>
-</div>
-<div class="ruled-line w-full mt-12"></div>
-</section>
-<!-- Unit 03: BCT-CHOP -->
-<section class="group">
-<div class="flex flex-col md:flex-row gap-8 items-start">
-<div class="flex-1 space-y-3">
-<p class="text-[10px] uppercase tracking-widest text-denim-blue font-bold">Ref. No. 003 — Harmonic Destruction</p>
-<h2 class="text-3xl font-bold tracking-tight text-denim-blue">BCT-CHOP</h2>
-<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm">
-                            Signal mutilator and bit-crusher. Warm brown chassis. Captures the essence of magnetic tape degradation.
-                        </p>
-<div class="pt-4">
-<a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener" class="inline-block text-[10px] font-bold uppercase tracking-widest border-2 border-denim-blue/30 px-5 py-2 hover:bg-denim-blue hover:text-white transition-all duration-300 bg-denim-blue/5">
-                                Launch →
-                            </a>
-</div>
-</div>
-<div class="w-full md:w-48 aspect-square bg-muted-brown/5 rounded-lg border border-primary/10 overflow-hidden">
-<div class="w-full h-full bg-center bg-cover mix-blend-multiply opacity-80" data-alt="Macro photo of a rusty cassette tape reel" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwmKFBSrzzCIQijpjCYHN47UrrHAaMcdxmHxQguui2zBdNcHSXLecJPeKGeqDZn71as3q3vJgkm-afBIrhbJ_N8CRqsyf1MdlmvoZaqiV37or5gifgcvQ2c9chmCcZC8rQmupI81abeTCn01nntLFTUkB5PU44y6eLp7umJeTlVrw9Bt4BtNmLqWPAbC1MC57WQxj6P6mVOUudm61C1-eFHIZFZZMtNL3gqUSs8d-UVOe7h2CfovVQeli9Lh68HiPg5xHKAG7-xIg')"></div>
-</div>
-</div>
-</section>
-</main>
-<!-- Footer Section -->
-<footer class="mt-24 mb-12">
-<div class="ruled-line w-full mb-6"></div>
-<div class="flex justify-between items-center typewriter text-[9px] font-bold tracking-[0.3em] uppercase text-denim-blue/60"><div class="flex gap-4 text-denim-blue">
-<span>Side A</span>
-<span>•</span>
-<span>2026</span>
-</div>
-<div class="flex gap-4 items-center text-denim-blue">
-<span class="material-symbols-outlined text-sm">pause</span>
-<span>High Fidelity</span>
-</div></div>
-</footer>
-</div>
-<!-- Navigation Bar (Repurposed as floating controller) -->
-<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-[#fcfbf9]/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-denim-blue/10 rounded-xl px-8 py-4 flex justify-between items-center shadow-lg shadow-black/5">
-<a class="text-denim-blue hover:scale-110 transition-transform" href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener" title="BCT-404">
-<span class="material-symbols-outlined text-2xl">play_arrow</span>
-</a>
-<a class="text-slate-400 hover:text-primary transition-colors" href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener" title="BCT-SEQ">
-<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">auto_stories</span>
-</a>
-<a class="text-slate-400 hover:text-primary transition-colors" href="https://chop-sampler.vercel.app" target="_blank" rel="noopener" title="BCT-CHOP">
-<span class="material-symbols-outlined text-2xl">settings</span>
-</a>
-</nav>
-</body></html>
+
+</body>
+</html>
