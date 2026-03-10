@@ -136,13 +136,31 @@
       </a>
     </div>
 
-    <!-- Loading state -->
-    <div id="yt-loading" class="text-xs uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 py-8 text-center">
-      Loading...
-    </div>
+    <!-- Video grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8">
 
-    <!-- Video grid (shown by JS after load) -->
-    <div id="yt-videos" class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8" style="display:none"></div>
+      <div class="flex flex-col gap-3">
+        <div class="relative w-full rounded overflow-hidden" style="padding-bottom:56.25%">
+          <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/ExWKjZrCyQQ"
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="relative w-full rounded overflow-hidden" style="padding-bottom:56.25%">
+          <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/BNMxQgD0zUE"
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="relative w-full rounded overflow-hidden" style="padding-bottom:56.25%">
+          <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/W71h7vCSOl8"
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+    </div>
   </section>
 
   <!-- Footer -->
@@ -174,71 +192,5 @@
   </nav>
 </div>
 
-<script>
-(async function loadLatestVideos() {
-  const proxy  = 'https://api.allorigins.win/get?url=';
-  const handle = 'https://www.youtube.com/@bluechordtape';
-  const loading = document.getElementById('yt-loading');
-  const grid    = document.getElementById('yt-videos');
-
-  try {
-    // 1. Fetch channel page to extract channel ID
-    const pageResp = await fetch(proxy + encodeURIComponent(handle));
-    if (!pageResp.ok) throw new Error('page fetch failed');
-    const pageData = await pageResp.json();
-
-    const idMatch = pageData.contents.match(/"channelId":"(UC[\w-]+)"/);
-    if (!idMatch) throw new Error('channel ID not found');
-    const channelId = idMatch[1];
-
-    // 2. Fetch RSS feed
-    const rssUrl  = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-    const rssResp = await fetch(proxy + encodeURIComponent(rssUrl));
-    if (!rssResp.ok) throw new Error('RSS fetch failed');
-    const rssData = await rssResp.json();
-    const xml = rssData.contents;
-
-    // 3. Parse up to 3 entries via regex (handles XML namespaces safely)
-    const entries = [];
-    const entryRx = /<entry>([\s\S]*?)<\/entry>/g;
-    let m;
-    while ((m = entryRx.exec(xml)) !== null && entries.length < 3) {
-      const e       = m[1];
-      const videoId = (e.match(/<yt:videoId>([^<]+)<\/yt:videoId>/) || [])[1];
-      const title   = (e.match(/<media:title>([^<]+)<\/media:title>/) ||
-                       e.match(/<title>([^<]+)<\/title>/) || [])[1];
-      if (videoId && title) entries.push({ videoId, title });
-    }
-    if (entries.length === 0) throw new Error('no videos');
-
-    // 4. Render
-    grid.innerHTML = '';
-    entries.forEach(({ videoId, title }) => {
-      const card = document.createElement('div');
-      card.className = 'flex flex-col gap-3';
-      card.innerHTML = `
-        <div class="relative w-full rounded overflow-hidden" style="padding-bottom:56.25%">
-          <iframe
-            class="absolute inset-0 w-full h-full"
-            src="https://www.youtube-nocookie.com/embed/${videoId}"
-            title="${title.replace(/"/g, '&quot;')}"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <p class="text-xs tracking-wide text-slate-500 dark:text-slate-400 leading-snug">${title}</p>
-      `;
-      grid.appendChild(card);
-    });
-
-    loading.style.display = 'none';
-    grid.style.display    = 'grid';
-
-  } catch (_) {
-    loading.innerHTML = `<a href="https://www.youtube.com/@bluechordtape" target="_blank" rel="noopener noreferrer" class="text-primary hover:opacity-60 transition-opacity">Visit Channel ↗</a>`;
-  }
-})();
-</script>
 </body>
 </html>
