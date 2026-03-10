@@ -1,194 +1,483 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BLUE CHORD TAPE | Studio Tools</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<title>BLUE CHORD TAPE</title>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "primary": "#1a3aff",
-          "background-light": "#F9F7F4",
-          "background-dark": "#221610",
-        },
-        fontFamily: {
-          "display": ["Public Sans", "sans-serif"]
-        },
-        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-      },
-    },
-  }
-</script>
 <style>
-  body {
-    font-family: 'Public Sans', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    min-height: max(884px, 100dvh);
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #1a3aff;
+  --warm-white: #F9F7F4;
+  --dark: #0e1a2e;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Public Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--warm-white);
+  color: #1a1a1a;
+}
+
+/* ─── SECTION 1: VISUAL INTRO ─────────────────────────────────── */
+.section-intro {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.video-bg iframe {
+  position: absolute;
+  /* Scale up to cover entire section regardless of aspect ratio */
+  top: 50%;
+  left: 50%;
+  width: max(100%, 177.78vh); /* 16/9 × 100vh */
+  height: max(100%, 56.25vw); /* 9/16 × 100vw */
+  transform: translate(-50%, -50%);
+}
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 14, 30, 0.52);
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.tape-logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.reel {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid rgba(255,255,255,0.85);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reel::after {
+  content: '';
+  width: 3px;
+  height: 3px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 50%;
+}
+.connector {
+  width: 9px;
+  height: 1.5px;
+  background: rgba(255,255,255,0.85);
+}
+
+.intro-title {
+  font-size: clamp(2.2rem, 9vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 0.92;
+}
+
+.intro-sub {
+  font-size: clamp(9px, 1.5vw, 11px);
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.4);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  animation: bob 2s ease-in-out infinite;
+}
+.scroll-hint::after {
+  content: '';
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,0.3);
+}
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ─── SECTION 2: TOOLS ────────────────────────────────────────── */
+.section-tools {
+  background: var(--warm-white);
+  padding: 80px 24px 100px;
+}
+
+.section-tools-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.section-label {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 48px;
+}
+
+.tools-divider {
+  width: 100%;
+  height: 2px;
+  background: var(--primary);
+  margin-bottom: 0;
+}
+
+.tool-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  border-bottom: 1px solid #e2e0db;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+  gap: 16px;
+}
+.tool-row:hover { background: rgba(26,58,255,0.04); margin: 0 -24px; padding-left: 24px; padding-right: 24px; }
+
+.tool-row-left {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .tool-row-left { gap: 48px; }
+}
+
+.tool-num {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.tool-name {
+  font-size: clamp(1.1rem, 4vw, 2rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: #2a2a2a;
+  white-space: nowrap;
+}
+
+.tool-name span {
+  color: #bbb;
+  margin: 0 6px;
+}
+
+.tool-arrow {
+  color: var(--primary);
+  font-size: 22px;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+  line-height: 1;
+}
+.tool-row:hover .tool-arrow { transform: translateX(5px); }
+
+/* ─── SECTION 3: CONTACT & GUESTBOOK ─────────────────────────── */
+.section-contact {
+  background: var(--dark);
+  color: #fff;
+  padding: 80px 24px 100px;
+}
+
+.section-contact-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px;
+}
+
+@media (min-width: 768px) {
+  .section-contact-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
   }
-  .tape-logo {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .reel {
-    width: 12px;
-    height: 12px;
-    border: 1.5px solid #1a3aff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .reel::after {
-    content: '';
-    width: 3px;
-    height: 3px;
-    background-color: #1a3aff;
-    border-radius: 50%;
-  }
-  .connector {
-    width: 8px;
-    height: 1.5px;
-    background-color: #1a3aff;
-  }
+}
+
+/* Contact info */
+.contact-label {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 28px;
+  display: block;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+
+.contact-info a {
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.contact-info a:hover { color: #fff; }
+
+.social-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.social-links a:hover { color: rgba(255,255,255,0.9); }
+
+/* Guestbook form */
+.form-label {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 28px;
+  display: block;
+}
+
+#guestbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-field input,
+.form-field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 0;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+  width: 100%;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-bottom-color: rgba(255,255,255,0.7);
+}
+
+.form-submit {
+  padding-top: 4px;
+}
+
+.btn-send {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-send:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.8);
+}
+
+#guestbook-success {
+  display: none;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  padding-top: 12px;
+}
 </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<body>
 
-<div class="relative flex min-h-screen w-full flex-col max-w-5xl mx-auto px-4 sm:px-6 py-10 md:py-24 pb-32">
+<!-- ══ SECTION 1: VISUAL INTRO ══════════════════════════════════ -->
+<section class="section-intro">
 
-  <!-- Logo Section -->
-  <header class="mb-8">
-    <div class="tape-logo mb-6">
+  <!-- YouTube background -->
+  <div class="video-bg">
+    <iframe
+      src="https://www.youtube.com/embed/ExWKjZrCyQQ?autoplay=1&mute=1&loop=1&playlist=ExWKjZrCyQQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&disablekb=1"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    ></iframe>
+  </div>
+
+  <!-- Dark overlay -->
+  <div class="video-overlay"></div>
+
+  <!-- Title content -->
+  <div class="intro-content">
+    <div class="tape-logo">
       <div class="reel"></div>
       <div class="connector"></div>
       <div class="reel"></div>
     </div>
-    <h1 class="text-slate-900 dark:text-slate-100 tracking-tighter text-[clamp(2rem,10vw,5rem)] font-bold leading-[0.9] uppercase w-full">
-      Blue Chord Tape
-    </h1>
-    <p class="mt-4 text-[10px] uppercase tracking-[0.35em] text-slate-400 dark:text-slate-500">
-      Musician · Analog Player
-    </p>
-  </header>
-
-  <!-- Editorial Divider -->
-  <div class="w-full h-[2px] bg-primary mb-0"></div>
-
-  <!-- Video Section -->
-  <div class="relative w-full mb-12" style="padding-bottom:56.25%">
-    <iframe
-      class="absolute inset-0 w-full h-full"
-      src="https://www.youtube.com/embed/ExWKjZrCyQQ?autoplay=1&mute=1&loop=1&playlist=ExWKjZrCyQQ&controls=0&showinfo=0&rel=0"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-    ></iframe>
+    <h1 class="intro-title">Blue Chord Tape</h1>
+    <p class="intro-sub">Musician · Analog Player</p>
   </div>
 
-  <!-- Tool List -->
-  <main class="flex flex-col gap-0">
+  <!-- Scroll hint -->
+  <div class="scroll-hint">Scroll</div>
 
-    <!-- Tool Row 001 -->
-    <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer"
-       class="group flex items-center justify-between py-6 md:py-8 border-b border-slate-200 dark:border-slate-800 hover:bg-primary/5 transition-colors">
-      <div class="flex items-baseline gap-4 md:gap-12">
-        <span class="text-primary font-medium text-sm md:text-base tracking-widest shrink-0">001</span>
-        <h2 class="text-lg sm:text-xl md:text-3xl font-light tracking-tight text-slate-800 dark:text-slate-200">
-          BCT-404 <span class="text-slate-400 dark:text-slate-600 mx-1 md:mx-2">/</span> DRUM MACHINE
-        </h2>
+</section>
+
+
+<!-- ══ SECTION 2: TOOLS ══════════════════════════════════════════ -->
+<section class="section-tools">
+  <div class="section-tools-inner">
+
+    <span class="section-label">— Tools —</span>
+    <div class="tools-divider"></div>
+
+    <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row">
+      <div class="tool-row-left">
+        <span class="tool-num">001</span>
+        <span class="tool-name">BCT-404 <span>/</span> Drum Machine</span>
       </div>
-      <div class="text-primary transform transition-transform group-hover:translate-x-2 shrink-0 ml-4">
-        <span class="material-symbols-outlined text-3xl font-light">arrow_right_alt</span>
-      </div>
+      <span class="tool-arrow">→</span>
     </a>
 
-    <!-- Tool Row 002 -->
-    <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer"
-       class="group flex items-center justify-between py-6 md:py-8 border-b border-slate-200 dark:border-slate-800 hover:bg-primary/5 transition-colors">
-      <div class="flex items-baseline gap-4 md:gap-12">
-        <span class="text-primary font-medium text-sm md:text-base tracking-widest shrink-0">002</span>
-        <h2 class="text-lg sm:text-xl md:text-3xl font-light tracking-tight text-slate-800 dark:text-slate-200">
-          BCT-SEQ <span class="text-slate-400 dark:text-slate-600 mx-1 md:mx-2">/</span> SEQUENCER
-        </h2>
+    <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row">
+      <div class="tool-row-left">
+        <span class="tool-num">002</span>
+        <span class="tool-name">BCT-SEQ <span>/</span> Sequencer</span>
       </div>
-      <div class="text-primary transform transition-transform group-hover:translate-x-2 shrink-0 ml-4">
-        <span class="material-symbols-outlined text-3xl font-light">arrow_right_alt</span>
-      </div>
+      <span class="tool-arrow">→</span>
     </a>
 
-    <!-- Tool Row 003 -->
-    <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer"
-       class="group flex items-center justify-between py-6 md:py-8 border-b border-slate-200 dark:border-slate-800 hover:bg-primary/5 transition-colors">
-      <div class="flex items-baseline gap-4 md:gap-12">
-        <span class="text-primary font-medium text-sm md:text-base tracking-widest shrink-0">003</span>
-        <h2 class="text-lg sm:text-xl md:text-3xl font-light tracking-tight text-slate-800 dark:text-slate-200">
-          BCT-CHOP <span class="text-slate-400 dark:text-slate-600 mx-1 md:mx-2">/</span> CHOP SAMPLER
-        </h2>
+    <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row">
+      <div class="tool-row-left">
+        <span class="tool-num">003</span>
+        <span class="tool-name">BCT-CHOP <span>/</span> Chop Sampler</span>
       </div>
-      <div class="text-primary transform transition-transform group-hover:translate-x-2 shrink-0 ml-4">
-        <span class="material-symbols-outlined text-3xl font-light">arrow_right_alt</span>
-      </div>
+      <span class="tool-arrow">→</span>
     </a>
 
-  </main>
+  </div>
+</section>
 
-  <!-- Contact Section -->
-  <section class="mt-16 md:mt-24 border-t border-slate-200 dark:border-slate-800 pt-10">
-    <p class="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 mb-6">— Contact —</p>
-    <div class="flex flex-col md:flex-row justify-between gap-6 md:gap-8">
-      <div class="flex flex-col gap-2">
-        <a href="mailto:haktyoo@gmail.com"
-           class="text-sm tracking-wide text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">
-          haktyoo@gmail.com
-        </a>
-        <a href="tel:+821054335576"
-           class="text-sm tracking-wide text-slate-500 dark:text-slate-400 hover:text-primary transition-colors">
-          +82 10 5433 5576
-        </a>
+
+<!-- ══ SECTION 3: CONTACT & GUESTBOOK ═══════════════════════════ -->
+<section class="section-contact">
+  <div class="section-contact-inner">
+
+    <!-- Left: Contact -->
+    <div>
+      <span class="contact-label">— Contact —</span>
+      <div class="contact-info">
+        <a href="mailto:haktyoo@gmail.com">haktyoo@gmail.com</a>
+        <a href="tel:+821054335576">+82 10 5433 5576</a>
       </div>
-      <div class="flex gap-6 md:gap-8 text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 items-end">
-        <a class="hover:text-primary transition-colors" href="https://www.instagram.com/bluechordtape" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a class="hover:text-primary transition-colors" href="https://www.threads.net/@bluechordtape" target="_blank" rel="noopener noreferrer">Threads</a>
-        <a class="hover:text-primary transition-colors" href="https://www.youtube.com/@bluechordtape" target="_blank" rel="noopener noreferrer">Youtube</a>
+      <div class="social-links">
+        <a href="https://www.instagram.com/bluechordtape" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.threads.net/@bluechordtape" target="_blank" rel="noopener noreferrer">Threads</a>
+        <a href="https://www.youtube.com/@bluechordtape" target="_blank" rel="noopener noreferrer">Youtube</a>
       </div>
     </div>
-  </section>
 
-  <!-- Guestbook Section -->
-  <section class="mt-16 md:mt-20 border-t border-slate-200 dark:border-slate-800 pt-10 pb-16">
-    <p class="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 mb-8">— Leave a Message —</p>
+    <!-- Right: Guestbook -->
+    <div>
+      <span class="form-label">— Leave a Message —</span>
 
-    <form id="guestbook-form" action="https://formspree.io/f/xlgpjjwb" method="POST"
-          class="flex flex-col gap-4 max-w-lg">
-      <input
-        type="text" name="name" placeholder="NAME" required
-        class="bg-transparent border-b border-slate-300 dark:border-slate-700 py-2 text-sm tracking-wide placeholder:text-slate-400 placeholder:tracking-widest placeholder:uppercase placeholder:text-xs outline-none focus:border-primary transition-colors text-slate-800 dark:text-slate-200"
-      />
-      <textarea
-        name="message" placeholder="MESSAGE" required rows="4"
-        class="bg-transparent border-b border-slate-300 dark:border-slate-700 py-2 text-sm tracking-wide placeholder:text-slate-400 placeholder:tracking-widest placeholder:uppercase placeholder:text-xs outline-none focus:border-primary transition-colors resize-none text-slate-800 dark:text-slate-200"
-      ></textarea>
-      <div class="pt-2">
-        <button type="submit"
-          class="text-xs uppercase tracking-[0.3em] text-primary border border-primary px-6 py-2 hover:bg-primary hover:text-white transition-colors">
-          Send
-        </button>
-      </div>
-    </form>
+      <form id="guestbook-form" action="https://formspree.io/f/xlgpjjwb" method="POST">
+        <div class="form-field">
+          <input type="text" name="name" placeholder="Name" required autocomplete="off"/>
+        </div>
+        <div class="form-field">
+          <textarea name="message" placeholder="Message" required rows="4"></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" class="btn-send">Send</button>
+        </div>
+      </form>
 
-    <p id="guestbook-success" class="hidden text-xs uppercase tracking-[0.3em] text-primary pt-6">
-      메시지가 전달됐습니다 ✓
-    </p>
-  </section>
+      <p id="guestbook-success">메시지가 전달됐습니다 ✓</p>
+    </div>
 
-</div>
+  </div>
+</section>
 
 <script>
   document.getElementById('guestbook-form').addEventListener('submit', async function(e) {
@@ -201,8 +490,8 @@
         headers: { 'Accept': 'application/json' }
       });
       if (res.ok) {
-        form.classList.add('hidden');
-        document.getElementById('guestbook-success').classList.remove('hidden');
+        form.style.display = 'none';
+        document.getElementById('guestbook-success').style.display = 'block';
       }
     } catch(_) {}
   });
