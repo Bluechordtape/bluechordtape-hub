@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -21,6 +21,22 @@ body {
   -webkit-font-smoothing: antialiased;
   background: var(--warm-white);
   color: #1a1a1a;
+}
+
+/* ─── FADE-IN ANIMATION ───────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ─── SECTION 1: VISUAL INTRO ─────────────────────────────────── */
@@ -46,11 +62,10 @@ body {
 
 .video-bg iframe {
   position: absolute;
-  /* Scale up to cover entire section regardless of aspect ratio */
   top: 50%;
   left: 50%;
-  width: max(100%, 177.78vh); /* 16/9 × 100vh */
-  height: max(100%, 56.25vw); /* 9/16 × 100vw */
+  width: max(100%, 177.78vh);
+  height: max(100%, 56.25vw);
   transform: translate(-50%, -50%);
 }
 
@@ -69,6 +84,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  animation: fadeUp 1s ease 0.3s both;
 }
 
 .tape-logo {
@@ -109,7 +125,7 @@ body {
 }
 
 .intro-sub {
-  font-size: clamp(9px, 1.5vw, 11px);
+  font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.35em;
   text-transform: uppercase;
@@ -127,7 +143,7 @@ body {
   align-items: center;
   gap: 6px;
   color: rgba(255,255,255,0.4);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   animation: bob 2s ease-in-out infinite;
@@ -146,7 +162,7 @@ body {
 /* ─── SECTION 2: TOOLS ────────────────────────────────────────── */
 .section-tools {
   background: var(--warm-white);
-  padding: 80px 24px 100px;
+  padding: 80px 24px;
 }
 
 .section-tools-inner {
@@ -161,7 +177,16 @@ body {
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: #aaa;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
+}
+
+.section-heading {
+  text-align: center;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: #2a2a2a;
+  margin-bottom: 40px;
 }
 
 .tools-divider {
@@ -175,19 +200,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 0;
+  padding: 24px 16px;
   border-bottom: 1px solid #e2e0db;
   text-decoration: none;
   color: inherit;
-  transition: background 0.15s;
+  transition: background 0.2s, padding-left 0.2s;
   gap: 16px;
 }
-.tool-row:hover { background: rgba(26,58,255,0.04); margin: 0 -24px; padding-left: 24px; padding-right: 24px; }
+.tool-row:hover {
+  background: rgba(26, 58, 255, 0.04);
+  padding-left: 24px;
+}
 
 .tool-row-left {
   display: flex;
   align-items: baseline;
-  gap: 20px;
+  gap: 24px;
 }
 
 @media (min-width: 640px) {
@@ -195,7 +223,7 @@ body {
 }
 
 .tool-num {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.2em;
   color: var(--primary);
@@ -203,8 +231,8 @@ body {
 }
 
 .tool-name {
-  font-size: clamp(0.9rem, 2.8vw, 1.35rem);
-  font-weight: 300;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 400;
   letter-spacing: -0.01em;
   color: #2a2a2a;
   white-space: nowrap;
@@ -219,16 +247,16 @@ body {
   color: var(--primary);
   font-size: 22px;
   flex-shrink: 0;
-  transition: transform 0.15s;
+  transition: transform 0.2s;
   line-height: 1;
 }
-.tool-row:hover .tool-arrow { transform: translateX(5px); }
+.tool-row:hover .tool-arrow { transform: translateX(6px); }
 
 /* ─── SECTION 3: CONTACT & GUESTBOOK ─────────────────────────── */
 .section-contact {
   background: var(--dark);
   color: #fff;
-  padding: 80px 24px 100px;
+  padding: 80px 24px;
 }
 
 .section-contact-inner {
@@ -264,7 +292,7 @@ body {
 }
 
 .contact-info a {
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.03em;
   color: rgba(255,255,255,0.8);
   text-decoration: none;
@@ -272,9 +300,25 @@ body {
 }
 .contact-info a:hover { color: #fff; }
 
+/* Phone number reveal */
+.phone-reveal {
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'Public Sans', sans-serif;
+  padding: 0;
+  text-align: left;
+  transition: color 0.15s;
+}
+.phone-reveal:hover { color: rgba(255,255,255,0.7); }
+.phone-reveal.revealed { color: rgba(255,255,255,0.8); cursor: default; }
+
 .social-links {
   display: flex;
-  gap: 24px;
+  gap: 0;
   flex-wrap: wrap;
 }
 
@@ -285,6 +329,15 @@ body {
   color: rgba(255,255,255,0.4);
   text-decoration: none;
   transition: color 0.15s;
+  padding-right: 16px;
+  margin-right: 16px;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  line-height: 1.8;
+}
+.social-links a:last-child {
+  border-right: none;
+  padding-right: 0;
+  margin-right: 0;
 }
 .social-links a:hover { color: rgba(255,255,255,0.9); }
 
@@ -307,7 +360,14 @@ body {
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 4px;
+}
+
+.form-field label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
 }
 
 .form-field input,
@@ -324,14 +384,6 @@ body {
   transition: border-color 0.2s;
   resize: none;
   width: 100%;
-}
-
-.form-field input::placeholder,
-.form-field textarea::placeholder {
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
 }
 
 .form-field input:focus,
@@ -351,18 +403,23 @@ body {
   color: #fff;
   background: transparent;
   border: 1px solid rgba(255,255,255,0.4);
-  padding: 10px 28px;
+  padding: 12px 32px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 .btn-send:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.8);
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.btn-send:active {
+  background: #0f27cc;
+  border-color: #0f27cc;
 }
 
 #guestbook-success {
   display: none;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.6);
@@ -378,9 +435,10 @@ body {
   <!-- YouTube background -->
   <div class="video-bg">
     <iframe
-      src="https://www.youtube.com/embed/ExWKjZrCyQQ?autoplay=1&mute=1&loop=1&playlist=ExWKjZrCyQQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&disablekb=1"
+      title="Blue Chord Tape background video"
+      src="https://www.youtube.com/embed/ExWKjZrCyQQ?autoplay=1&mute=1&loop=1&playlist=ExWKjZrCyQQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1"
       frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     ></iframe>
   </div>
 
@@ -389,7 +447,7 @@ body {
 
   <!-- Title content -->
   <div class="intro-content">
-    <div class="tape-logo">
+    <div class="tape-logo" aria-hidden="true">
       <div class="reel"></div>
       <div class="connector"></div>
       <div class="reel"></div>
@@ -399,7 +457,7 @@ body {
   </div>
 
   <!-- Scroll hint -->
-  <div class="scroll-hint">Scroll</div>
+  <div class="scroll-hint" aria-hidden="true">Scroll</div>
 
 </section>
 
@@ -408,31 +466,32 @@ body {
 <section class="section-tools">
   <div class="section-tools-inner">
 
-    <span class="section-label">— Tools —</span>
-    <div class="tools-divider"></div>
+    <span class="section-label reveal">— Tools —</span>
+    <h2 class="section-heading reveal">Music Tools</h2>
+    <div class="tools-divider reveal"></div>
 
-    <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row">
+    <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
       <div class="tool-row-left">
         <span class="tool-num">001</span>
         <span class="tool-name">BCT-404 <span>/</span> Drum Machine</span>
       </div>
-      <span class="tool-arrow">→</span>
+      <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
 
-    <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row">
+    <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
       <div class="tool-row-left">
         <span class="tool-num">002</span>
         <span class="tool-name">BCT-SEQ <span>/</span> Sequencer</span>
       </div>
-      <span class="tool-arrow">→</span>
+      <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
 
-    <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row">
+    <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
       <div class="tool-row-left">
         <span class="tool-num">003</span>
         <span class="tool-name">BCT-CHOP <span>/</span> Chop Sampler</span>
       </div>
-      <span class="tool-arrow">→</span>
+      <span class="tool-arrow" aria-hidden="true">→</span>
     </a>
 
   </div>
@@ -444,11 +503,13 @@ body {
   <div class="section-contact-inner">
 
     <!-- Left: Contact -->
-    <div>
+    <div class="reveal">
       <span class="contact-label">— Contact —</span>
       <div class="contact-info">
         <a href="mailto:haktyoo@gmail.com">haktyoo@gmail.com</a>
-        <a href="tel:+821054335576">+82 10 5433 5576</a>
+        <button class="phone-reveal" id="phone-btn" aria-label="전화번호 표시">
+          전화번호 보기 →
+        </button>
       </div>
       <div class="social-links">
         <a href="https://www.instagram.com/bluechordtape" target="_blank" rel="noopener noreferrer">Instagram</a>
@@ -458,15 +519,17 @@ body {
     </div>
 
     <!-- Right: Guestbook -->
-    <div>
+    <div class="reveal">
       <span class="form-label">— Leave a Message —</span>
 
       <form id="guestbook-form" action="https://formspree.io/f/xlgpjjwb" method="POST">
         <div class="form-field">
-          <input type="text" name="name" placeholder="Name" required autocomplete="off"/>
+          <label for="field-name">Name</label>
+          <input id="field-name" type="text" name="name" required autocomplete="off"/>
         </div>
         <div class="form-field">
-          <textarea name="message" placeholder="Message" required rows="4"></textarea>
+          <label for="field-message">Message</label>
+          <textarea id="field-message" name="message" required rows="4"></textarea>
         </div>
         <div class="form-submit">
           <button type="submit" class="btn-send">Send</button>
@@ -480,9 +543,33 @@ body {
 </section>
 
 <script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Phone reveal
+  const phoneBtn = document.getElementById('phone-btn');
+  phoneBtn.addEventListener('click', function() {
+    this.textContent = '+82 10 5433 5576';
+    this.classList.add('revealed');
+    this.setAttribute('aria-label', '전화번호');
+  });
+
+  // Guestbook form
   document.getElementById('guestbook-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const form = e.target;
+    const btn = form.querySelector('.btn-send');
+    btn.textContent = '...';
+    btn.disabled = true;
     try {
       const res = await fetch(form.action, {
         method: 'POST',
@@ -492,8 +579,14 @@ body {
       if (res.ok) {
         form.style.display = 'none';
         document.getElementById('guestbook-success').style.display = 'block';
+      } else {
+        btn.textContent = 'Send';
+        btn.disabled = false;
       }
-    } catch(_) {}
+    } catch(_) {
+      btn.textContent = 'Send';
+      btn.disabled = false;
+    }
   });
 </script>
 
