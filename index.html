@@ -173,20 +173,11 @@ body {
 .section-label {
   display: block;
   text-align: center;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: #aaa;
   margin-bottom: 32px;
-}
-
-.section-heading {
-  text-align: center;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  font-weight: 300;
-  letter-spacing: -0.01em;
-  color: #2a2a2a;
-  margin-bottom: 40px;
 }
 
 .tools-divider {
@@ -231,9 +222,9 @@ body {
 }
 
 .tool-name {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-size: 15px;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: #2a2a2a;
   white-space: nowrap;
 }
@@ -276,7 +267,7 @@ body {
 
 /* Contact info */
 .contact-label {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.35);
@@ -300,22 +291,6 @@ body {
 }
 .contact-info a:hover { color: #fff; }
 
-/* Phone number reveal */
-.phone-reveal {
-  font-size: 13px;
-  letter-spacing: 0.03em;
-  color: rgba(255,255,255,0.4);
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: 'Public Sans', sans-serif;
-  padding: 0;
-  text-align: left;
-  transition: color 0.15s;
-}
-.phone-reveal:hover { color: rgba(255,255,255,0.7); }
-.phone-reveal.revealed { color: rgba(255,255,255,0.8); cursor: default; }
-
 .social-links {
   display: flex;
   gap: 0;
@@ -323,7 +298,7 @@ body {
 }
 
 .social-links a {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.4);
@@ -343,7 +318,7 @@ body {
 
 /* Guestbook form */
 .form-label {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.35);
@@ -364,7 +339,7 @@ body {
 }
 
 .form-field label {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.25);
@@ -397,7 +372,7 @@ body {
 
 .btn-send {
   font-family: 'Public Sans', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #fff;
@@ -467,7 +442,6 @@ body {
   <div class="section-tools-inner">
 
     <span class="section-label reveal">— Tools —</span>
-    <h2 class="section-heading reveal">Music Tools</h2>
     <div class="tools-divider reveal"></div>
 
     <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
@@ -507,9 +481,6 @@ body {
       <span class="contact-label">— Contact —</span>
       <div class="contact-info">
         <a href="mailto:haktyoo@gmail.com">haktyoo@gmail.com</a>
-        <button class="phone-reveal" id="phone-btn" aria-label="전화번호 표시">
-          전화번호 보기 →
-        </button>
       </div>
       <div class="social-links">
         <a href="https://www.instagram.com/bluechordtape" target="_blank" rel="noopener noreferrer">Instagram</a>
@@ -554,14 +525,6 @@ body {
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Phone reveal
-  const phoneBtn = document.getElementById('phone-btn');
-  phoneBtn.addEventListener('click', function() {
-    this.textContent = '+82 10 5433 5576';
-    this.classList.add('revealed');
-    this.setAttribute('aria-label', '전화번호');
-  });
 
   // Guestbook form
   document.getElementById('guestbook-form').addEventListener('submit', async function(e) {
