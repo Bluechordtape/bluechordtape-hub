@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Reading — Blue Chord Tape</title>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
@@ -10,11 +10,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  --bg:      #07111e;
+  --bg2:     #0d1929;
+  --text:    #ddd8d0;
+  --muted:   rgba(221,216,208,0.45);
+  --dim:     rgba(221,216,208,0.2);
   --primary: #1a3aff;
-  --warm-white: #F9F7F4;
-  --dark: #0e1a2e;
-  --border: #e2e0db;
-  --text: #1a1a1a;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
 }
 
 html { scroll-behavior: smooth; }
@@ -22,1796 +25,945 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'Public Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: var(--warm-white);
+  background: var(--bg);
   color: var(--text);
   min-height: 100vh;
 }
+body.no-scroll { overflow: hidden; }
 
-body.modal-open { overflow: hidden; }
-
-/* ─── NAV ─────────────────────────────────────────────────── */
+/* ── NAV ──────────────────────────────────────────────────── */
 .nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--warm-white);
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(7,17,30,0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  height: 52px; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-
 .nav-back {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--text);
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--muted);
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
   transition: color 0.15s;
 }
-.nav-back:hover { color: var(--primary); }
-.nav-back-arrow {
-  font-size: 16px;
-  line-height: 1;
-  color: var(--primary);
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.nav-title {
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #bbb;
-}
+.nav-back:hover { color: var(--text); }
+.nav-back-arrow { color: var(--primary); }
+.nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
 
 .admin-badge {
-  display: none;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--primary);
-  border: 1px solid rgba(26,58,255,0.3);
-  padding: 2px 7px;
-  border-radius: 2px;
+  display: none; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--primary); border: 1px solid rgba(26,58,255,0.35); padding: 2px 7px;
 }
 .is-admin .admin-badge { display: inline-block; }
 
-.admin-logout {
-  display: none;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #aaa;
-  cursor: pointer;
-  transition: color 0.15s;
-  background: none;
-  border: none;
-  font-family: inherit;
-  padding: 0;
+.btn-logout {
+  display: none; font-family: inherit; font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--dim); background: none; border: none;
+  cursor: pointer; padding: 0; transition: color 0.15s;
 }
-.admin-logout:hover { color: var(--text); }
-.is-admin .admin-logout { display: inline-block; }
+.btn-logout:hover { color: var(--muted); }
+.is-admin .btn-logout { display: inline-block; }
 
 .lock-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  opacity: 0.3;
-  transition: opacity 0.15s;
-  padding: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
+  background: none; border: none; cursor: pointer;
+  font-size: 14px; opacity: 0.25; transition: opacity 0.15s; padding: 0; line-height: 1;
 }
-.lock-btn:hover { opacity: 0.7; }
-.is-admin .lock-btn { opacity: 1; filter: hue-rotate(0deg) saturate(3); }
+.lock-btn:hover { opacity: 0.6; }
+.is-admin .lock-btn { opacity: 1; }
 
-/* ─── HEADER ──────────────────────────────────────────────── */
-.page-header {
-  padding: 64px 24px 48px;
-  max-width: 740px;
-  margin: 0 auto;
+/* ── VIEW ANIMATION ───────────────────────────────────────── */
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.fade-in { animation: viewIn 0.22s ease; }
 
-.page-label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: #aaa;
-  margin-bottom: 16px;
+/* ── LIST VIEW ────────────────────────────────────────────── */
+#view-list {
+  max-width: 680px; margin: 0 auto; padding: 64px 24px 120px;
 }
+#view-reading { display: none; max-width: 640px; margin: 0 auto; padding: 48px 24px 120px; }
 
-.page-title {
-  font-size: clamp(1.8rem, 5vw, 3rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: #111;
+.list-header { margin-bottom: 52px; }
+.list-title {
+  font-size: clamp(2rem, 6vw, 3rem); font-weight: 700;
+  letter-spacing: -0.025em; line-height: 0.95;
+  color: var(--text); margin-bottom: 10px;
 }
-
-.page-desc {
-  margin-top: 16px;
-  font-size: 13px;
-  color: #888;
-  letter-spacing: 0.02em;
-  line-height: 1.6;
-}
-
-/* ─── BOOK LIST ───────────────────────────────────────────── */
-.book-list {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 0 24px 120px;
-}
-
-.list-divider {
-  width: 100%;
-  height: 2px;
-  background: var(--primary);
-  margin-bottom: 0;
-}
-
-.list-actions {
-  display: none;
-  padding: 16px 0 0;
-}
-.is-admin .list-actions { display: block; }
+.list-desc { font-size: 12px; color: var(--muted); letter-spacing: 0.03em; }
 
 .btn-new-book {
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--primary);
-  border: 1px solid rgba(26,58,255,0.35);
-  background: transparent;
-  padding: 7px 14px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  border-radius: 2px;
+  display: none; font-family: inherit; font-size: 10px; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--primary);
+  border: 1px solid rgba(26,58,255,0.3); background: transparent;
+  padding: 6px 14px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  margin-bottom: 36px;
 }
-.btn-new-book:hover {
-  background: var(--primary);
-  color: #fff;
-}
+.btn-new-book:hover { background: var(--primary); color: #fff; }
+.is-admin .btn-new-book { display: inline-block; }
 
-.book-item {
-  border-bottom: 1px solid var(--border);
-}
+/* Book items */
+.book-item { padding: 28px 0; border-bottom: 1px solid var(--border); }
+.book-item:first-child { border-top: 1px solid var(--border); }
+.book-item-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
 
-.book-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 24px 16px;
-  cursor: pointer;
-  gap: 16px;
-  transition: background 0.2s, padding-left 0.2s;
-  user-select: none;
-}
-.book-header:hover {
-  background: rgba(26, 58, 255, 0.03);
-  padding-left: 24px;
-}
-
-.book-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  flex: 1;
-  min-width: 0;
-}
-
-@media (min-width: 640px) {
-  .book-left { gap: 40px; }
-}
-
-.book-num {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  color: var(--primary);
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.book-meta { flex: 1; min-width: 0; }
-
-.book-title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
+.book-click { flex: 1; min-width: 0; cursor: pointer; }
 .book-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  line-height: 1.3;
+  font-size: clamp(15px, 2.2vw, 17px); font-weight: 400;
+  letter-spacing: -0.01em; color: var(--text); line-height: 1.3;
+  margin-bottom: 5px; transition: color 0.15s;
 }
+.book-item:hover .book-title { color: var(--primary); }
+.book-byline { font-size: 12px; color: var(--muted); letter-spacing: 0.02em; margin-bottom: 4px; }
+.book-read-date { font-size: 11px; color: var(--dim); letter-spacing: 0.04em; margin-bottom: 8px; }
+.book-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
+.tag {
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dim); border: 1px solid var(--border); padding: 2px 7px;
+}
 .draft-badge {
-  display: none;
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #e08a00;
-  border: 1px solid rgba(224,138,0,0.3);
-  padding: 2px 6px;
-  border-radius: 2px;
-  flex-shrink: 0;
+  display: none; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #e08a00; border: 1px solid rgba(224,138,0,0.25); padding: 2px 6px;
 }
 .is-admin .draft-badge { display: inline-block; }
 
-.book-info {
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+.book-admin-col {
+  display: none; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0;
 }
-
-.book-author {
-  font-size: 12px;
-  color: #888;
-  letter-spacing: 0.02em;
-}
-
-.book-date {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #bbb;
-}
-
-.book-tag {
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--primary);
-  border: 1px solid rgba(26,58,255,0.25);
-  padding: 2px 7px;
-  border-radius: 2px;
-}
-
-.book-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.book-admin-btns {
-  display: none;
-  align-items: center;
-  gap: 10px;
-}
-.is-admin .book-admin-btns { display: flex; }
-
-.btn-edit-book,
-.btn-delete-book {
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 2px 0;
+.is-admin .book-admin-col { display: flex; }
+.btn-adm {
+  font-family: inherit; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  background: none; border: none; cursor: pointer; padding: 2px 0; white-space: nowrap;
   transition: opacity 0.15s;
 }
-.btn-edit-book { color: var(--primary); }
-.btn-delete-book { color: #cc4444; }
-.btn-edit-book:hover,
-.btn-delete-book:hover { opacity: 0.6; }
+.btn-adm-edit   { color: rgba(26,58,255,0.6); }
+.btn-adm-status { color: var(--dim); }
+.btn-adm-del    { color: rgba(204,68,68,0.6); }
+.btn-adm:hover { opacity: 1 !important; }
+.btn-adm-edit:hover   { color: var(--primary); }
+.btn-adm-status:hover { color: var(--muted); }
+.btn-adm-del:hover    { color: #cc4444; }
 
-.book-toggle {
-  font-size: 18px;
-  color: #ccc;
-  flex-shrink: 0;
-  transition: transform 0.3s ease, color 0.2s;
-  line-height: 1;
-}
-.book-item.open .book-toggle {
-  transform: rotate(45deg);
-  color: var(--primary);
-}
+.list-empty { font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; padding: 48px 0; }
 
-/* ─── REVIEW CONTENT ──────────────────────────────────────── */
-.book-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s ease;
+/* ── READING VIEW ─────────────────────────────────────────── */
+.reading-nav {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 52px;
 }
-.book-item.open .book-body {
-  grid-template-rows: 1fr;
+.btn-back-list {
+  font-family: inherit; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--muted); background: none; border: none; cursor: pointer; padding: 0;
+  display: flex; align-items: center; gap: 8px; transition: color 0.15s;
 }
-
-.book-body-inner {
-  overflow: hidden;
+.btn-back-list:hover { color: var(--text); }
+.btn-back-list .arr { color: var(--primary); }
+.btn-edit-current {
+  display: none; font-family: inherit; font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--dim); background: none; border: none;
+  cursor: pointer; padding: 0; transition: color 0.15s;
 }
+.btn-edit-current:hover { color: var(--text); }
+.is-admin .btn-edit-current { display: inline-block; }
 
-.book-review {
-  padding: 0 16px 32px calc(16px + 24px + 24px);
-  font-size: 13px;
-  line-height: 1.8;
-  color: #333;
-  letter-spacing: 0.02em;
+.reading-hero { margin-bottom: 44px; }
+.reading-title {
+  font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700;
+  letter-spacing: -0.025em; line-height: 1.1; color: var(--text); margin-bottom: 14px;
 }
-
-@media (min-width: 640px) {
-  .book-review { padding-left: calc(16px + 40px + 10px); }
+.reading-author { font-size: 14px; color: var(--muted); letter-spacing: 0.02em; margin-bottom: 10px; }
+.reading-meta-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
 }
+.reading-year, .reading-date-read { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; }
+.reading-sep { font-size: 11px; color: var(--border2); }
+.reading-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
-.book-review h2 {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #aaa;
-  margin: 28px 0 12px;
+.reading-divider { width: 28px; height: 1px; background: var(--border2); margin: 32px 0; }
+
+/* Markdown review */
+.review-body { font-size: 14px; line-height: 1.85; color: rgba(221,216,208,0.72); letter-spacing: 0.015em; }
+.review-body h2 {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--dim); margin: 36px 0 14px;
 }
-.book-review h2:first-child { margin-top: 0; }
-
-.book-review h3 {
-  font-size: 13px;
-  font-weight: 500;
-  color: #555;
-  margin: 20px 0 8px;
+.review-body h2:first-child { margin-top: 0; }
+.review-body h3 { font-size: 13px; font-weight: 500; color: var(--muted); margin: 24px 0 10px; }
+.review-body p { margin-bottom: 16px; }
+.review-body p:last-child { margin-bottom: 0; }
+.review-body blockquote {
+  border-left: 2px solid rgba(26,58,255,0.45); padding-left: 18px;
+  margin: 24px 0; color: var(--muted); font-style: italic;
 }
-
-.book-review p { margin-bottom: 14px; }
-.book-review p:last-child { margin-bottom: 0; }
-
-.book-review blockquote {
-  border-left: 2px solid var(--primary);
-  padding-left: 16px;
-  margin: 20px 0;
-  color: #666;
-  font-style: italic;
+.review-body ul, .review-body ol { padding-left: 20px; margin-bottom: 16px; }
+.review-body li { margin-bottom: 6px; }
+.review-body strong { font-weight: 500; color: var(--text); }
+.review-body em { font-style: italic; }
+.review-body hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+.review-body code {
+  font-family: 'Menlo','Monaco',monospace; font-size: 12px;
+  background: var(--bg2); padding: 2px 6px; color: var(--muted);
 }
 
-.book-review ul, .book-review ol {
-  padding-left: 18px;
-  margin-bottom: 14px;
+/* ── COMMENTS ─────────────────────────────────────────────── */
+.comments-section { margin-top: 72px; padding-top: 40px; border-top: 1px solid var(--border); }
+.comments-heading {
+  font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--dim);
+  margin-bottom: 32px; display: flex; align-items: center; gap: 10px;
 }
-.book-review li { margin-bottom: 4px; }
+.comments-count { color: rgba(26,58,255,0.55); }
 
-.book-review strong { font-weight: 500; color: var(--text); }
-.book-review em { font-style: italic; }
-
-.book-review hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 24px 0;
+/* Comment write form */
+.cform { margin-bottom: 48px; }
+.cform-field { margin-bottom: 0; }
+.cform-field + .cform-field { margin-top: 0; }
+.c-input, .c-textarea {
+  display: block; width: 100%; font-family: inherit; font-size: 13px;
+  color: var(--text); background: transparent; border: none;
+  border-bottom: 1px solid var(--border2); padding: 11px 0;
+  outline: none; transition: border-color 0.15s;
 }
-
-/* ─── EMPTY STATE ─────────────────────────────────────────── */
-.empty {
-  padding: 60px 16px;
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #ccc;
+.c-input::placeholder, .c-textarea::placeholder { color: var(--dim); }
+.c-input:focus, .c-textarea:focus { border-bottom-color: rgba(26,58,255,0.5); }
+.c-input { margin-bottom: 0; }
+.c-textarea { resize: none; line-height: 1.6; min-height: 50px; overflow: hidden; }
+.cform-footer {
+  display: flex; align-items: center; justify-content: space-between; padding-top: 12px;
 }
-
-/* ─── FOOTER ──────────────────────────────────────────────── */
-.page-footer {
-  background: var(--dark);
-  padding: 40px 24px;
-  text-align: center;
+.c-error { font-size: 11px; color: #cc4444; min-height: 16px; }
+.btn-post {
+  font-family: inherit; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--primary); border: 1px solid rgba(26,58,255,0.3); background: transparent;
+  padding: 7px 16px; cursor: pointer; flex-shrink: 0; transition: background 0.15s, color 0.15s;
 }
-.page-footer a {
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
-  text-decoration: none;
+.btn-post:hover { background: var(--primary); color: #fff; }
+.btn-post:disabled { opacity: 0.35; cursor: default; background: none; }
+
+/* Comment items */
+.comment-list { display: flex; flex-direction: column; }
+.comment { padding: 20px 0; border-bottom: 1px solid var(--border); }
+.comment:last-child { border-bottom: none; }
+.comment-hdr {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; margin-bottom: 7px;
+}
+.comment-author { font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: 0.02em; }
+.comment-right { display: flex; align-items: center; gap: 12px; }
+.comment-time { font-size: 10px; color: var(--dim); letter-spacing: 0.04em; white-space: nowrap; }
+.btn-del-c {
+  display: none; font-family: inherit; font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; background: none; border: none;
+  color: rgba(204,68,68,0.45); cursor: pointer; padding: 0; transition: color 0.15s;
+}
+.btn-del-c:hover { color: #cc4444; }
+.is-admin .btn-del-c { display: inline-block; }
+.comment-body {
+  font-size: 13px; line-height: 1.7; color: rgba(221,216,208,0.62);
+  white-space: pre-wrap; word-break: break-word; margin-bottom: 8px;
+}
+.btn-reply-toggle {
+  font-family: inherit; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  background: none; border: none; color: var(--dim); cursor: pointer; padding: 0;
   transition: color 0.15s;
 }
-.page-footer a:hover { color: rgba(255,255,255,0.7); }
+.btn-reply-toggle:hover { color: var(--muted); }
 
-/* ─── AUTH MODAL ──────────────────────────────────────────── */
+/* Replies */
+.comment-replies { margin-top: 8px; padding-left: 16px; border-left: 1px solid var(--border); }
+.reply { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.reply:first-child { padding-top: 8px; }
+.reply:last-child { border-bottom: none; }
+.reply-form-wrap { margin-top: 8px; }
+
+.comments-empty { font-size: 12px; color: var(--dim); letter-spacing: 0.04em; padding: 4px 0 20px; }
+
+/* ── OVERLAY / MODALS ─────────────────────────────────────── */
 .overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
 }
-.overlay.visible {
-  opacity: 1;
-  pointer-events: all;
-}
+.overlay.open { opacity: 1; pointer-events: all; }
 
 .auth-card {
-  background: #fff;
-  padding: 36px 32px 32px;
-  width: 100%;
-  max-width: 360px;
-  margin: 0 16px;
-  border-radius: 4px;
-  transform: translateY(12px);
-  transition: transform 0.25s ease;
+  background: var(--bg2); border: 1px solid var(--border2);
+  padding: 36px 32px; width: 100%; max-width: 320px; margin: 0 16px;
+  transform: translateY(10px); transition: transform 0.25s;
 }
-.overlay.visible .auth-card {
-  transform: translateY(0);
+.overlay.open .auth-card { transform: none; }
+.auth-lbl { display: block; font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+.auth-in {
+  width: 100%; font-family: inherit; font-size: 14px; color: var(--text);
+  background: transparent; border: none; border-bottom: 1px solid var(--border2);
+  padding: 8px 0; outline: none; transition: border-color 0.15s;
 }
-
-.auth-title {
-  font-size: 11px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: #aaa;
-  margin-bottom: 24px;
-}
-
-.auth-input-wrap { position: relative; }
-
-.auth-input {
-  width: 100%;
-  font-family: inherit;
-  font-size: 15px;
-  color: var(--text);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #d8d6d2;
-  padding: 8px 0;
-  outline: none;
-  transition: border-color 0.15s;
-}
-.auth-input:focus { border-bottom-color: var(--primary); }
-
-.auth-error {
-  display: none;
-  font-size: 11px;
-  color: #cc4444;
-  margin-top: 8px;
-  letter-spacing: 0.05em;
-}
-.auth-error.visible { display: block; }
-
-.auth-hint {
-  font-size: 11px;
-  color: #bbb;
-  margin-top: 10px;
-  letter-spacing: 0.05em;
-}
+.auth-in:focus { border-bottom-color: var(--primary); }
+.auth-err { font-size: 11px; color: #cc4444; margin-top: 8px; display: none; }
+.auth-err.show { display: block; }
+.auth-hint { font-size: 10px; color: var(--dim); margin-top: 10px; letter-spacing: 0.04em; }
 
 @keyframes shake {
   0%,100% { transform: translateX(0); }
-  20%     { transform: translateX(-6px); }
-  40%     { transform: translateX(6px); }
-  60%     { transform: translateX(-4px); }
-  80%     { transform: translateX(4px); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
 }
-.shake { animation: shake 0.35s ease; }
+.shake { animation: shake 0.3s ease; }
 
-/* ─── BOOK MODAL ──────────────────────────────────────────── */
-.book-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  padding: 20px;
+/* Book edit modal */
+.bmodal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 20px; overflow-y: auto;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
 }
-.book-modal-overlay.visible {
-  opacity: 1;
-  pointer-events: all;
+.bmodal-overlay.open { opacity: 1; pointer-events: all; }
+.bmodal-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  width: 100%; max-width: 660px; margin: auto;
+  display: flex; flex-direction: column;
+  transform: translateY(12px); transition: transform 0.25s;
 }
+.bmodal-overlay.open .bmodal-card { transform: none; }
 
-.book-modal-card {
-  background: #fff;
-  width: 100%;
-  max-width: 680px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  transform: translateY(16px);
-  transition: transform 0.25s ease;
+.modal-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
 }
-.book-modal-overlay.visible .book-modal-card {
-  transform: translateY(0);
+.modal-hdr-lbl { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--dim); }
+.modal-x-btn {
+  background: none; border: none; cursor: pointer; font-size: 20px;
+  color: var(--dim); line-height: 1; padding: 0; font-family: inherit; transition: color 0.15s;
 }
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 24px 20px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.modal-title {
-  font-size: 11px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: #aaa;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  color: #aaa;
-  line-height: 1;
-  padding: 0;
-  transition: color 0.15s;
-  font-family: inherit;
-}
-.modal-close:hover { color: var(--text); }
-
-.modal-body {
-  padding: 24px;
-  flex: 1;
-  overflow-y: auto;
-}
-
+.modal-x-btn:hover { color: var(--text); }
+.modal-body { padding: 24px; }
 .modal-footer {
-  padding: 20px 24px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-shrink: 0;
+  padding: 18px 24px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: flex-end; gap: 14px;
 }
 
-/* Form fields */
-.field {
-  margin-bottom: 24px;
+.field { margin-bottom: 22px; }
+.field-row { display: flex; gap: 20px; }
+.field-row .field { flex: 1; }
+.field-lbl { display: block; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+.f-in {
+  display: block; width: 100%; font-family: inherit; font-size: 14px;
+  color: var(--text); background: transparent; border: none;
+  border-bottom: 1px solid var(--border2); padding: 6px 0; outline: none;
+  transition: border-color 0.15s; -webkit-appearance: none; border-radius: 0;
 }
+.f-in:focus { border-bottom-color: var(--primary); }
+.f-in::placeholder { color: var(--dim); }
+.field-err { font-size: 11px; color: #cc4444; margin-top: 5px; display: none; }
+.field-err.show { display: block; }
 
-.field-label {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #999;
-  margin-bottom: 8px;
-}
+input[type="date"].f-in { font-size: 13px; color: var(--muted); }
 
-.field-input {
-  display: block;
-  width: 100%;
-  font-family: inherit;
-  font-size: 15px;
-  color: var(--text);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #d8d6d2;
-  padding: 6px 0;
-  outline: none;
-  transition: border-color 0.15s;
-  border-radius: 0;
-  -webkit-appearance: none;
-}
-.field-input:focus { border-bottom-color: var(--primary); }
-.field-input::placeholder { color: #ccc; }
-.field-input[data-large] { font-weight: 500; }
-
-.field-error {
-  display: none;
-  font-size: 11px;
-  color: #cc4444;
-  margin-top: 6px;
-  letter-spacing: 0.05em;
-}
-.field-error.visible { display: block; }
-
-/* Date input */
-input[type="date"].field-input {
-  font-size: 13px;
-  color: #666;
-}
-
-/* Status toggle */
-.status-toggle {
-  display: inline-flex;
-  border: 1px solid #d8d6d2;
-  border-radius: 20px;
-  overflow: hidden;
-}
+.status-toggle { display: inline-flex; border: 1px solid var(--border2); overflow: hidden; }
 .status-btn {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 6px 18px;
-  border: none;
-  background: transparent;
-  color: #aaa;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  font-family: inherit; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 6px 16px; border: none; background: transparent; color: var(--dim);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
 }
-.status-btn.active {
-  background: var(--primary);
-  color: #fff;
-}
+.status-btn.active { background: var(--primary); color: #fff; }
 
-/* Editor tabs */
-.editor-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0;
-}
+.editor-tabs { display: flex; border-bottom: 1px solid var(--border); }
 .editor-tab {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 8px 14px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  color: #aaa;
-  margin-bottom: -1px;
-  transition: color 0.15s, border-color 0.15s;
+  font-family: inherit; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 8px 14px; background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; color: var(--dim); margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
 }
-.editor-tab.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
-}
+.editor-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-.editor-write { display: block; }
-.editor-preview-panel { display: none; }
-.editor-write.hidden { display: none; }
-.editor-preview-panel.visible { display: block; }
-
-.field-textarea {
-  display: block;
-  width: 100%;
-  min-height: 280px;
-  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.7;
-  color: var(--text);
-  background: transparent;
-  border: 1px solid #d8d6d2;
-  border-top: none;
-  padding: 14px;
-  outline: none;
-  resize: vertical;
+.f-textarea {
+  display: block; width: 100%; min-height: 260px;
+  font-family: 'Menlo','Monaco',monospace; font-size: 12px; line-height: 1.7;
+  color: var(--text); background: var(--bg); border: 1px solid var(--border);
+  border-top: none; padding: 14px; outline: none; resize: vertical;
   transition: border-color 0.15s;
 }
-.field-textarea:focus { border-color: var(--primary); }
+.f-textarea:focus { border-color: rgba(26,58,255,0.4); }
+.f-textarea.hidden { display: none; }
 
-.editor-preview-panel {
-  min-height: 280px;
-  border: 1px solid #d8d6d2;
-  border-top: none;
-  padding: 14px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: #333;
-  letter-spacing: 0.02em;
+.editor-preview {
+  display: none; min-height: 260px; border: 1px solid var(--border);
+  border-top: none; padding: 16px;
+  font-size: 13px; line-height: 1.8; color: rgba(221,216,208,0.7);
 }
+.editor-preview.show { display: block; }
+.editor-preview h2 { font-size: 10px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: var(--dim); margin: 28px 0 12px; }
+.editor-preview h2:first-child { margin-top: 0; }
+.editor-preview p { margin-bottom: 14px; }
+.editor-preview blockquote { border-left: 2px solid rgba(26,58,255,0.4); padding-left: 16px; margin: 20px 0; color: var(--muted); font-style: italic; }
+.editor-preview ul, .editor-preview ol { padding-left: 18px; margin-bottom: 14px; }
+.editor-preview strong { font-weight: 500; color: var(--text); }
 
-/* reuse book-review styles inside preview */
-.editor-preview-panel h2 {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #aaa;
-  margin: 28px 0 12px;
-}
-.editor-preview-panel h2:first-child { margin-top: 0; }
-.editor-preview-panel h3 {
-  font-size: 13px;
-  font-weight: 500;
-  color: #555;
-  margin: 20px 0 8px;
-}
-.editor-preview-panel p { margin-bottom: 14px; }
-.editor-preview-panel p:last-child { margin-bottom: 0; }
-.editor-preview-panel blockquote {
-  border-left: 2px solid var(--primary);
-  padding-left: 16px;
-  margin: 20px 0;
-  color: #666;
-  font-style: italic;
-}
-.editor-preview-panel ul, .editor-preview-panel ol {
-  padding-left: 18px;
-  margin-bottom: 14px;
-}
-.editor-preview-panel li { margin-bottom: 4px; }
-.editor-preview-panel strong { font-weight: 500; color: var(--text); }
-.editor-preview-panel em { font-style: italic; }
-.editor-preview-panel hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 24px 0;
-}
-
-/* Buttons */
-.btn-cancel {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
-  padding: 8px 12px;
+.btn-modal-cancel {
+  font-family: inherit; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  background: none; border: none; color: var(--dim); cursor: pointer; padding: 8px 12px;
   transition: color 0.15s;
 }
-.btn-cancel:hover { color: var(--text); }
+.btn-modal-cancel:hover { color: var(--text); }
+.btn-modal-save {
+  font-family: inherit; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  background: var(--primary); color: #fff; border: none; padding: 10px 22px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn-modal-save:hover { opacity: 0.85; }
 
-.btn-save {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  padding: 10px 22px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: opacity 0.15s;
-}
-.btn-save:hover { opacity: 0.85; }
-
-/* ─── COMMENTS ────────────────────────────────────────────── */
-.comments-section {
-  padding: 0 16px 32px calc(16px + 24px + 24px);
-  border-top: 1px solid var(--border);
-  margin-top: 8px;
-}
-@media (min-width: 640px) {
-  .comments-section { padding-left: calc(16px + 40px + 10px); }
-}
-
-.comments-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 20px 0 16px;
-}
-.comments-label {
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #aaa;
-}
-.comments-count {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: #ccc;
-}
-
-.comments-list { margin-bottom: 24px; }
-
-.comment {
-  padding: 14px 0;
-  border-top: 1px solid #eeece8;
-}
-.comment:first-child { border-top: none; }
-
-.comment-meta {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-.comment-author {
-  font-size: 12px;
-  font-weight: 500;
-  color: #2a2a2a;
-  letter-spacing: 0.02em;
-}
-.comment-date {
-  font-size: 10px;
-  color: #bbb;
-  letter-spacing: 0.05em;
-}
-.comment-body {
-  font-size: 13px;
-  line-height: 1.7;
-  color: #444;
-  letter-spacing: 0.01em;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.comment-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 6px;
-}
-.btn-reply-toggle {
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  color: #bbb;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.15s;
-}
-.btn-reply-toggle:hover { color: var(--primary); }
-.btn-delete-comment {
-  display: none;
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  color: #ddd;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.15s;
-}
-.btn-delete-comment:hover { color: #cc4444; }
-.is-admin .btn-delete-comment { display: inline-block; }
-
-/* Replies */
-.comment-replies {
-  margin-top: 4px;
-  margin-left: 16px;
-  padding-left: 14px;
-  border-left: 2px solid #eeece8;
-}
-
-/* Inline reply form */
-.reply-form-wrap { margin-top: 10px; }
-
-/* Comment input form */
-.comment-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.comment-form-row {
-  display: flex;
-  gap: 10px;
-}
+/* ── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .comment-form-row { flex-direction: column; }
-}
-.comment-input {
-  font-family: inherit;
-  font-size: 13px;
-  color: var(--text);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #d8d6d2;
-  padding: 7px 0;
-  outline: none;
-  transition: border-color 0.15s;
-  width: 100%;
-}
-.comment-input:focus { border-bottom-color: var(--primary); }
-.comment-input::placeholder { color: #ccc; }
-.comment-input-name { flex: 0 0 180px; }
-@media (max-width: 480px) {
-  .comment-input-name { flex: none; }
-}
-.comment-textarea {
-  font-family: inherit;
-  font-size: 13px;
-  color: var(--text);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #d8d6d2;
-  padding: 7px 0;
-  outline: none;
-  resize: none;
-  width: 100%;
-  line-height: 1.6;
-  transition: border-color 0.15s;
-  min-height: 60px;
-  overflow: hidden;
-}
-.comment-textarea:focus { border-bottom-color: var(--primary); }
-.comment-textarea::placeholder { color: #ccc; }
-.comment-form-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.comment-form-error {
-  font-size: 11px;
-  color: #cc4444;
-  letter-spacing: 0.05em;
-  min-height: 16px;
-}
-.btn-post-comment {
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--primary);
-  border: none;
-  padding: 8px 18px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: opacity 0.15s;
-  flex-shrink: 0;
-}
-.btn-post-comment:hover { opacity: 0.85; }
-.btn-post-comment:disabled { opacity: 0.4; cursor: default; }
-.btn-cancel-reply {
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  color: #bbb;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.15s;
-}
-.btn-cancel-reply:hover { color: var(--text); }
-
-.comments-loading {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #ccc;
-  padding: 20px 0;
-}
-.comments-empty {
-  font-size: 12px;
-  color: #ccc;
-  padding: 8px 0 16px;
-  letter-spacing: 0.03em;
+  #view-list, #view-reading { padding-left: 18px; padding-right: 18px; }
+  .field-row { flex-direction: column; gap: 0; }
 }
 </style>
 </head>
 <body>
 
-<!-- ── NAV ─────────────────────────────────────────────────── -->
 <nav class="nav">
-  <a class="nav-back" href="/">
-    <span class="nav-back-arrow">←</span>
-    Blue Chord Tape
-  </a>
+  <a class="nav-back" href="/"><span class="nav-back-arrow">←</span> Blue Chord Tape</a>
   <div class="nav-right">
-    <span class="admin-badge">Admin Mode</span>
-    <button class="admin-logout" id="btn-logout" aria-label="Logout">Logout</button>
-    <span class="nav-title">Reading</span>
-    <button class="lock-btn" id="btn-lock" aria-label="Admin login" title="Admin">🔒</button>
+    <span class="admin-badge">Admin</span>
+    <button class="btn-logout" id="btn-logout">Logout</button>
+    <span class="nav-label">Reading</span>
+    <button class="lock-btn" id="btn-lock" title="Admin">🔒</button>
   </div>
 </nav>
 
-<!-- ── HEADER ──────────────────────────────────────────────── -->
-<header class="page-header">
-  <span class="page-label">— Reading —</span>
-  <h1 class="page-title">Books</h1>
-  <p class="page-desc">읽은 책들과 그에 대한 단상.</p>
-</header>
-
-<!-- ── BOOK LIST ───────────────────────────────────────────── -->
-<main class="book-list">
-  <div class="list-divider"></div>
-  <div class="list-actions">
-    <button class="btn-new-book" id="btn-new-book">+ New Book</button>
+<!-- ── LIST VIEW ───────────────────────────────────────────── -->
+<div id="view-list">
+  <div class="list-header">
+    <h1 class="list-title">Reading</h1>
+    <p class="list-desc">읽은 책들의 기록.</p>
   </div>
+  <button class="btn-new-book" id="btn-new-book">+ New Book</button>
   <div id="book-list"></div>
-</main>
+</div>
 
-<!-- ── FOOTER ──────────────────────────────────────────────── -->
-<footer class="page-footer">
-  <a href="/">← Blue Chord Tape</a>
-</footer>
+<!-- ── READING VIEW ────────────────────────────────────────── -->
+<div id="view-reading">
+  <div class="reading-nav">
+    <button class="btn-back-list" id="btn-back"><span class="arr">←</span> Reading</button>
+    <button class="btn-edit-current" id="btn-edit-current">Edit</button>
+  </div>
+  <div id="reading-content"></div>
+  <div class="comments-section" id="comments-section"></div>
+</div>
 
-<!-- ── AUTH MODAL ─────────────────────────────────────────── -->
-<div class="overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-label="Admin login">
+<!-- ── AUTH MODAL ──────────────────────────────────────────── -->
+<div class="overlay" id="auth-overlay">
   <div class="auth-card">
-    <div class="auth-title">Admin Access</div>
-    <div class="auth-input-wrap">
-      <input
-        class="auth-input"
-        id="auth-input"
-        type="password"
-        placeholder="Password"
-        autocomplete="current-password"
-        spellcheck="false"
-      />
-    </div>
-    <div class="auth-error" id="auth-error">잘못된 비밀번호입니다</div>
-    <div class="auth-hint">Enter to submit · Escape to close</div>
+    <span class="auth-lbl">Admin Access</span>
+    <input class="auth-in" id="auth-in" type="password" placeholder="Password" autocomplete="current-password"/>
+    <div class="auth-err" id="auth-err">잘못된 비밀번호</div>
+    <div class="auth-hint">Enter to submit · Esc to close</div>
   </div>
 </div>
 
-<!-- ── BOOK MODAL ─────────────────────────────────────────── -->
-<div class="book-modal-overlay" id="book-modal-overlay" role="dialog" aria-modal="true">
-  <div class="book-modal-card" id="book-modal-card">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">New Book</span>
-      <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+<!-- ── BOOK EDIT MODAL ─────────────────────────────────────── -->
+<div class="bmodal-overlay" id="bmodal">
+  <div class="bmodal-card">
+    <div class="modal-hdr">
+      <span class="modal-hdr-lbl" id="modal-lbl">New Book</span>
+      <button class="modal-x-btn" id="modal-close">×</button>
     </div>
     <div class="modal-body">
       <div class="field">
-        <label class="field-label" for="f-title">Title</label>
-        <input class="field-input" id="f-title" type="text" placeholder="Book title" data-large autocomplete="off"/>
-        <div class="field-error" id="err-title">제목을 입력하세요</div>
+        <label class="field-lbl" for="f-title">Title</label>
+        <input class="f-in" id="f-title" type="text" placeholder="Book title" autocomplete="off"/>
+        <div class="field-err" id="err-title">제목을 입력하세요</div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-lbl" for="f-author">Author</label>
+          <input class="f-in" id="f-author" type="text" placeholder="Author" autocomplete="off"/>
+          <div class="field-err" id="err-author">저자를 입력하세요</div>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="f-year">Publication Year</label>
+          <input class="f-in" id="f-year" type="text" placeholder="2024" maxlength="4"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-lbl" for="f-date">Date Read</label>
+          <input class="f-in" id="f-date" type="date"/>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="f-tags">Tags</label>
+          <input class="f-in" id="f-tags" type="text" placeholder="fiction, essay" autocomplete="off"/>
+        </div>
       </div>
       <div class="field">
-        <label class="field-label" for="f-author">Author</label>
-        <input class="field-input" id="f-author" type="text" placeholder="Author name" autocomplete="off"/>
-        <div class="field-error" id="err-author">저자를 입력하세요</div>
-      </div>
-      <div class="field">
-        <label class="field-label" for="f-date">Date</label>
-        <input class="field-input" id="f-date" type="date"/>
-      </div>
-      <div class="field">
-        <label class="field-label" for="f-tags">Tags</label>
-        <input class="field-input" id="f-tags" type="text" placeholder="fiction, essay, ..." autocomplete="off"/>
-      </div>
-      <div class="field">
-        <label class="field-label">Status</label>
+        <label class="field-lbl">Status</label>
         <div class="status-toggle">
-          <button class="status-btn active" id="status-published" data-val="published">Published</button>
-          <button class="status-btn" id="status-draft" data-val="draft">Draft</button>
+          <button class="status-btn active" id="s-pub">Published</button>
+          <button class="status-btn" id="s-dft">Draft</button>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">Review</label>
+        <label class="field-lbl">Review</label>
         <div class="editor-tabs">
-          <button class="editor-tab active" id="tab-write">Write</button>
-          <button class="editor-tab" id="tab-preview">Preview</button>
+          <button class="editor-tab active" id="tab-w">Write</button>
+          <button class="editor-tab" id="tab-p">Preview</button>
         </div>
-        <textarea
-          class="field-textarea editor-write"
-          id="f-review"
-          placeholder="마크다운으로 리뷰를 작성하세요..."
-          spellcheck="false"
-        ></textarea>
-        <div class="editor-preview-panel book-review" id="editor-preview"></div>
+        <textarea class="f-textarea" id="f-review" placeholder="마크다운으로 리뷰를 작성하세요..." spellcheck="false"></textarea>
+        <div class="editor-preview" id="ep"></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-cancel" id="modal-cancel">Cancel</button>
-      <button class="btn-save" id="modal-save">Save</button>
+      <button class="btn-modal-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-modal-save" id="modal-save">Save</button>
     </div>
   </div>
 </div>
 
 <script>
-/* =============================================================
-   비밀번호를 여기서 변경하세요
-============================================================= */
+/* ── CONFIG ───────────────────────────────────────────────── */
+// 비밀번호를 여기서 변경하세요
 const ADMIN_PASSWORD = 'bluechord2025';
 
-/* =============================================================
-   DEFAULT BOOKS
-============================================================= */
+const LS_BOOKS    = 'bct_books_v3';
+const LS_COMMENTS = 'bct_comments_v3';
+const SS_ADMIN    = 'bct_admin';
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ── DEFAULT DATA ─────────────────────────────────────────── */
 const DEFAULT_BOOKS = [
   {
-    id: 'default-001',
-    title: 'The Creative Act: A Way of Being',
-    author: 'Rick Rubin',
-    date: '2025-01-10',
-    tags: ['creativity'],
-    status: 'published',
-    review: `## 한 줄 감상
-
-창작이란 무언가를 만드는 것이 아니라, 이미 존재하는 것을 발견하는 행위라는 생각.
-
-## 인상 깊은 구절
-
-> We are all antennae for creative energy. The more we pay attention, the more we can receive.
-
-## 메모
-
-- 결과물보다 과정에 집중하라는 메시지가 계속 반복된다
-- 루빈이 말하는 "자연과의 연결"이 처음엔 추상적으로 느껴졌지만, 읽다 보면 구체적인 실천으로 이어짐
-- 음악 작업을 할 때의 태도를 다시 생각하게 됐다
-
-**결론적으로** — 뮤지션이라면 한 번쯤 읽어볼 만한 책.`,
-    createdAt: '2025-01-10T00:00:00.000Z',
-    updatedAt: '2025-01-10T00:00:00.000Z',
-  }
+    id: 'b001', title: 'The Creative Act: A Way of Being', author: 'Rick Rubin',
+    year: '2022', dateRead: '2025-01-10', tags: ['creativity'], status: 'published',
+    review: `## 한 줄 감상\n\n창작이란 무언가를 만드는 것이 아니라, 이미 존재하는 것을 발견하는 행위라는 생각.\n\n## 인상 깊은 구절\n\n> We are all antennae for creative energy. The more we pay attention, the more we can receive.\n\n## 메모\n\n- 결과물보다 과정에 집중하라는 메시지가 반복된다\n- 음악 작업을 할 때의 태도를 다시 생각하게 됐다\n\n**결론적으로** — 뮤지션이라면 한 번쯤 읽어볼 만한 책.`,
+    createdAt: '2025-01-10T00:00:00.000Z', updatedAt: '2025-01-10T00:00:00.000Z',
+  },
+  {
+    id: 'b002', title: 'Norwegian Wood', author: 'Haruki Murakami',
+    year: '1987', dateRead: '2025-02-14', tags: ['fiction', 'novel'], status: 'published',
+    review: `## 한 줄 감상\n\n상실과 기억, 그리고 살아남는 것에 대한 이야기.\n\n## 인상 깊은 구절\n\n> 죽음은 삶의 대극에 있는 것이 아니라, 삶 속에 내재해 있다.\n\n## 메모\n\n- 무라카미의 문장은 느리고 고요하다. 읽는 내내 이어폰을 빼게 된다\n- 와타나베의 방황이 지금의 내 상태와 겹쳐 보였다`,
+    createdAt: '2025-02-14T00:00:00.000Z', updatedAt: '2025-02-14T00:00:00.000Z',
+  },
+  {
+    id: 'b003', title: 'Meditations', author: 'Marcus Aurelius',
+    year: '180', dateRead: '2025-03-01', tags: ['philosophy', 'classics'], status: 'draft',
+    review: `## 메모\n\n아직 정리 중.`,
+    createdAt: '2025-03-01T00:00:00.000Z', updatedAt: '2025-03-01T00:00:00.000Z',
+  },
 ];
 
-/* =============================================================
-   STATE
-============================================================= */
-const LS_KEY = 'bct_books';
-const SS_KEY = 'bct_admin';
+/* ── STATE ────────────────────────────────────────────────── */
+let books = [], comments = [];
+let isAdmin = false, editingId = null, currentBookId = null, curStatus = 'published';
 
-let books = [];
-let isAdmin = false;
-let editingId = null; // null = new book, string = editing existing
-
-/* =============================================================
-   HELPERS
-============================================================= */
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function formatDate(iso) {
+/* ── HELPERS ──────────────────────────────────────────────── */
+function fmtDate(iso) {
   if (!iso) return '';
-  const parts = iso.split('-');
-  if (parts.length < 3) return iso;
-  const month = MONTHS[parseInt(parts[1], 10) - 1] || parts[1];
-  const day   = parseInt(parts[2], 10);
-  return `${month} ${day}. ${parts[0]}`;
+  const p = iso.split('-');
+  if (p.length < 3) return iso;
+  return `${MONTHS[+p[1]-1]} ${+p[2]}. ${p[0]}`;
 }
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-
+function todayISO() { return new Date().toISOString().slice(0,10); }
 function genId() {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  return (typeof crypto !== 'undefined' && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtAge(ts) {
+  const d = (Date.now() - ts) / 1000;
+  if (d < 60)       return 'just now';
+  if (d < 3600)     return Math.floor(d/60) + 'm ago';
+  if (d < 86400)    return Math.floor(d/3600) + 'h ago';
+  if (d < 86400*7)  return Math.floor(d/86400) + 'd ago';
+  const dt = new Date(ts);
+  return `${MONTHS[dt.getMonth()]} ${dt.getDate()}. ${dt.getFullYear()}`;
 }
 
+/* ── DATA ─────────────────────────────────────────────────── */
 function loadBooks() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length >= 0) {
-        books = parsed;
-        return;
-      }
-    }
-  } catch (e) { /* ignore */ }
+  try { const r = localStorage.getItem(LS_BOOKS); if (r) { books = JSON.parse(r); return; } } catch(e) {}
   books = JSON.parse(JSON.stringify(DEFAULT_BOOKS));
 }
-
 function saveBooks() {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(books));
-  } catch (e) { /* ignore */ }
+  try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); } catch(e) {}
+}
+function loadComments() {
+  try { const r = localStorage.getItem(LS_COMMENTS); if (r) { comments = JSON.parse(r); return; } } catch(e) {}
+  comments = [];
+}
+function saveComments() {
+  try { localStorage.setItem(LS_COMMENTS, JSON.stringify(comments)); } catch(e) {}
 }
 
-/* =============================================================
-   RENDER
-============================================================= */
+/* ── VIEWS ────────────────────────────────────────────────── */
+function showView(id) {
+  const ids = ['view-list', 'view-reading'];
+  ids.forEach(v => { document.getElementById(v).style.display = v === id ? 'block' : 'none'; });
+  const el = document.getElementById(id);
+  el.classList.remove('fade-in');
+  void el.offsetWidth;
+  el.classList.add('fade-in');
+}
+
+function goList() {
+  currentBookId = null;
+  renderList();
+  showView('view-list');
+}
+
+function goReading(bookId) {
+  currentBookId = bookId;
+  renderReading(bookId);
+  showView('view-reading');
+  window.scrollTo(0, 0);
+}
+
+/* ── RENDER LIST ──────────────────────────────────────────── */
 function renderList() {
-  const list = document.getElementById('book-list');
-  const visible = isAdmin
-    ? books
-    : books.filter(b => b.status === 'published');
+  const el = document.getElementById('book-list');
+  const visible = isAdmin ? books : books.filter(b => b.status === 'published');
 
   if (!visible.length) {
-    list.innerHTML = '<div class="empty">아직 기록된 책이 없습니다</div>';
+    el.innerHTML = '<div class="list-empty">아직 기록된 책이 없습니다</div>';
     return;
   }
 
-  // Keep track of open items to restore state
-  const openIds = new Set(
-    [...document.querySelectorAll('.book-item.open')]
-      .map(el => el.dataset.id)
-  );
-
-  list.innerHTML = '';
-
-  visible.forEach((book, i) => {
+  el.innerHTML = '';
+  visible.forEach(book => {
     const item = document.createElement('div');
-    item.className = 'book-item' + (openIds.has(book.id) ? ' open' : '');
-    item.dataset.id = book.id;
-
-    const tags = (book.tags || []).map(t =>
-      `<span class="book-tag">${escHtml(t.trim())}</span>`
-    ).join('');
-
-    const draftLabel = (book.status === 'draft')
-      ? `<span class="draft-badge">Draft</span>`
-      : '';
+    item.className = 'book-item';
+    const tagsHtml = (book.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+    const draftHtml = book.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '';
 
     item.innerHTML = `
-      <div class="book-header">
-        <div class="book-left">
-          <span class="book-num">${String(i + 1).padStart(3, '0')}</span>
-          <div class="book-meta">
-            <div class="book-title-row">
-              <span class="book-title">${escHtml(book.title)}</span>
-              ${draftLabel}
-            </div>
-            <div class="book-info">
-              <span class="book-author">${escHtml(book.author)}</span>
-              <span class="book-date">${escHtml(formatDate(book.date))}</span>
-              ${tags}
-            </div>
-          </div>
+      <div class="book-item-inner">
+        <div class="book-click">
+          <div class="book-title">${esc(book.title)} ${draftHtml}</div>
+          <div class="book-byline">${esc(book.author)}${book.year ? ' · ' + esc(book.year) : ''}</div>
+          ${book.dateRead ? `<div class="book-read-date">Read ${esc(fmtDate(book.dateRead))}</div>` : ''}
+          ${tagsHtml ? `<div class="book-tags">${tagsHtml}</div>` : ''}
         </div>
-        <div class="book-right">
-          <div class="book-admin-btns">
-            <button class="btn-edit-book" data-id="${escHtml(book.id)}">Edit</button>
-            <button class="btn-delete-book" data-id="${escHtml(book.id)}">Delete</button>
-          </div>
-          <span class="book-toggle">+</span>
+        <div class="book-admin-col">
+          <button class="btn-adm btn-adm-edit">Edit</button>
+          <button class="btn-adm btn-adm-status">${book.status === 'published' ? 'Unpublish' : 'Publish'}</button>
+          <button class="btn-adm btn-adm-del">Delete</button>
         </div>
-      </div>
-      <div class="book-body">
-        <div class="book-body-inner">
-          <div class="book-review"></div>
-          <div class="comments-section" data-book-id="${escHtml(book.id)}" data-loaded="false">
-            <div class="comments-header">
-              <span class="comments-label">Comments</span>
-              <span class="comments-count"></span>
-            </div>
-            <div class="comments-list"><div class="comments-loading">Loading...</div></div>
-            <div class="comment-form-wrap"></div>
-          </div>
-        </div>
-      </div>
-    `;
+      </div>`;
 
-    item.querySelector('.book-review').innerHTML =
-      book.review ? marked.parse(book.review) : '';
-
-    // Accordion toggle — clicking admin buttons should not toggle
-    item.querySelector('.book-header').addEventListener('click', (e) => {
-      if (e.target.classList.contains('btn-edit-book') ||
-          e.target.classList.contains('btn-delete-book')) return;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.book-item.open').forEach(el => el.classList.remove('open'));
-      if (!isOpen) {
-        item.classList.add('open');
-        const cs = item.querySelector('.comments-section');
-        if (cs && cs.dataset.loaded === 'false') loadComments(cs);
+    item.querySelector('.book-click').addEventListener('click', () => goReading(book.id));
+    item.querySelector('.btn-adm-edit').addEventListener('click', e => { e.stopPropagation(); openBModal(book.id); });
+    item.querySelector('.btn-adm-status').addEventListener('click', e => {
+      e.stopPropagation();
+      const b = books.find(x => x.id === book.id);
+      if (b) { b.status = b.status === 'published' ? 'draft' : 'published'; b.updatedAt = new Date().toISOString(); saveBooks(); renderList(); }
+    });
+    item.querySelector('.btn-adm-del').addEventListener('click', e => {
+      e.stopPropagation();
+      if (confirm(`"${book.title}"을(를) 삭제하시겠습니까?`)) {
+        books = books.filter(b => b.id !== book.id);
+        saveBooks(); renderList();
       }
     });
-
-    // Edit button
-    const editBtn = item.querySelector('.btn-edit-book');
-    if (editBtn) {
-      editBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openBookModal(book.id);
-      });
-    }
-
-    // Delete button
-    const delBtn = item.querySelector('.btn-delete-book');
-    if (delBtn) {
-      delBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (confirm(`"${book.title}"을(를) 삭제하시겠습니까?`)) {
-          books = books.filter(b => b.id !== book.id);
-          saveBooks();
-          renderList();
-        }
-      });
-    }
-
-    list.appendChild(item);
+    el.appendChild(item);
   });
 }
 
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
+/* ── RENDER READING ───────────────────────────────────────── */
+function renderReading(bookId) {
+  const book = books.find(b => b.id === bookId);
+  if (!book) { goList(); return; }
 
-/* =============================================================
-   SUPABASE COMMENTS
-   ─────────────────────────────────────────────────────────────
-   설정 방법:
-   1. https://supabase.com 에서 무료 프로젝트 생성
-   2. SQL Editor에서 아래 쿼리 실행:
-
-   create table comments (
-     id uuid default gen_random_uuid() primary key,
-     book_id text not null,
-     parent_id uuid references comments(id) on delete cascade,
-     author text not null,
-     content text not null,
-     created_at timestamptz default now()
-   );
-   alter table comments enable row level security;
-   create policy "public read"   on comments for select using (true);
-   create policy "public insert" on comments for insert with check (true);
-   create policy "public delete" on comments for delete using (true);
-
-   3. Project Settings > API 에서 URL과 anon key를 복사해 아래에 붙여넣으세요.
-============================================================= */
-const SB_URL = 'YOUR_SUPABASE_URL';         // 예: https://xxxx.supabase.co
-const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';    // anon public key
-
-const SB_CONFIGURED = SB_URL !== 'YOUR_SUPABASE_URL';
-
-function sbHeaders() {
-  return {
-    'apikey': SB_KEY,
-    'Authorization': 'Bearer ' + SB_KEY,
-    'Content-Type': 'application/json',
-  };
-}
-
-async function fetchComments(bookId) {
-  if (!SB_CONFIGURED) return [];
-  const res = await fetch(
-    `${SB_URL}/rest/v1/comments?book_id=eq.${encodeURIComponent(bookId)}&order=created_at.asc`,
-    { headers: sbHeaders() }
-  );
-  if (!res.ok) return [];
-  return res.json();
-}
-
-async function insertComment({ book_id, parent_id, author, content }) {
-  const res = await fetch(`${SB_URL}/rest/v1/comments`, {
-    method: 'POST',
-    headers: { ...sbHeaders(), 'Prefer': 'return=representation' },
-    body: JSON.stringify({ book_id, parent_id: parent_id || null, author, content }),
-  });
-  if (!res.ok) throw new Error('Failed to post comment');
-  const rows = await res.json();
-  return rows[0];
-}
-
-async function deleteComment(id) {
-  await fetch(`${SB_URL}/rest/v1/comments?id=eq.${id}`, {
-    method: 'DELETE',
-    headers: sbHeaders(),
-  });
-}
-
-/* ── Comment time formatter ──────────────────────────────── */
-function formatCommentDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = (now - d) / 1000;
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-  if (diff < 86400 * 7) return Math.floor(diff / 86400) + 'd ago';
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-/* ── Build inline comment form HTML ─────────────────────── */
-function buildCommentForm(bookId, parentId) {
-  const savedName = localStorage.getItem('bct_comment_name') || '';
-  const isReply = !!parentId;
-  return `
-    <div class="comment-form" data-book-id="${escHtml(bookId)}" data-parent-id="${parentId || ''}">
-      <div class="comment-form-row">
-        <input class="comment-input comment-input-name" type="text" placeholder="Name" value="${escHtml(savedName)}" maxlength="40"/>
+  const tagsHtml = (book.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+  document.getElementById('reading-content').innerHTML = `
+    <div class="reading-hero">
+      <h1 class="reading-title">${esc(book.title)}</h1>
+      <div class="reading-author">${esc(book.author)}</div>
+      <div class="reading-meta-row">
+        ${book.year ? `<span class="reading-year">${esc(book.year)}</span>` : ''}
+        ${book.year && book.dateRead ? `<span class="reading-sep">·</span>` : ''}
+        ${book.dateRead ? `<span class="reading-date-read">Read ${esc(fmtDate(book.dateRead))}</span>` : ''}
       </div>
-      <textarea class="comment-textarea" placeholder="${isReply ? 'Write a reply...' : 'Leave a comment...'}" rows="3" maxlength="2000"></textarea>
-      <div class="comment-form-footer">
-        <span class="comment-form-error"></span>
-        <div style="display:flex;gap:10px;align-items:center">
-          ${isReply ? '<button class="btn-cancel-reply">Cancel</button>' : ''}
-          <button class="btn-post-comment">Post</button>
+      ${tagsHtml ? `<div class="reading-tags">${tagsHtml}</div>` : ''}
+    </div>
+    <div class="reading-divider"></div>
+    <div class="review-body">${book.review ? marked.parse(book.review) : '<p style="color:var(--dim)">리뷰가 없습니다.</p>'}</div>`;
+
+  renderComments(bookId);
+}
+
+/* ── RENDER COMMENTS ──────────────────────────────────────── */
+function renderComments(bookId) {
+  const sec = document.getElementById('comments-section');
+  const bc  = comments.filter(c => c.bookId === bookId);
+  const top = bc.filter(c => !c.parentId);
+  const cnt = bc.length;
+
+  sec.innerHTML = `
+    <div class="comments-heading">
+      Comments ${cnt ? `<span class="comments-count">${cnt}</span>` : ''}
+    </div>
+    <div class="cform" id="main-cform">
+      <div class="cform-field">
+        <input class="c-input" id="cn" type="text" placeholder="Name" value="${esc(localStorage.getItem('bct_cn')||'')}" maxlength="40"/>
+      </div>
+      <div class="cform-field">
+        <textarea class="c-textarea" id="ct" placeholder="Leave a comment..." rows="2" maxlength="2000"></textarea>
+      </div>
+      <div class="cform-footer">
+        <span class="c-error" id="ce"></span>
+        <button class="btn-post" id="btn-post-main">Post</button>
+      </div>
+    </div>
+    <div class="comment-list" id="clist">
+      ${top.length ? top.map(c => commentHTML(c, bc)).join('') : '<div class="comments-empty">첫 번째 댓글을 남겨보세요.</div>'}
+    </div>`;
+
+  autoResize(sec.querySelector('#ct'));
+  sec.querySelector('#btn-post-main').addEventListener('click', () => postComment(bookId, null));
+  wireComments(sec, bookId);
+}
+
+function commentHTML(c, allInBook) {
+  const replies = allInBook.filter(r => r.parentId === c.id);
+  const repliesHtml = replies.map(r => `
+    <div class="reply" data-cid="${esc(r.id)}">
+      <div class="comment-hdr">
+        <span class="comment-author">${esc(r.author)}</span>
+        <div class="comment-right">
+          <span class="comment-time">${fmtAge(r.createdAt)}</span>
+          <button class="btn-del-c" data-id="${esc(r.id)}">Delete</button>
         </div>
       </div>
-    </div>
-  `;
-}
-
-/* ── Render one comment (and its replies recursively) ────── */
-function renderComment(c, allComments, depth) {
-  depth = depth || 0;
-  const replies = allComments.filter(r => r.parent_id === c.id);
-  const repliesHTML = replies.map(r => renderComment(r, allComments, depth + 1)).join('');
+      <div class="comment-body">${esc(r.content)}</div>
+    </div>`).join('');
 
   return `
-    <div class="comment" data-comment-id="${escHtml(c.id)}">
-      <div class="comment-meta">
-        <span class="comment-author">${escHtml(c.author)}</span>
-        <span class="comment-date">${formatCommentDate(c.created_at)}</span>
+    <div class="comment" data-cid="${esc(c.id)}">
+      <div class="comment-hdr">
+        <span class="comment-author">${esc(c.author)}</span>
+        <div class="comment-right">
+          <span class="comment-time">${fmtAge(c.createdAt)}</span>
+          <button class="btn-del-c" data-id="${esc(c.id)}">Delete</button>
+        </div>
       </div>
-      <div class="comment-body">${escHtml(c.content)}</div>
-      <div class="comment-actions">
-        <button class="btn-reply-toggle">Reply</button>
-        <button class="btn-delete-comment" data-id="${escHtml(c.id)}">Delete</button>
-      </div>
-      <div class="reply-form-wrap"></div>
-      ${replies.length ? `<div class="comment-replies">${repliesHTML}</div>` : `<div class="comment-replies"></div>`}
-    </div>
-  `;
+      <div class="comment-body">${esc(c.content)}</div>
+      <button class="btn-reply-toggle" data-id="${esc(c.id)}">Reply</button>
+      <div class="reply-form-wrap" id="rfw-${esc(c.id)}"></div>
+      ${replies.length ? `<div class="comment-replies">${repliesHtml}</div>` : '<div class="comment-replies"></div>'}
+    </div>`;
 }
 
-/* ── Wire up events inside a rendered comments section ───── */
-function wireCommentEvents(section, allComments, bookId) {
-  // Delete buttons
-  section.querySelectorAll('.btn-delete-comment').forEach(btn => {
-    btn.addEventListener('click', async () => {
+function wireComments(container, bookId) {
+  container.querySelectorAll('.btn-del-c').forEach(btn => {
+    btn.addEventListener('click', () => {
       if (!confirm('댓글을 삭제하시겠습니까?')) return;
       const id = btn.dataset.id;
-      btn.disabled = true;
-      await deleteComment(id);
-      await loadComments(section);
+      comments = comments.filter(c => c.id !== id && c.parentId !== id);
+      saveComments(); renderComments(bookId);
     });
   });
 
-  // Reply toggles
-  section.querySelectorAll('.btn-reply-toggle').forEach(btn => {
+  container.querySelectorAll('.btn-reply-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
-      const commentEl = btn.closest('.comment');
-      const wrap = commentEl.querySelector(':scope > .reply-form-wrap');
+      const cid = btn.dataset.id;
+      const wrap = document.getElementById('rfw-' + cid);
       if (wrap.innerHTML) { wrap.innerHTML = ''; return; }
-      const cid = commentEl.dataset.commentId;
-      wrap.innerHTML = buildCommentForm(bookId, cid);
-      wireFormEvents(wrap.querySelector('.comment-form'), section, bookId);
-      wrap.querySelector('.btn-cancel-reply').addEventListener('click', () => { wrap.innerHTML = ''; });
-      wrap.querySelector('.comment-textarea').focus();
+      const saved = esc(localStorage.getItem('bct_cn') || '');
+      wrap.innerHTML = `
+        <div class="cform" style="margin-bottom:0;margin-top:12px">
+          <div class="cform-field"><input class="c-input rf-name" type="text" placeholder="Name" value="${saved}" maxlength="40"/></div>
+          <div class="cform-field"><textarea class="c-textarea rf-text" placeholder="Write a reply..." rows="2" maxlength="2000"></textarea></div>
+          <div class="cform-footer">
+            <span class="c-error rf-err"></span>
+            <div style="display:flex;gap:10px;align-items:center">
+              <button class="btn-modal-cancel rf-cancel" style="padding:4px 0">Cancel</button>
+              <button class="btn-post rf-post">Post</button>
+            </div>
+          </div>
+        </div>`;
+      const rta = wrap.querySelector('.rf-text');
+      autoResize(rta); rta.focus();
+      wrap.querySelector('.rf-cancel').addEventListener('click', () => { wrap.innerHTML = ''; });
+      wrap.querySelector('.rf-post').addEventListener('click', () => {
+        const name = wrap.querySelector('.rf-name').value.trim();
+        const text = rta.value.trim();
+        const err  = wrap.querySelector('.rf-err');
+        err.textContent = '';
+        if (!name) { err.textContent = '이름을 입력하세요'; return; }
+        if (!text) { err.textContent = '내용을 입력하세요'; return; }
+        localStorage.setItem('bct_cn', name);
+        comments.push({ id: genId(), bookId, parentId: cid, author: name, content: text, createdAt: Date.now() });
+        saveComments(); renderComments(bookId);
+      });
     });
   });
 }
 
-/* ── Wire submit events on a form ───────────────────────── */
-function wireFormEvents(form, section, bookId) {
-  const textarea = form.querySelector('.comment-textarea');
-
-  // Auto-resize textarea
-  textarea.addEventListener('input', () => {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
-  });
-
-  form.querySelector('.btn-post-comment').addEventListener('click', async () => {
-    const nameEl  = form.querySelector('.comment-input-name');
-    const errEl   = form.querySelector('.comment-form-error');
-    const btn     = form.querySelector('.btn-post-comment');
-    const name    = nameEl.value.trim();
-    const content = textarea.value.trim();
-    const parentId = form.dataset.parentId || null;
-
-    errEl.textContent = '';
-    if (!name)    { errEl.textContent = '이름을 입력하세요'; nameEl.focus(); return; }
-    if (!content) { errEl.textContent = '내용을 입력하세요'; textarea.focus(); return; }
-    if (!SB_CONFIGURED) { errEl.textContent = 'Supabase가 설정되지 않았습니다'; return; }
-
-    btn.disabled = true;
-    btn.textContent = '...';
-    localStorage.setItem('bct_comment_name', name);
-
-    try {
-      await insertComment({ book_id: bookId, parent_id: parentId || null, author: name, content });
-      await loadComments(section);
-    } catch (err) {
-      errEl.textContent = '오류가 발생했습니다. 다시 시도하세요.';
-      btn.disabled = false;
-      btn.textContent = 'Post';
-    }
-  });
+function postComment(bookId, parentId) {
+  const nameEl = document.getElementById('cn');
+  const textEl = document.getElementById('ct');
+  const errEl  = document.getElementById('ce');
+  const name = nameEl.value.trim(), text = textEl.value.trim();
+  errEl.textContent = '';
+  if (!name) { errEl.textContent = '이름을 입력하세요'; nameEl.focus(); return; }
+  if (!text) { errEl.textContent = '내용을 입력하세요'; textEl.focus(); return; }
+  localStorage.setItem('bct_cn', name);
+  comments.push({ id: genId(), bookId, parentId: parentId || null, author: name, content: text, createdAt: Date.now() });
+  saveComments(); renderComments(bookId);
 }
 
-/* ── Main: load comments into a section element ─────────── */
-async function loadComments(section) {
-  section.dataset.loaded = 'true';
-  const bookId = section.dataset.bookId;
-  const listEl = section.querySelector('.comments-list');
-  const countEl = section.querySelector('.comments-count');
-  const formWrap = section.querySelector('.comment-form-wrap');
-
-  listEl.innerHTML = '<div class="comments-loading">Loading...</div>';
-
-  let all = [];
-  if (SB_CONFIGURED) {
-    all = await fetchComments(bookId);
-  }
-
-  const topLevel = all.filter(c => !c.parent_id);
-  countEl.textContent = all.length ? `(${all.length})` : '';
-
-  if (!topLevel.length) {
-    listEl.innerHTML = `<div class="comments-empty">${SB_CONFIGURED ? '첫 번째 댓글을 남겨보세요.' : 'Supabase를 설정하면 댓글 기능이 활성화됩니다.'}</div>`;
-  } else {
-    listEl.innerHTML = topLevel.map(c => renderComment(c, all, 0)).join('');
-    wireCommentEvents(section, all, bookId);
-  }
-
-  formWrap.innerHTML = buildCommentForm(bookId, null);
-  wireFormEvents(formWrap.querySelector('.comment-form'), section, bookId);
+function autoResize(ta) {
+  if (!ta) return;
+  ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; });
 }
 
-/* =============================================================
-   ADMIN SESSION
-============================================================= */
+/* ── ADMIN ────────────────────────────────────────────────── */
 function setAdmin(val) {
   isAdmin = val;
-  if (val) {
-    sessionStorage.setItem(SS_KEY, '1');
-    document.body.classList.add('is-admin');
-  } else {
-    sessionStorage.removeItem(SS_KEY);
-    document.body.classList.remove('is-admin');
-  }
-  renderList();
+  val ? sessionStorage.setItem(SS_ADMIN,'1') : sessionStorage.removeItem(SS_ADMIN);
+  document.body.classList.toggle('is-admin', val);
+  currentBookId ? renderReading(currentBookId) : renderList();
 }
 
-/* =============================================================
-   AUTH MODAL
-============================================================= */
-const authOverlay = document.getElementById('auth-overlay');
-const authInput   = document.getElementById('auth-input');
-const authError   = document.getElementById('auth-error');
+/* ── AUTH MODAL ───────────────────────────────────────────── */
+const authOv = document.getElementById('auth-overlay');
+const authIn = document.getElementById('auth-in');
+const authEr = document.getElementById('auth-err');
 
-function openAuthModal() {
-  authInput.value = '';
-  authError.classList.remove('visible');
-  authOverlay.classList.add('visible');
-  document.body.classList.add('modal-open');
-  setTimeout(() => authInput.focus(), 50);
+function openAuth() {
+  authIn.value = ''; authEr.classList.remove('show');
+  authOv.classList.add('open'); document.body.classList.add('no-scroll');
+  setTimeout(() => authIn.focus(), 50);
 }
-
-function closeAuthModal() {
-  authOverlay.classList.remove('visible');
-  document.body.classList.remove('modal-open');
-}
-
+function closeAuth() { authOv.classList.remove('open'); document.body.classList.remove('no-scroll'); }
 function tryLogin() {
-  const val = authInput.value.trim();
-  if (val === ADMIN_PASSWORD) {
-    closeAuthModal();
-    setAdmin(true);
-  } else {
-    authError.classList.add('visible');
-    authInput.classList.remove('shake');
-    void authInput.offsetWidth; // reflow to restart animation
-    authInput.classList.add('shake');
-    authInput.value = '';
-    setTimeout(() => authInput.focus(), 10);
+  if (authIn.value.trim() === ADMIN_PASSWORD) { closeAuth(); setAdmin(true); }
+  else {
+    authEr.classList.add('show');
+    authIn.classList.remove('shake'); void authIn.offsetWidth; authIn.classList.add('shake');
+    authIn.value = ''; setTimeout(() => authIn.focus(), 10);
   }
 }
+authIn.addEventListener('keydown', e => { if (e.key==='Enter') tryLogin(); if (e.key==='Escape') closeAuth(); });
+authOv.addEventListener('click', e => { if (e.target===authOv) closeAuth(); });
+document.getElementById('btn-lock').addEventListener('click', () => { if (!isAdmin) openAuth(); });
+document.getElementById('btn-logout').addEventListener('click', () => setAdmin(false));
 
-authInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') tryLogin();
-  if (e.key === 'Escape') closeAuthModal();
-});
+/* ── BOOK MODAL ───────────────────────────────────────────── */
+const bmodal = document.getElementById('bmodal');
 
-authOverlay.addEventListener('click', (e) => {
-  if (e.target === authOverlay) closeAuthModal();
-});
-
-document.getElementById('btn-lock').addEventListener('click', () => {
-  if (isAdmin) {
-    // Already admin: do nothing (logout via logout button)
-  } else {
-    openAuthModal();
-  }
-});
-
-document.getElementById('btn-logout').addEventListener('click', () => {
-  setAdmin(false);
-});
-
-/* =============================================================
-   BOOK MODAL
-============================================================= */
-const bookModalOverlay = document.getElementById('book-modal-overlay');
-const fTitle    = document.getElementById('f-title');
-const fAuthor   = document.getElementById('f-author');
-const fDate     = document.getElementById('f-date');
-const fTags     = document.getElementById('f-tags');
-const fReview   = document.getElementById('f-review');
-const errTitle  = document.getElementById('err-title');
-const errAuthor = document.getElementById('err-author');
-const modalTitleEl = document.getElementById('modal-title');
-
-let currentStatus = 'published';
-
-function openBookModal(id) {
+function openBModal(id) {
   editingId = id || null;
-  errTitle.classList.remove('visible');
-  errAuthor.classList.remove('visible');
+  ['err-title','err-author'].forEach(x => document.getElementById(x).classList.remove('show'));
+  const get = x => document.getElementById(x);
 
   if (id) {
-    const book = books.find(b => b.id === id);
-    if (!book) return;
-    modalTitleEl.textContent = 'Edit Book';
-    fTitle.value  = book.title;
-    fAuthor.value = book.author;
-    fDate.value   = book.date || '';
-    fTags.value   = (book.tags || []).join(', ');
-    fReview.value = book.review || '';
-    setStatus(book.status || 'published');
+    const b = books.find(x => x.id === id); if (!b) return;
+    get('modal-lbl').textContent = 'Edit Book';
+    get('f-title').value  = b.title;
+    get('f-author').value = b.author;
+    get('f-year').value   = b.year || '';
+    get('f-date').value   = b.dateRead || '';
+    get('f-tags').value   = (b.tags||[]).join(', ');
+    get('f-review').value = b.review || '';
+    setStatus(b.status || 'published');
   } else {
-    modalTitleEl.textContent = 'New Book';
-    fTitle.value  = '';
-    fAuthor.value = '';
-    fDate.value   = todayISO();
-    fTags.value   = '';
-    fReview.value = '';
+    get('modal-lbl').textContent = 'New Book';
+    ['f-title','f-author','f-year','f-tags','f-review'].forEach(x => get(x).value = '');
+    get('f-date').value = todayISO();
     setStatus('published');
   }
-
-  // Reset editor to Write tab
-  switchTab('write');
-
-  bookModalOverlay.classList.add('visible');
-  document.body.classList.add('modal-open');
-  setTimeout(() => fTitle.focus(), 50);
+  switchTab('w');
+  bmodal.classList.add('open'); document.body.classList.add('no-scroll');
+  setTimeout(() => get('f-title').focus(), 50);
 }
 
-function closeBookModal() {
-  bookModalOverlay.classList.remove('visible');
-  document.body.classList.remove('modal-open');
-  editingId = null;
+function closeBModal() {
+  bmodal.classList.remove('open'); document.body.classList.remove('no-scroll'); editingId = null;
 }
 
-function setStatus(val) {
-  currentStatus = val;
-  document.getElementById('status-published').classList.toggle('active', val === 'published');
-  document.getElementById('status-draft').classList.toggle('active', val === 'draft');
+function setStatus(v) {
+  curStatus = v;
+  document.getElementById('s-pub').classList.toggle('active', v==='published');
+  document.getElementById('s-dft').classList.toggle('active', v==='draft');
 }
-
-document.getElementById('status-published').addEventListener('click', () => setStatus('published'));
-document.getElementById('status-draft').addEventListener('click', () => setStatus('draft'));
 
 function saveBook() {
-  let valid = true;
+  const get = x => document.getElementById(x);
+  const title  = get('f-title').value.trim();
+  const author = get('f-author').value.trim();
+  let ok = true;
+  if (!title)  { get('err-title').classList.add('show');  ok = false; } else get('err-title').classList.remove('show');
+  if (!author) { get('err-author').classList.add('show'); ok = false; } else get('err-author').classList.remove('show');
+  if (!ok) return;
 
-  if (!fTitle.value.trim()) {
-    errTitle.classList.add('visible');
-    valid = false;
-  } else {
-    errTitle.classList.remove('visible');
-  }
-
-  if (!fAuthor.value.trim()) {
-    errAuthor.classList.add('visible');
-    valid = false;
-  } else {
-    errAuthor.classList.remove('visible');
-  }
-
-  if (!valid) return;
-
-  const now = new Date().toISOString();
-  const tags = fTags.value
-    .split(',')
-    .map(t => t.trim())
-    .filter(Boolean);
+  const now  = new Date().toISOString();
+  const tags = get('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const data = { title, author, year: get('f-year').value.trim(), dateRead: get('f-date').value, tags, status: curStatus, review: get('f-review').value, updatedAt: now };
 
   if (editingId) {
     const idx = books.findIndex(b => b.id === editingId);
-    if (idx !== -1) {
-      books[idx] = {
-        ...books[idx],
-        title: fTitle.value.trim(),
-        author: fAuthor.value.trim(),
-        date: fDate.value || todayISO(),
-        tags,
-        status: currentStatus,
-        review: fReview.value,
-        updatedAt: now,
-      };
-    }
+    if (idx !== -1) books[idx] = { ...books[idx], ...data };
   } else {
-    books.unshift({
-      id: genId(),
-      title: fTitle.value.trim(),
-      author: fAuthor.value.trim(),
-      date: fDate.value || todayISO(),
-      tags,
-      status: currentStatus,
-      review: fReview.value,
-      createdAt: now,
-      updatedAt: now,
-    });
+    books.unshift({ id: genId(), ...data, createdAt: now });
   }
-
-  saveBooks();
-  renderList();
-  closeBookModal();
+  saveBooks(); closeBModal();
+  if (editingId && currentBookId === editingId) renderReading(editingId); else renderList();
 }
 
+document.getElementById('s-pub').addEventListener('click', () => setStatus('published'));
+document.getElementById('s-dft').addEventListener('click', () => setStatus('draft'));
 document.getElementById('modal-save').addEventListener('click', saveBook);
-document.getElementById('modal-cancel').addEventListener('click', closeBookModal);
-document.getElementById('modal-close').addEventListener('click', closeBookModal);
-
-bookModalOverlay.addEventListener('click', (e) => {
-  if (e.target === bookModalOverlay) closeBookModal();
-});
-
-document.addEventListener('keydown', (e) => {
-  // Cmd/Ctrl+Enter saves if modal is open
-  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-    if (bookModalOverlay.classList.contains('visible')) {
-      saveBook();
-    }
-  }
-  // Escape closes whichever modal is open
-  if (e.key === 'Escape') {
-    if (bookModalOverlay.classList.contains('visible')) {
-      closeBookModal();
-    } else if (authOverlay.classList.contains('visible')) {
-      closeAuthModal();
-    }
-  }
-});
-
-document.getElementById('btn-new-book').addEventListener('click', () => {
-  openBookModal(null);
-});
-
-/* ── Editor tabs ─────────────────────────────────────────── */
-const tabWrite    = document.getElementById('tab-write');
-const tabPreview  = document.getElementById('tab-preview');
-const writePanel  = document.getElementById('f-review');
-const previewPanel = document.getElementById('editor-preview');
+document.getElementById('modal-cancel').addEventListener('click', closeBModal);
+document.getElementById('modal-close').addEventListener('click', closeBModal);
+bmodal.addEventListener('click', e => { if (e.target===bmodal) closeBModal(); });
 
 function switchTab(which) {
-  if (which === 'write') {
-    tabWrite.classList.add('active');
-    tabPreview.classList.remove('active');
-    writePanel.classList.remove('hidden');
-    previewPanel.classList.remove('visible');
+  const ta = document.getElementById('f-review');
+  const pv = document.getElementById('ep');
+  const tw = document.getElementById('tab-w');
+  const tp = document.getElementById('tab-p');
+  if (which==='w') {
+    tw.classList.add('active'); tp.classList.remove('active');
+    ta.classList.remove('hidden'); pv.classList.remove('show');
   } else {
-    tabPreview.classList.add('active');
-    tabWrite.classList.remove('active');
-    writePanel.classList.add('hidden');
-    previewPanel.classList.add('visible');
-    previewPanel.innerHTML = fReview.value
-      ? marked.parse(fReview.value)
-      : '<span style="color:#ccc;font-size:12px;">미리볼 내용이 없습니다</span>';
+    tp.classList.add('active'); tw.classList.remove('active');
+    ta.classList.add('hidden');
+    pv.innerHTML = ta.value ? marked.parse(ta.value) : '<span style="color:var(--dim);font-size:12px">미리볼 내용이 없습니다</span>';
+    pv.classList.add('show');
   }
 }
-
-tabWrite.addEventListener('click', () => switchTab('write'));
-tabPreview.addEventListener('click', () => switchTab('preview'));
-
-/* ── Tab key in textarea inserts 2 spaces ─────────────────── */
-fReview.addEventListener('keydown', (e) => {
-  if (e.key === 'Tab') {
+document.getElementById('tab-w').addEventListener('click', () => switchTab('w'));
+document.getElementById('tab-p').addEventListener('click', () => switchTab('p'));
+document.getElementById('f-review').addEventListener('keydown', e => {
+  if (e.key==='Tab') {
     e.preventDefault();
-    const start = fReview.selectionStart;
-    const end   = fReview.selectionEnd;
-    fReview.value = fReview.value.slice(0, start) + '  ' + fReview.value.slice(end);
-    fReview.selectionStart = fReview.selectionEnd = start + 2;
+    const s=e.target.selectionStart, en=e.target.selectionEnd;
+    e.target.value = e.target.value.slice(0,s)+'  '+e.target.value.slice(en);
+    e.target.selectionStart = e.target.selectionEnd = s+2;
   }
 });
 
-/* =============================================================
-   INIT
-============================================================= */
-loadBooks();
+/* ── GLOBAL SHORTCUTS ─────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if ((e.metaKey||e.ctrlKey) && e.key==='Enter' && bmodal.classList.contains('open')) saveBook();
+  if (e.key==='Escape') {
+    if (bmodal.classList.contains('open')) closeBModal();
+    else if (authOv.classList.contains('open')) closeAuth();
+  }
+});
 
-if (sessionStorage.getItem(SS_KEY) === '1') {
-  isAdmin = true;
-  document.body.classList.add('is-admin');
-}
+document.getElementById('btn-back').addEventListener('click', goList);
+document.getElementById('btn-edit-current').addEventListener('click', () => { if (currentBookId) openBModal(currentBookId); });
+document.getElementById('btn-new-book').addEventListener('click', () => openBModal(null));
 
-renderList();
+/* ── INIT ─────────────────────────────────────────────────── */
+loadBooks(); loadComments();
+if (sessionStorage.getItem(SS_ADMIN)==='1') { isAdmin=true; document.body.classList.add('is-admin'); }
+goList();
 </script>
-
 </body>
 </html>
