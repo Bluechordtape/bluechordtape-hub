@@ -592,7 +592,13 @@ body {
     ];
 
     const map = {};
-    NODES.forEach(n => { n.vx = 0; n.vy = 0; map[n.id] = n; });
+    NODES.forEach(n => {
+      n.vx = 0; n.vy = 0;
+      // coherent drift: each node slowly orbits in its own direction
+      n.driftAngle = Math.random() * Math.PI * 2;
+      n.driftSpeed = 0.004 + Math.random() * 0.003;
+      map[n.id] = n;
+    });
     const edges = EDGES.map(([s, t, d]) => ({ a: map[s], b: map[t], d }));
     let W, H, cx, cy, hovered = null, dragged = null;
     let dragOffX = 0, dragOffY = 0, dragVX = 0, dragVY = 0, lastMX = 0, lastMY = 0;
@@ -629,34 +635,37 @@ body {
     }
 
     function simulate() {
+      // Repulsion — softened so nodes don't snap/jump
       for (let i = 0; i < NODES.length; i++) {
         for (let j = i + 1; j < NODES.length; j++) {
           const a = NODES[i], b = NODES[j];
           const dx = b.x - a.x || .01, dy = b.y - a.y || .01;
           const d2 = dx*dx + dy*dy, d = Math.sqrt(d2);
-          const f = 1600 / d2;
+          const f = 900 / (d2 + 80); // softened: +80 prevents infinite force at close range
           a.vx -= dx/d*f; a.vy -= dy/d*f;
           b.vx += dx/d*f; b.vy += dy/d*f;
         }
       }
+      // Springs — looser so nodes flow more freely
       edges.forEach(({ a, b, d }) => {
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-        const f = (dist - d) * 0.035;
+        const f = (dist - d) * 0.016;
         const fx = dx/dist*f, fy = dy/dist*f;
         a.vx += fx; a.vy += fy;
         b.vx -= fx; b.vy -= fy;
       });
       NODES.forEach(n => {
         if (n === dragged) return;
-        // tiny ambient drift
-        n.vx += (Math.random() - 0.5) * 0.04;
-        n.vy += (Math.random() - 0.5) * 0.04;
-        // gentle center gravity
-        n.vx += (cx - n.x) * 0.003;
-        n.vy += (cy - n.y) * 0.003;
-        // water-like damping (high = viscous)
-        n.vx *= 0.9; n.vy *= 0.9;
+        // Coherent drift: each node slowly turns its own angle → smooth, organic motion
+        n.driftAngle += n.driftSpeed;
+        n.vx += Math.cos(n.driftAngle) * 0.013;
+        n.vy += Math.sin(n.driftAngle) * 0.013;
+        // Very weak center gravity — just enough to keep nodes from drifting offscreen
+        n.vx += (cx - n.x) * 0.0006;
+        n.vy += (cy - n.y) * 0.0006;
+        // High damping = heavy water / space inertia (velocity half-life ~23 frames)
+        n.vx *= 0.97; n.vy *= 0.97;
         n.x += n.vx; n.y += n.vy;
         n.x = Math.max(30, Math.min(W - 30, n.x));
         n.y = Math.max(30, Math.min(H - 30, n.y));
@@ -753,8 +762,8 @@ body {
     function endDrag() {
       if (dragged) {
         if (!dragMoved && dragged.url) window.open(dragged.url, '_blank', 'noopener');
-        dragged.vx = dragVX * 0.6;
-        dragged.vy = dragVY * 0.6;
+        dragged.vx = dragVX * 1.0;
+        dragged.vy = dragVY * 1.0;
         dragged = null;
       }
       canvas.style.cursor = hovered ? (hovered.url ? 'pointer' : 'grab') : 'default';
