@@ -589,7 +589,8 @@ body {
     const map = {};
     NODES.forEach(n => { n.vx = 0; n.vy = 0; map[n.id] = n; });
     const edges = EDGES.map(([s, t, d]) => ({ a: map[s], b: map[t], d }));
-    let W, H, cx, cy, hovered = null;
+    let W, H, cx, cy, hovered = null, dragged = null;
+    let dragOffX = 0, dragOffY = 0, dragVX = 0, dragVY = 0, lastMX = 0, lastMY = 0;
 
     function resize() {
       const dpr = window.devicePixelRatio || 1;
@@ -635,15 +636,21 @@ body {
       edges.forEach(({ a, b, d }) => {
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-        const f = (dist - d) * 0.06;
+        const f = (dist - d) * 0.035;
         const fx = dx/dist*f, fy = dy/dist*f;
         a.vx += fx; a.vy += fy;
         b.vx -= fx; b.vy -= fy;
       });
       NODES.forEach(n => {
-        n.vx += (cx - n.x) * 0.005;
-        n.vy += (cy - n.y) * 0.005;
-        n.vx *= 0.82; n.vy *= 0.82;
+        if (n === dragged) return;
+        // tiny ambient drift
+        n.vx += (Math.random() - 0.5) * 0.04;
+        n.vy += (Math.random() - 0.5) * 0.04;
+        // gentle center gravity
+        n.vx += (cx - n.x) * 0.003;
+        n.vy += (cy - n.y) * 0.003;
+        // water-like damping (high = viscous)
+        n.vx *= 0.9; n.vy *= 0.9;
         n.x += n.vx; n.y += n.vy;
         n.x = Math.max(30, Math.min(W - 30, n.x));
         n.y = Math.max(30, Math.min(H - 30, n.y));
@@ -652,12 +659,13 @@ body {
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      const connIds = hovered
-        ? new Set(edges.filter(e => e.a===hovered||e.b===hovered).flatMap(e => [e.a.id, e.b.id]))
+      const active = dragged || hovered;
+      const connIds = active
+        ? new Set(edges.filter(e => e.a===active||e.b===active).flatMap(e => [e.a.id, e.b.id]))
         : null;
 
       edges.forEach(({ a, b }) => {
-        const hl = hovered && (a===hovered || b===hovered);
+        const hl = active && (a===active || b===active);
         ctx.beginPath();
         ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
         ctx.strokeStyle = hl ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.1)';
@@ -667,25 +675,25 @@ body {
 
       NODES.forEach(n => {
         const conn = connIds ? connIds.has(n.id) : true;
-        const isHov = n === hovered;
+        const isActive = n === active;
         ctx.save();
-        ctx.globalAlpha = hovered ? (conn ? 1 : 0.15) : 1;
-        if (n.type === 'hub' || isHov) {
-          ctx.shadowBlur = 16;
+        ctx.globalAlpha = active ? (conn ? 1 : 0.15) : 1;
+        if (n.type === 'hub' || isActive) {
+          ctx.shadowBlur = isActive ? 22 : 16;
           ctx.shadowColor = n.type === 'hub' ? '#1a3aff' : 'rgba(255,255,255,0.9)';
         }
         ctx.beginPath();
-        ctx.arc(n.x, n.y, isHov ? n.r * 1.5 : n.r, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, isActive ? n.r * 1.5 : n.r, 0, Math.PI * 2);
         ctx.fillStyle = n.type === 'hub'  ? '#1a3aff'
                       : n.type === 'main' ? 'rgba(255,255,255,0.9)'
                       : 'rgba(255,255,255,0.5)';
         ctx.fill();
         ctx.restore();
 
-        const showLbl = n.type !== 'sub' || isHov || (connIds && connIds.has(n.id));
+        const showLbl = n.type !== 'sub' || isActive || (connIds && connIds.has(n.id));
         if (showLbl) {
           ctx.save();
-          ctx.globalAlpha = hovered ? (conn ? 1 : 0.08) : (n.type === 'sub' ? 0.65 : 1);
+          ctx.globalAlpha = active ? (conn ? 1 : 0.08) : (n.type === 'sub' ? 0.65 : 1);
           ctx.fillStyle = '#fff';
           ctx.font = `${n.type==='hub'?'500':'400'} ${n.type==='hub'?'12':'10'}px 'Public Sans',sans-serif`;
           ctx.textAlign = 'center';
@@ -697,16 +705,59 @@ body {
 
     function loop() { simulate(); draw(); requestAnimationFrame(loop); }
 
-    canvas.addEventListener('mousemove', e => {
+    function getPos(e) {
       const rect = canvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      hovered = null;
+      const src = e.touches ? e.touches[0] : e;
+      return { mx: src.clientX - rect.left, my: src.clientY - rect.top };
+    }
+
+    function startDrag(mx, my) {
       for (const n of NODES) {
-        if (Math.hypot(n.x - mx, n.y - my) < n.r + 10) { hovered = n; break; }
+        if (Math.hypot(n.x - mx, n.y - my) < n.r + 12) {
+          dragged = n;
+          dragOffX = n.x - mx; dragOffY = n.y - my;
+          lastMX = mx; lastMY = my;
+          dragVX = 0; dragVY = 0;
+          break;
+        }
       }
-      canvas.style.cursor = hovered ? 'pointer' : 'default';
-    });
-    canvas.addEventListener('mouseleave', () => { hovered = null; });
+    }
+
+    function moveDrag(mx, my) {
+      if (dragged) {
+        dragVX = mx - lastMX; dragVY = my - lastMY;
+        lastMX = mx; lastMY = my;
+        dragged.x = mx + dragOffX;
+        dragged.y = my + dragOffY;
+        dragged.vx = 0; dragged.vy = 0;
+        canvas.style.cursor = 'grabbing';
+      } else {
+        hovered = null;
+        for (const n of NODES) {
+          if (Math.hypot(n.x - mx, n.y - my) < n.r + 10) { hovered = n; break; }
+        }
+        canvas.style.cursor = hovered ? 'grab' : 'default';
+      }
+    }
+
+    function endDrag() {
+      if (dragged) {
+        dragged.vx = dragVX * 0.6;
+        dragged.vy = dragVY * 0.6;
+        dragged = null;
+      }
+      canvas.style.cursor = hovered ? 'grab' : 'default';
+    }
+
+    canvas.addEventListener('mousedown',  e => { const {mx,my} = getPos(e); startDrag(mx,my); });
+    canvas.addEventListener('mousemove',  e => { const {mx,my} = getPos(e); moveDrag(mx,my); });
+    canvas.addEventListener('mouseup',    () => endDrag());
+    canvas.addEventListener('mouseleave', () => { hovered = null; endDrag(); });
+
+    canvas.addEventListener('touchstart',  e => { e.preventDefault(); const {mx,my} = getPos(e); startDrag(mx,my); }, { passive: false });
+    canvas.addEventListener('touchmove',   e => { e.preventDefault(); const {mx,my} = getPos(e); moveDrag(mx,my); },  { passive: false });
+    canvas.addEventListener('touchend',    () => endDrag());
+
     window.addEventListener('resize', resize);
     resize();
     loop();
