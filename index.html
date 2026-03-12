@@ -400,6 +400,22 @@ body {
   color: rgba(255,255,255,0.6);
   padding-top: 12px;
 }
+
+/* ─── SECTION: UNIVERSE / GRAPH ──────────────────────────── */
+.section-graph {
+  background: #07111e;
+  padding: 80px 24px;
+  overflow: hidden;
+}
+.section-graph-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+#graph-canvas {
+  display: block;
+  width: 100%;
+  margin-top: 32px;
+}
 </style>
 </head>
 <body>
@@ -472,6 +488,15 @@ body {
 </section>
 
 
+<!-- ══ SECTION: UNIVERSE / GRAPH ════════════════════════════════ -->
+<section class="section-graph">
+  <div class="section-graph-inner">
+    <span class="section-label reveal" style="color:rgba(255,255,255,0.3)">— Universe —</span>
+    <canvas id="graph-canvas"></canvas>
+  </div>
+</section>
+
+
 <!-- ══ SECTION 3: CONTACT & GUESTBOOK ═══════════════════════════ -->
 <section class="section-contact">
   <div class="section-contact-inner">
@@ -525,6 +550,167 @@ body {
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── GRAPH / UNIVERSE ────────────────────────────────────────
+  ;(function () {
+    const canvas = document.getElementById('graph-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const NODES = [
+      { id: 'hub',        label: 'Blue Chord Tape', type: 'hub',  r: 9   },
+      { id: 'music',      label: 'Music',           type: 'main', r: 6   },
+      { id: 'guitar',     label: 'Guitar',          type: 'main', r: 6   },
+      { id: 'reading',    label: 'Reading',         type: 'main', r: 6   },
+      { id: 'photo',      label: 'Photo / Video',   type: 'main', r: 6   },
+      { id: 'sampling',   label: 'Sampling',        type: 'sub',  r: 3.5 },
+      { id: 'lofi',       label: 'Lo-fi',           type: 'sub',  r: 3.5 },
+      { id: 'beatmaking', label: 'Beat Making',     type: 'sub',  r: 3.5 },
+      { id: 'sp404',      label: 'SP-404',          type: 'sub',  r: 3.5 },
+      { id: 'electric',   label: 'Electric',        type: 'sub',  r: 3.5 },
+      { id: 'pedals',     label: 'Pedals & FX',     type: 'sub',  r: 3.5 },
+      { id: 'books',      label: 'Books',           type: 'sub',  r: 3.5 },
+      { id: 'philosophy', label: 'Philosophy',      type: 'sub',  r: 3.5 },
+      { id: 'film',       label: 'Film',            type: 'sub',  r: 3.5 },
+      { id: 'portrait',   label: 'Portrait',        type: 'sub',  r: 3.5 },
+      { id: 'cinematic',  label: 'Cinematic',       type: 'sub',  r: 3.5 },
+    ];
+
+    const EDGES = [
+      ['hub','music',140],['hub','guitar',140],['hub','reading',140],['hub','photo',140],
+      ['music','sampling',80],['music','lofi',80],['music','beatmaking',80],['music','sp404',80],
+      ['guitar','electric',80],['guitar','pedals',80],
+      ['reading','books',80],['reading','philosophy',80],
+      ['lofi','guitar',160],['sp404','beatmaking',55],
+      ['photo','film',80],['photo','portrait',80],['photo','cinematic',80],
+      ['cinematic','music',170],
+    ];
+
+    const map = {};
+    NODES.forEach(n => { n.vx = 0; n.vy = 0; map[n.id] = n; });
+    const edges = EDGES.map(([s, t, d]) => ({ a: map[s], b: map[t], d }));
+    let W, H, cx, cy, hovered = null;
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      W = canvas.parentElement.getBoundingClientRect().width;
+      H = Math.min(480, Math.max(280, W * 0.5));
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
+      canvas.width  = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cx = W / 2; cy = H / 2;
+      place();
+    }
+
+    function place() {
+      map.hub.x = cx; map.hub.y = cy;
+      const mains = NODES.filter(n => n.type === 'main');
+      mains.forEach((n, i) => {
+        const a = (i / mains.length) * Math.PI * 2 - Math.PI / 2;
+        n.x = cx + Math.cos(a) * 135;
+        n.y = cy + Math.sin(a) * 95;
+      });
+      NODES.filter(n => n.type === 'sub').forEach(n => {
+        const e = edges.find(e => (e.b === n && e.a.type === 'main') || (e.a === n && e.b.type === 'main'));
+        const p = e ? (e.b === n ? e.a : e.b) : map.hub;
+        const a = Math.random() * Math.PI * 2;
+        n.x = p.x + Math.cos(a) * 80;
+        n.y = p.y + Math.sin(a) * 80;
+      });
+    }
+
+    function simulate() {
+      for (let i = 0; i < NODES.length; i++) {
+        for (let j = i + 1; j < NODES.length; j++) {
+          const a = NODES[i], b = NODES[j];
+          const dx = b.x - a.x || .01, dy = b.y - a.y || .01;
+          const d2 = dx*dx + dy*dy, d = Math.sqrt(d2);
+          const f = 1600 / d2;
+          a.vx -= dx/d*f; a.vy -= dy/d*f;
+          b.vx += dx/d*f; b.vy += dy/d*f;
+        }
+      }
+      edges.forEach(({ a, b, d }) => {
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        const f = (dist - d) * 0.06;
+        const fx = dx/dist*f, fy = dy/dist*f;
+        a.vx += fx; a.vy += fy;
+        b.vx -= fx; b.vy -= fy;
+      });
+      NODES.forEach(n => {
+        n.vx += (cx - n.x) * 0.005;
+        n.vy += (cy - n.y) * 0.005;
+        n.vx *= 0.82; n.vy *= 0.82;
+        n.x += n.vx; n.y += n.vy;
+        n.x = Math.max(30, Math.min(W - 30, n.x));
+        n.y = Math.max(30, Math.min(H - 30, n.y));
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      const connIds = hovered
+        ? new Set(edges.filter(e => e.a===hovered||e.b===hovered).flatMap(e => [e.a.id, e.b.id]))
+        : null;
+
+      edges.forEach(({ a, b }) => {
+        const hl = hovered && (a===hovered || b===hovered);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = hl ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.1)';
+        ctx.lineWidth = hl ? 1.2 : 0.8;
+        ctx.stroke();
+      });
+
+      NODES.forEach(n => {
+        const conn = connIds ? connIds.has(n.id) : true;
+        const isHov = n === hovered;
+        ctx.save();
+        ctx.globalAlpha = hovered ? (conn ? 1 : 0.15) : 1;
+        if (n.type === 'hub' || isHov) {
+          ctx.shadowBlur = 16;
+          ctx.shadowColor = n.type === 'hub' ? '#1a3aff' : 'rgba(255,255,255,0.9)';
+        }
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, isHov ? n.r * 1.5 : n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.type === 'hub'  ? '#1a3aff'
+                      : n.type === 'main' ? 'rgba(255,255,255,0.9)'
+                      : 'rgba(255,255,255,0.5)';
+        ctx.fill();
+        ctx.restore();
+
+        const showLbl = n.type !== 'sub' || isHov || (connIds && connIds.has(n.id));
+        if (showLbl) {
+          ctx.save();
+          ctx.globalAlpha = hovered ? (conn ? 1 : 0.08) : (n.type === 'sub' ? 0.65 : 1);
+          ctx.fillStyle = '#fff';
+          ctx.font = `${n.type==='hub'?'500':'400'} ${n.type==='hub'?'12':'10'}px 'Public Sans',sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, n.x, n.y + n.r + 13);
+          ctx.restore();
+        }
+      });
+    }
+
+    function loop() { simulate(); draw(); requestAnimationFrame(loop); }
+
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      hovered = null;
+      for (const n of NODES) {
+        if (Math.hypot(n.x - mx, n.y - my) < n.r + 10) { hovered = n; break; }
+      }
+      canvas.style.cursor = hovered ? 'pointer' : 'default';
+    });
+    canvas.addEventListener('mouseleave', () => { hovered = null; });
+    window.addEventListener('resize', resize);
+    resize();
+    loop();
+  })();
 
   // Guestbook form
   document.getElementById('guestbook-form').addEventListener('submit', async function(e) {
