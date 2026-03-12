@@ -563,6 +563,8 @@ body {
       { id: 'guitar',     label: 'Guitar',          type: 'main', r: 6   },
       { id: 'reading',    label: 'Reading',         type: 'main', r: 6   },
       { id: 'photo',      label: 'Photo / Video',   type: 'main', r: 6   },
+      { id: 'spotify',      label: 'Spotify Playlist', type: 'sub',  r: 3.5 },
+      { id: 'still-reading', label: 'Still Reading',  type: 'sub',  r: 3.5, url: 'https://open.spotify.com/playlist/0xAtic0IQXykZO5M8HM1k2?si=qDIwHaStRmG95bkq7y_VJw&pi=bJg9qP4jRn2M-' },
       { id: 'sampling',   label: 'Sampling',        type: 'sub',  r: 3.5 },
       { id: 'lofi',       label: 'Lo-fi',           type: 'sub',  r: 3.5 },
       { id: 'beatmaking', label: 'Beat Making',     type: 'sub',  r: 3.5 },
@@ -578,6 +580,7 @@ body {
 
     const EDGES = [
       ['hub','music',140],['hub','guitar',140],['hub','reading',140],['hub','photo',140],
+      ['music','spotify',80],['spotify','still-reading',70],
       ['music','sampling',80],['music','lofi',80],['music','beatmaking',80],['music','sp404',80],
       ['guitar','electric',80],['guitar','pedals',80],
       ['reading','books',80],['reading','philosophy',80],
@@ -591,6 +594,7 @@ body {
     const edges = EDGES.map(([s, t, d]) => ({ a: map[s], b: map[t], d }));
     let W, H, cx, cy, hovered = null, dragged = null;
     let dragOffX = 0, dragOffY = 0, dragVX = 0, dragVY = 0, lastMX = 0, lastMY = 0;
+    let dragStartX = 0, dragStartY = 0, dragMoved = false;
 
     function resize() {
       const dpr = window.devicePixelRatio || 1;
@@ -685,6 +689,7 @@ body {
         ctx.beginPath();
         ctx.arc(n.x, n.y, isActive ? n.r * 1.5 : n.r, 0, Math.PI * 2);
         ctx.fillStyle = n.type === 'hub'  ? '#1a3aff'
+                      : n.url             ? '#1DB954'
                       : n.type === 'main' ? 'rgba(255,255,255,0.9)'
                       : 'rgba(255,255,255,0.5)';
         ctx.fill();
@@ -717,7 +722,9 @@ body {
           dragged = n;
           dragOffX = n.x - mx; dragOffY = n.y - my;
           lastMX = mx; lastMY = my;
+          dragStartX = mx; dragStartY = my;
           dragVX = 0; dragVY = 0;
+          dragMoved = false;
           break;
         }
       }
@@ -725,6 +732,7 @@ body {
 
     function moveDrag(mx, my) {
       if (dragged) {
+        if (Math.hypot(mx - dragStartX, my - dragStartY) > 4) dragMoved = true;
         dragVX = mx - lastMX; dragVY = my - lastMY;
         lastMX = mx; lastMY = my;
         dragged.x = mx + dragOffX;
@@ -736,17 +744,18 @@ body {
         for (const n of NODES) {
           if (Math.hypot(n.x - mx, n.y - my) < n.r + 10) { hovered = n; break; }
         }
-        canvas.style.cursor = hovered ? 'grab' : 'default';
+        canvas.style.cursor = hovered ? (hovered.url ? 'pointer' : 'grab') : 'default';
       }
     }
 
     function endDrag() {
       if (dragged) {
+        if (!dragMoved && dragged.url) window.open(dragged.url, '_blank', 'noopener');
         dragged.vx = dragVX * 0.6;
         dragged.vy = dragVY * 0.6;
         dragged = null;
       }
-      canvas.style.cursor = hovered ? 'grab' : 'default';
+      canvas.style.cursor = hovered ? (hovered.url ? 'pointer' : 'grab') : 'default';
     }
 
     canvas.addEventListener('mousedown',  e => { const {mx,my} = getPos(e); startDrag(mx,my); });
