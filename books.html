@@ -787,6 +787,218 @@ input[type="date"].field-input {
   transition: opacity 0.15s;
 }
 .btn-save:hover { opacity: 0.85; }
+
+/* ─── COMMENTS ────────────────────────────────────────────── */
+.comments-section {
+  padding: 0 16px 32px calc(16px + 24px + 24px);
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+@media (min-width: 640px) {
+  .comments-section { padding-left: calc(16px + 40px + 10px); }
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0 16px;
+}
+.comments-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #aaa;
+}
+.comments-count {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #ccc;
+}
+
+.comments-list { margin-bottom: 24px; }
+
+.comment {
+  padding: 14px 0;
+  border-top: 1px solid #eeece8;
+}
+.comment:first-child { border-top: none; }
+
+.comment-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.comment-author {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2a2a2a;
+  letter-spacing: 0.02em;
+}
+.comment-date {
+  font-size: 10px;
+  color: #bbb;
+  letter-spacing: 0.05em;
+}
+.comment-body {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #444;
+  letter-spacing: 0.01em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+.btn-reply-toggle {
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.btn-reply-toggle:hover { color: var(--primary); }
+.btn-delete-comment {
+  display: none;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: #ddd;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.btn-delete-comment:hover { color: #cc4444; }
+.is-admin .btn-delete-comment { display: inline-block; }
+
+/* Replies */
+.comment-replies {
+  margin-top: 4px;
+  margin-left: 16px;
+  padding-left: 14px;
+  border-left: 2px solid #eeece8;
+}
+
+/* Inline reply form */
+.reply-form-wrap { margin-top: 10px; }
+
+/* Comment input form */
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.comment-form-row {
+  display: flex;
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .comment-form-row { flex-direction: column; }
+}
+.comment-input {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #d8d6d2;
+  padding: 7px 0;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.comment-input:focus { border-bottom-color: var(--primary); }
+.comment-input::placeholder { color: #ccc; }
+.comment-input-name { flex: 0 0 180px; }
+@media (max-width: 480px) {
+  .comment-input-name { flex: none; }
+}
+.comment-textarea {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #d8d6d2;
+  padding: 7px 0;
+  outline: none;
+  resize: none;
+  width: 100%;
+  line-height: 1.6;
+  transition: border-color 0.15s;
+  min-height: 60px;
+  overflow: hidden;
+}
+.comment-textarea:focus { border-bottom-color: var(--primary); }
+.comment-textarea::placeholder { color: #ccc; }
+.comment-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.comment-form-error {
+  font-size: 11px;
+  color: #cc4444;
+  letter-spacing: 0.05em;
+  min-height: 16px;
+}
+.btn-post-comment {
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  padding: 8px 18px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.btn-post-comment:hover { opacity: 0.85; }
+.btn-post-comment:disabled { opacity: 0.4; cursor: default; }
+.btn-cancel-reply {
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.btn-cancel-reply:hover { color: var(--text); }
+
+.comments-loading {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ccc;
+  padding: 20px 0;
+}
+.comments-empty {
+  font-size: 12px;
+  color: #ccc;
+  padding: 8px 0 16px;
+  letter-spacing: 0.03em;
+}
 </style>
 </head>
 <body>
@@ -950,12 +1162,14 @@ let editingId = null; // null = new book, string = editing existing
 /* =============================================================
    HELPERS
 ============================================================= */
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function formatDate(iso) {
-  // "2025-03-12" → "2025 · 03"
   if (!iso) return '';
   const parts = iso.split('-');
-  if (parts.length < 2) return iso;
-  return parts[0] + ' · ' + parts[1];
+  if (parts.length < 3) return iso;
+  const month = MONTHS[parseInt(parts[1], 10) - 1] || parts[1];
+  const day   = parseInt(parts[2], 10);
+  return `${month} ${day}. ${parts[0]}`;
 }
 
 function todayISO() {
@@ -1051,6 +1265,14 @@ function renderList() {
       <div class="book-body">
         <div class="book-body-inner">
           <div class="book-review"></div>
+          <div class="comments-section" data-book-id="${escHtml(book.id)}" data-loaded="false">
+            <div class="comments-header">
+              <span class="comments-label">Comments</span>
+              <span class="comments-count"></span>
+            </div>
+            <div class="comments-list"><div class="comments-loading">Loading...</div></div>
+            <div class="comment-form-wrap"></div>
+          </div>
         </div>
       </div>
     `;
@@ -1064,7 +1286,11 @@ function renderList() {
           e.target.classList.contains('btn-delete-book')) return;
       const isOpen = item.classList.contains('open');
       document.querySelectorAll('.book-item.open').forEach(el => el.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      if (!isOpen) {
+        item.classList.add('open');
+        const cs = item.querySelector('.comments-section');
+        if (cs && cs.dataset.loaded === 'false') loadComments(cs);
+      }
     });
 
     // Edit button
@@ -1099,6 +1325,221 @@ function escHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/* =============================================================
+   SUPABASE COMMENTS
+   ─────────────────────────────────────────────────────────────
+   설정 방법:
+   1. https://supabase.com 에서 무료 프로젝트 생성
+   2. SQL Editor에서 아래 쿼리 실행:
+
+   create table comments (
+     id uuid default gen_random_uuid() primary key,
+     book_id text not null,
+     parent_id uuid references comments(id) on delete cascade,
+     author text not null,
+     content text not null,
+     created_at timestamptz default now()
+   );
+   alter table comments enable row level security;
+   create policy "public read"   on comments for select using (true);
+   create policy "public insert" on comments for insert with check (true);
+   create policy "public delete" on comments for delete using (true);
+
+   3. Project Settings > API 에서 URL과 anon key를 복사해 아래에 붙여넣으세요.
+============================================================= */
+const SB_URL = 'YOUR_SUPABASE_URL';         // 예: https://xxxx.supabase.co
+const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';    // anon public key
+
+const SB_CONFIGURED = SB_URL !== 'YOUR_SUPABASE_URL';
+
+function sbHeaders() {
+  return {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json',
+  };
+}
+
+async function fetchComments(bookId) {
+  if (!SB_CONFIGURED) return [];
+  const res = await fetch(
+    `${SB_URL}/rest/v1/comments?book_id=eq.${encodeURIComponent(bookId)}&order=created_at.asc`,
+    { headers: sbHeaders() }
+  );
+  if (!res.ok) return [];
+  return res.json();
+}
+
+async function insertComment({ book_id, parent_id, author, content }) {
+  const res = await fetch(`${SB_URL}/rest/v1/comments`, {
+    method: 'POST',
+    headers: { ...sbHeaders(), 'Prefer': 'return=representation' },
+    body: JSON.stringify({ book_id, parent_id: parent_id || null, author, content }),
+  });
+  if (!res.ok) throw new Error('Failed to post comment');
+  const rows = await res.json();
+  return rows[0];
+}
+
+async function deleteComment(id) {
+  await fetch(`${SB_URL}/rest/v1/comments?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: sbHeaders(),
+  });
+}
+
+/* ── Comment time formatter ──────────────────────────────── */
+function formatCommentDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = (now - d) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  if (diff < 86400 * 7) return Math.floor(diff / 86400) + 'd ago';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/* ── Build inline comment form HTML ─────────────────────── */
+function buildCommentForm(bookId, parentId) {
+  const savedName = localStorage.getItem('bct_comment_name') || '';
+  const isReply = !!parentId;
+  return `
+    <div class="comment-form" data-book-id="${escHtml(bookId)}" data-parent-id="${parentId || ''}">
+      <div class="comment-form-row">
+        <input class="comment-input comment-input-name" type="text" placeholder="Name" value="${escHtml(savedName)}" maxlength="40"/>
+      </div>
+      <textarea class="comment-textarea" placeholder="${isReply ? 'Write a reply...' : 'Leave a comment...'}" rows="3" maxlength="2000"></textarea>
+      <div class="comment-form-footer">
+        <span class="comment-form-error"></span>
+        <div style="display:flex;gap:10px;align-items:center">
+          ${isReply ? '<button class="btn-cancel-reply">Cancel</button>' : ''}
+          <button class="btn-post-comment">Post</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ── Render one comment (and its replies recursively) ────── */
+function renderComment(c, allComments, depth) {
+  depth = depth || 0;
+  const replies = allComments.filter(r => r.parent_id === c.id);
+  const repliesHTML = replies.map(r => renderComment(r, allComments, depth + 1)).join('');
+
+  return `
+    <div class="comment" data-comment-id="${escHtml(c.id)}">
+      <div class="comment-meta">
+        <span class="comment-author">${escHtml(c.author)}</span>
+        <span class="comment-date">${formatCommentDate(c.created_at)}</span>
+      </div>
+      <div class="comment-body">${escHtml(c.content)}</div>
+      <div class="comment-actions">
+        <button class="btn-reply-toggle">Reply</button>
+        <button class="btn-delete-comment" data-id="${escHtml(c.id)}">Delete</button>
+      </div>
+      <div class="reply-form-wrap"></div>
+      ${replies.length ? `<div class="comment-replies">${repliesHTML}</div>` : `<div class="comment-replies"></div>`}
+    </div>
+  `;
+}
+
+/* ── Wire up events inside a rendered comments section ───── */
+function wireCommentEvents(section, allComments, bookId) {
+  // Delete buttons
+  section.querySelectorAll('.btn-delete-comment').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('댓글을 삭제하시겠습니까?')) return;
+      const id = btn.dataset.id;
+      btn.disabled = true;
+      await deleteComment(id);
+      await loadComments(section);
+    });
+  });
+
+  // Reply toggles
+  section.querySelectorAll('.btn-reply-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const commentEl = btn.closest('.comment');
+      const wrap = commentEl.querySelector(':scope > .reply-form-wrap');
+      if (wrap.innerHTML) { wrap.innerHTML = ''; return; }
+      const cid = commentEl.dataset.commentId;
+      wrap.innerHTML = buildCommentForm(bookId, cid);
+      wireFormEvents(wrap.querySelector('.comment-form'), section, bookId);
+      wrap.querySelector('.btn-cancel-reply').addEventListener('click', () => { wrap.innerHTML = ''; });
+      wrap.querySelector('.comment-textarea').focus();
+    });
+  });
+}
+
+/* ── Wire submit events on a form ───────────────────────── */
+function wireFormEvents(form, section, bookId) {
+  const textarea = form.querySelector('.comment-textarea');
+
+  // Auto-resize textarea
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
+
+  form.querySelector('.btn-post-comment').addEventListener('click', async () => {
+    const nameEl  = form.querySelector('.comment-input-name');
+    const errEl   = form.querySelector('.comment-form-error');
+    const btn     = form.querySelector('.btn-post-comment');
+    const name    = nameEl.value.trim();
+    const content = textarea.value.trim();
+    const parentId = form.dataset.parentId || null;
+
+    errEl.textContent = '';
+    if (!name)    { errEl.textContent = '이름을 입력하세요'; nameEl.focus(); return; }
+    if (!content) { errEl.textContent = '내용을 입력하세요'; textarea.focus(); return; }
+    if (!SB_CONFIGURED) { errEl.textContent = 'Supabase가 설정되지 않았습니다'; return; }
+
+    btn.disabled = true;
+    btn.textContent = '...';
+    localStorage.setItem('bct_comment_name', name);
+
+    try {
+      await insertComment({ book_id: bookId, parent_id: parentId || null, author: name, content });
+      await loadComments(section);
+    } catch (err) {
+      errEl.textContent = '오류가 발생했습니다. 다시 시도하세요.';
+      btn.disabled = false;
+      btn.textContent = 'Post';
+    }
+  });
+}
+
+/* ── Main: load comments into a section element ─────────── */
+async function loadComments(section) {
+  section.dataset.loaded = 'true';
+  const bookId = section.dataset.bookId;
+  const listEl = section.querySelector('.comments-list');
+  const countEl = section.querySelector('.comments-count');
+  const formWrap = section.querySelector('.comment-form-wrap');
+
+  listEl.innerHTML = '<div class="comments-loading">Loading...</div>';
+
+  let all = [];
+  if (SB_CONFIGURED) {
+    all = await fetchComments(bookId);
+  }
+
+  const topLevel = all.filter(c => !c.parent_id);
+  countEl.textContent = all.length ? `(${all.length})` : '';
+
+  if (!topLevel.length) {
+    listEl.innerHTML = `<div class="comments-empty">${SB_CONFIGURED ? '첫 번째 댓글을 남겨보세요.' : 'Supabase를 설정하면 댓글 기능이 활성화됩니다.'}</div>`;
+  } else {
+    listEl.innerHTML = topLevel.map(c => renderComment(c, all, 0)).join('');
+    wireCommentEvents(section, all, bookId);
+  }
+
+  formWrap.innerHTML = buildCommentForm(bookId, null);
+  wireFormEvents(formWrap.querySelector('.comment-form'), section, bookId);
 }
 
 /* =============================================================
