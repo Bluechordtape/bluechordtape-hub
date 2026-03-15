@@ -159,81 +159,272 @@ body {
   50%       { transform: translateX(-50%) translateY(6px); }
 }
 
-/* ─── SECTION 2: TOOLS ────────────────────────────────────────── */
-.section-tools {
+/* ─── SECTION: ABOUT + NOW ───────────────────────────────────── */
+.section-about {
   background: var(--warm-white);
-  padding: 80px 24px;
+  padding: 56px 24px;
+  border-top: 1px solid #e2e0db;
 }
+.section-about-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+}
+@media (min-width: 680px) {
+  .section-about-inner { grid-template-columns: 3fr 2fr; gap: 80px; }
+}
+.about-label {
+  display: block;
+  font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: #aaa; margin-bottom: 20px;
+}
+.about-text {
+  font-size: clamp(18px, 2.4vw, 24px); line-height: 1.75; color: #1a1a1a; font-weight: 300;
+}
+.now-list { list-style: none; display: flex; flex-direction: column; gap: 20px; margin-top: 0; }
+.now-item {}
+.now-type {
+  display: block; font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: #bbb; margin-bottom: 5px;
+}
+.now-val { font-size: 14px; color: #2a2a2a; font-weight: 400; line-height: 1.5; }
 
-.section-tools-inner {
+/* ─── SECTION: GALLERY ───────────────────────────────────────── */
+.section-gallery {
+  background: var(--warm-white);
+  padding: 56px 24px;
+  border-top: 1px solid #e2e0db;
+}
+.gallery-header {
+  max-width: 860px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gallery-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gallery-nav-btn {
+  background: none;
+  border: 1px solid #ccc;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  color: #555;
+  transition: border-color 0.2s, color 0.2s;
+}
+.gallery-nav-btn:hover { border-color: #333; color: #111; }
+.gallery-nav-btn:disabled { opacity: 0.25; cursor: default; }
+.gallery-counter {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #aaa;
+  min-width: 36px;
+  text-align: center;
+}
+.gallery-pages {
   max-width: 860px;
   margin: 0 auto;
 }
-
-.section-label {
+.gallery-page {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+}
+.gallery-page.active { display: grid; }
+.gallery-img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
   display: block;
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: #aaa;
-  margin-bottom: 32px;
+  cursor: zoom-in;
+  filter: grayscale(8%) brightness(0.96);
+  transition: filter 0.35s;
+}
+.gallery-img:hover { filter: grayscale(0%) brightness(1); }
+
+/* ─── LIGHTBOX ───────────────────────────────────────────────── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+#lightbox.open { display: flex; }
+#lightbox img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  display: block;
+  box-shadow: 0 8px 60px rgba(0,0,0,0.6);
+}
+#lightbox-close {
+  position: absolute;
+  top: 20px; right: 24px;
+  color: rgba(255,255,255,0.6);
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  background: none;
+  border: none;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+#lightbox-close:hover { color: #fff; }
+
+/* ─── SECTION: SELECTED WORKS ────────────────────────────────── */
+.section-works {
+  background: var(--warm-white);
+  padding: 56px 24px;
+  border-top: 1px solid #e2e0db;
+}
+.section-works-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+.work-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 32px 0;
+  border-bottom: 1px solid #e2e0db;
+  gap: 32px;
+}
+.work-row:first-of-type { border-top: 1px solid #e2e0db; }
+.work-row-left { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.work-num { display: none; }
+.work-title { font-size: clamp(18px, 2.2vw, 22px); font-weight: 500; color: #0a0a0a; line-height: 1.25; }
+.work-desc { font-size: 13px; color: #666; line-height: 1.7; max-width: 560px; }
+.work-year {
+  font-size: 10px; color: #aaa; letter-spacing: 0.2em; text-transform: uppercase;
+  flex-shrink: 0; padding-top: 6px; white-space: nowrap;
 }
 
+/* ─── SECTION 2: TOOLS ────────────────────────────────────────── */
+.section-tools {
+  background: #f5f4f1;
+  padding: 56px 24px;
+  border-top: 1px solid #e2e0db;
+}
+.section-tools-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.section-label {
+  display: block;
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 28px;
+}
 .tools-divider {
   width: 100%;
   height: 2px;
   background: var(--primary);
-  margin-bottom: 0;
+  margin-bottom: 32px;
 }
-
-.tool-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 16px;
-  border-bottom: 1px solid #e2e0db;
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 600px) {
+  .tool-grid { grid-template-columns: 1fr; }
+}
+.tool-card {
+  display: block;
   text-decoration: none;
   color: inherit;
-  transition: background 0.2s, padding-left 0.2s;
-  gap: 16px;
+  background: #fff;
+  border: 1px solid #e2e0db;
+  transition: box-shadow 0.25s, transform 0.25s;
 }
-.tool-row:hover {
-  background: rgba(26, 58, 255, 0.04);
-  padding-left: 24px;
+.tool-card:hover {
+  box-shadow: 0 10px 40px rgba(0,0,0,0.10);
+  transform: translateY(-3px);
 }
-
-.tool-row-left {
+.tool-card-preview {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: #0e1a2e;
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 18px 18px;
   display: flex;
-  align-items: baseline;
-  gap: 24px;
+  align-items: center;
+  justify-content: center;
 }
-
-@media (min-width: 640px) {
-  .tool-row-left { gap: 48px; }
+.tool-card-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) brightness(0.75);
+  transition: filter 0.3s;
 }
-
-.tool-num {
+.tool-card:hover .tool-card-preview img {
+  filter: grayscale(60%) brightness(0.9);
+}
+.tool-card-preview-label {
+  font-size: clamp(20px, 4vw, 30px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.12);
+  text-transform: uppercase;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+}
+.tool-card-body {
+  padding: 14px 16px 16px;
+  border-top: 1px solid #e2e0db;
+}
+.tool-card-tag {
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 7px;
+  display: block;
+}
+.tool-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0a0a0a;
+  margin-bottom: 6px;
+}
+.tool-card-desc {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.tool-card-cta {
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
   color: var(--primary);
-  flex-shrink: 0;
+  transition: letter-spacing 0.2s;
 }
+.tool-card:hover .tool-card-cta { letter-spacing: 0.35em; }
 
-.tool-name {
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: #2a2a2a;
-  white-space: nowrap;
-}
-
-.tool-name span {
-  color: #bbb;
-  margin: 0 6px;
-}
-
+/* keep arrow class for compat but unused */
+.tool-row { display: none; }
 .tool-arrow {
   color: var(--primary);
   font-size: 22px;
@@ -247,7 +438,7 @@ body {
 .section-contact {
   background: var(--dark);
   color: #fff;
-  padding: 80px 24px;
+  padding: 56px 24px;
 }
 
 .section-contact-inner {
@@ -404,21 +595,87 @@ body {
 /* ─── SECTION: UNIVERSE / GRAPH ──────────────────────────── */
 .section-graph {
   background: #07111e;
-  padding: 80px 24px;
+  padding: 56px 0 16px;
   overflow: hidden;
 }
 .section-graph-inner {
-  max-width: 860px;
-  margin: 0 auto;
+  width: 100%;
+}
+.graph-header {
+  padding: 0 40px;
+  margin-bottom: 0;
 }
 #graph-canvas {
   display: block;
   width: 100%;
-  margin-top: 32px;
+  touch-action: none;
 }
+.graph-zoom-row {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  padding: 10px 40px 0;
+}
+.graph-zoom-btn {
+  width: 30px; height: 30px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 5px;
+  color: rgba(255,255,255,0.45);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  font-family: 'Public Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.graph-zoom-btn:hover { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.9); }
+.graph-zoom-btn.reset { font-size: 14px; }
+
+/* ─── ADMIN MODE ──────────────────────────────────────────── */
+#adm-bar{position:fixed;bottom:0;left:0;right:0;background:#080f1c;border-top:1px solid rgba(255,255,255,0.07);padding:8px 14px;display:none;align-items:center;gap:6px;z-index:9000;font-family:'Public Sans',sans-serif}
+#adm-bar.open{display:flex}
+.adm-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,0.25);padding-right:4px;flex-shrink:0}
+.adm-sep{width:1px;height:18px;background:rgba(255,255,255,0.07);flex-shrink:0;margin:0 2px}
+.adm-sp{flex:1}
+.ab{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.55);cursor:pointer;font-family:'Public Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.ab:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,.9)}
+.ab.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ab.r{border-color:rgba(255,70,70,0.25);color:rgba(255,110,110,0.7)}
+.ab.r:hover{background:rgba(200,40,40,0.15);color:#ff8080;border-color:rgba(255,70,70,0.5)}
+body.adm [data-ae]{cursor:text;outline:1px dashed rgba(40,120,255,0.3);transition:outline .12s}
+body.adm [data-ae]:hover{outline:1px solid rgba(40,120,255,0.6)}
+body.adm [data-ae][contenteditable=true]:focus{outline:2px solid var(--primary);background:rgba(40,120,255,0.04)}
+.adm-ndel{display:none;background:none;border:none;color:rgba(255,80,80,0.45);font-size:18px;cursor:pointer;padding:0 2px 0 8px;line-height:1;flex-shrink:0;transition:color .12s;vertical-align:middle}
+.adm-ndel:hover{color:#ff6b6b}
+body.adm .adm-ndel{display:inline-block}
+#adm-add-note{display:none;width:100%;padding:13px;border:1px dashed rgba(40,120,255,0.2);background:none;color:rgba(40,120,255,0.45);font-size:9px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;font-family:'Public Sans',sans-serif;transition:all .15s;margin-top:10px;text-align:center}
+#adm-add-note:hover{border-color:var(--primary);color:var(--primary)}
+body.adm #adm-add-note{display:block}
+body.adm { padding-bottom: 56px; }
+.adm-panel{position:fixed;top:50%;right:20px;transform:translateY(-50%) translateX(calc(100% + 28px));width:264px;max-height:72vh;overflow-y:auto;background:#080f1c;border:1px solid rgba(255,255,255,0.09);padding:16px;z-index:8999;transition:transform .22s ease;font-family:'Public Sans',sans-serif}
+.adm-panel.open{transform:translateY(-50%) translateX(0)}
+.adm-ph{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:12px;display:block}
+.adm-nrow{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.adm-nbadge{font-size:8px;padding:2px 5px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3);flex-shrink:0;min-width:28px;text-align:center}
+.adm-ni{flex:1;padding:4px 7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#e0e0e0;font-size:11px;font-family:'Public Sans',sans-serif}
+.adm-ni:focus{outline:none;border-color:var(--primary)}
+.adm-save{width:100%;margin-top:10px;padding:7px;background:var(--primary);border:none;color:#fff;font-size:9px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;font-family:'Public Sans',sans-serif;transition:opacity .15s}
+.adm-save:hover{opacity:.85}
+.adm-prow{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:5px;border:1px solid rgba(255,255,255,0.06)}
+.adm-pthumb{width:56px;height:38px;object-fit:cover;flex-shrink:0;transition:opacity .2s,filter .2s}
+.adm-pthumb.hid{opacity:.2;filter:grayscale(100%)}
+.adm-pname{flex:1;color:rgba(255,255,255,0.45);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm-ptog{background:none;border:1px solid rgba(255,255,255,0.13);color:rgba(255,255,255,0.45);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;cursor:pointer;font-family:'Public Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.adm-ptog:hover{border-color:rgba(255,255,255,0.3);color:#fff}
+.adm-ptog.hid{border-color:rgba(255,80,80,0.3);color:rgba(255,120,120,0.7)}
 </style>
 </head>
 <body>
+
+
 
 <!-- ══ SECTION 1: VISUAL INTRO ══════════════════════════════════ -->
 <section class="section-intro">
@@ -444,7 +701,7 @@ body {
       <div class="reel"></div>
     </div>
     <h1 class="intro-title">Blue Chord Tape</h1>
-    <p class="intro-sub">Musician · Analog Player</p>
+    <p class="intro-sub" data-ae="introSub">Musician · Analog Player</p>
   </div>
 
   <!-- Scroll hint -->
@@ -453,11 +710,135 @@ body {
 </section>
 
 
+<!-- ══ SECTION: ABOUT + NOW ══════════════════════════════════════ -->
+<section class="section-about">
+  <div class="section-about-inner">
+
+    <div class="reveal">
+      <span class="about-label">— About —</span>
+      <p class="about-text" data-ae="about">
+        There are hours spent with a guitar or behind the SP-404.
+        What matters more than performing for others is what I feel in this moment.
+        Blue Chord Tape is where those feelings and thoughts get recorded.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <span class="about-label">— Now —</span>
+      <ul class="now-list">
+        <li class="now-item">
+          <span class="now-type" data-ae="nowType0">Listening</span>
+          <span class="now-val" data-ae="nowVal0">Brad Mehldau — Blackbird</span>
+        </li>
+        <li class="now-item">
+          <span class="now-type" data-ae="nowType1">Reading</span>
+          <span class="now-val" data-ae="nowVal1">Song Kilyoung — Forecast: The Birth of Lightweight Culture</span>
+        </li>
+        <li class="now-item">
+          <span class="now-type" data-ae="nowType2">Making</span>
+          <span class="now-val" data-ae="nowVal2">SP-404 Sampling / BCT-404</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+
 <!-- ══ SECTION: UNIVERSE / GRAPH ════════════════════════════════ -->
 <section class="section-graph">
   <div class="section-graph-inner">
-    <span class="section-label reveal" style="color:rgba(255,255,255,0.3)">— Universe —</span>
+    <div class="graph-header">
+      <span class="section-label reveal" style="color:rgba(255,255,255,0.3)">— Universe —</span>
+    </div>
     <canvas id="graph-canvas"></canvas>
+  </div>
+</section>
+
+
+<!-- ══ SECTION: SELECTED WORKS ══════════════════════════════════ -->
+<section class="section-works">
+  <div class="section-works-inner">
+
+    <span class="section-label reveal">— Notes —</span>
+    <div class="tools-divider reveal"></div>
+
+    <div class="work-row reveal">
+      <div class="work-row-left">
+        <span class="work-num">001</span>
+        <div>
+          <div class="work-title">표현하는 연주, 빠져드는 연주</div>
+          <div class="work-desc">남에게 잘 보이기 위한 연주는 의미가 없다. 음악은 자신을 표현하거나 완전히 잃어버리는 공간이어야 한다. 그 중간 어딘가는 없다.</div>
+        </div>
+      </div>
+      <span class="work-year">2025</span>
+    </div>
+
+    <div class="work-row reveal">
+      <div class="work-row-left">
+        <span class="work-num">002</span>
+        <div>
+          <div class="work-title">두려움이지, 게으름이 아니다</div>
+          <div class="work-desc">시작을 못하는 가장 큰 이유가 게으름이라고 생각했다. 아니었다. 두려움이었다. 실패할까봐, 평가받을까봐, 충분하지 않을까봐. 게으름이라고 부르면 더 편하기 때문에 그렇게 불렀던 것 같다.</div>
+        </div>
+      </div>
+      <span class="work-year">2025</span>
+    </div>
+
+    <div class="work-row reveal">
+      <div class="work-row-left">
+        <span class="work-num">003</span>
+        <div>
+          <div class="work-title">정리가 주는 것은 여유가 아니라 '충분함'이다</div>
+          <div class="work-desc">물건을 줄이고 나서 생긴 건 공간보다 마음이었다. 이 정도면 충분하다는 감각. 늘 부족하다고 느끼며 살았던 게 물건 때문이 아니라 비교 때문이었다는 걸 알게 됐다.</div>
+        </div>
+      </div>
+      <span class="work-year">2024</span>
+    </div>
+
+    <div class="work-row reveal">
+      <div class="work-row-left">
+        <span class="work-num">004</span>
+        <div>
+          <div class="work-title">가까워지는 것이 두려운 사람</div>
+          <div class="work-desc">거리를 두는 게 습관이 됐다면, 그건 자신을 보호하는 방식이다. 차가운 세상에 있는 천국은 그 거리를 조금 좁히는 데서 시작된다. 위험을 감수하는 것이 사랑의 조건이다.</div>
+        </div>
+      </div>
+      <span class="work-year">2025</span>
+    </div>
+
+    <button id="adm-add-note" type="button">+ Add Note</button>
+
+  </div>
+</section>
+
+
+<!-- ══ SECTION: GALLERY ═════════════════════════════════════════ -->
+<section class="section-gallery">
+  <div class="gallery-header">
+    <span class="section-label">— Photography —</span>
+    <div class="gallery-nav">
+      <button class="gallery-nav-btn" id="gallery-prev">‹</button>
+      <span class="gallery-counter" id="gallery-counter">1 / 3</span>
+      <button class="gallery-nav-btn" id="gallery-next">›</button>
+    </div>
+  </div>
+  <div class="gallery-pages" id="gallery-pages">
+    <div class="gallery-page active">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5451.JPG" data-full="gallery/DSCF5451.JPG" alt="">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5459.JPG" data-full="gallery/DSCF5459.JPG" alt="">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5496.JPG" data-full="gallery/DSCF5496.JPG" alt="">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5505.JPG" data-full="gallery/DSCF5505.JPG" alt="">
+    </div>
+    <div class="gallery-page">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5514.JPG" data-full="gallery/DSCF5514.JPG" alt="">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5531.JPG" data-full="gallery/DSCF5531.JPG" alt="">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5584.JPG" data-full="gallery/DSCF5584.JPG" alt="">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5640.JPG" data-full="gallery/DSCF5640.JPG" alt="">
+    </div>
+    <div class="gallery-page">
+      <img class="gallery-img" src="gallery/thumbs/DSCF5698.JPG" data-full="gallery/DSCF5698.JPG" alt="">
+    </div>
   </div>
 </section>
 
@@ -469,37 +850,61 @@ body {
     <span class="section-label reveal">— Tools —</span>
     <div class="tools-divider reveal"></div>
 
-    <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
-      <div class="tool-row-left">
-        <span class="tool-num">001</span>
-        <span class="tool-name">BCT-404 <span>/</span> Drum Machine</span>
-      </div>
-      <span class="tool-arrow" aria-hidden="true">→</span>
-    </a>
+    <div class="tool-grid">
 
-    <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
-      <div class="tool-row-left">
-        <span class="tool-num">002</span>
-        <span class="tool-name">BCT-SEQ <span>/</span> Sequencer</span>
-      </div>
-      <span class="tool-arrow" aria-hidden="true">→</span>
-    </a>
+      <a href="https://sp404-drum-machine.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-card reveal">
+        <div class="tool-card-preview">
+          <img src="tools/bct-404.jpg" alt="BCT-404 preview">
+          <span class="tool-card-preview-label">BCT-404</span>
+        </div>
+        <div class="tool-card-body">
+          <span class="tool-card-tag">Drum Machine</span>
+          <div class="tool-card-name">BCT-404</div>
+          <div class="tool-card-desc">Browser-based drum machine inspired by the SP-404. Pads, MIDI sequencer, loop recording, and chop sampler.</div>
+          <div class="tool-card-cta">Open →</div>
+        </div>
+      </a>
 
-    <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
-      <div class="tool-row-left">
-        <span class="tool-num">003</span>
-        <span class="tool-name">BCT-CHOP <span>/</span> Chop Sampler</span>
-      </div>
-      <span class="tool-arrow" aria-hidden="true">→</span>
-    </a>
+      <a href="https://sampler-sequencer.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-card reveal">
+        <div class="tool-card-preview">
+          <img src="tools/bct-seq.jpg" alt="BCT-SEQ preview">
+          <span class="tool-card-preview-label">BCT-SEQ</span>
+        </div>
+        <div class="tool-card-body">
+          <span class="tool-card-tag">Sequencer</span>
+          <div class="tool-card-name">BCT-SEQ</div>
+          <div class="tool-card-desc">Step sequencer with sample playback and pattern editing. Build loops from scratch in the browser.</div>
+          <div class="tool-card-cta">Open →</div>
+        </div>
+      </a>
 
-    <a href="https://bct-mix.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-row reveal">
-      <div class="tool-row-left">
-        <span class="tool-num">004</span>
-        <span class="tool-name">BCT-MIX <span>/</span> Video + Audio Merge</span>
-      </div>
-      <span class="tool-arrow" aria-hidden="true">→</span>
-    </a>
+      <a href="https://chop-sampler.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-card reveal">
+        <div class="tool-card-preview">
+          <img src="tools/bct-chop.jpg" alt="BCT-CHOP preview">
+          <span class="tool-card-preview-label">BCT-CHOP</span>
+        </div>
+        <div class="tool-card-body">
+          <span class="tool-card-tag">Chop Sampler</span>
+          <div class="tool-card-name">BCT-CHOP</div>
+          <div class="tool-card-desc">Load, record, and slice audio samples in the browser. Assign chops to pads and play.</div>
+          <div class="tool-card-cta">Open →</div>
+        </div>
+      </a>
+
+      <a href="https://bct-mix.vercel.app" target="_blank" rel="noopener noreferrer" class="tool-card reveal">
+        <div class="tool-card-preview">
+          <img src="tools/bct-mix.jpg" alt="BCT-MIX preview">
+          <span class="tool-card-preview-label">BCT-MIX</span>
+        </div>
+        <div class="tool-card-body">
+          <span class="tool-card-tag">Video + Audio</span>
+          <div class="tool-card-name">BCT-MIX</div>
+          <div class="tool-card-desc">Merge video and audio tracks directly in the browser. No upload, no install required.</div>
+          <div class="tool-card-cta">Open →</div>
+        </div>
+      </a>
+
+    </div>
 
   </div>
 </section>
@@ -540,13 +945,53 @@ body {
         </div>
       </form>
 
-      <p id="guestbook-success">메시지가 전달됐습니다 ✓</p>
+      <p id="guestbook-success">Message sent ✓</p>
     </div>
 
   </div>
 </section>
 
 <script>
+  // ── Apply admin content overrides (runs before everything) ──────────
+  (function() {
+    let S = {};
+    try { S = JSON.parse(localStorage.getItem('bct_c') || '{}'); } catch(_) {}
+    if (S.texts) {
+      Object.entries(S.texts).forEach(function(e) {
+        var el = document.querySelector('[data-ae="' + e[0] + '"]');
+        if (el) el.textContent = e[1];
+      });
+    }
+    if (S.notes) {
+      var inner = document.querySelector('.section-works-inner');
+      if (inner) {
+        inner.querySelectorAll('.work-row').forEach(function(r) { r.remove(); });
+        S.notes.forEach(function(n) {
+          var d = document.createElement('div');
+          d.className = 'work-row reveal visible';
+          d.innerHTML =
+            '<div class="work-row-left">' +
+              '<span class="work-num">' + n.num + '</span>' +
+              '<div>' +
+                '<div class="work-title">' + n.title + '</div>' +
+                '<div class="work-desc">' + n.desc + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<span class="work-year">' + n.year + '</span>' +
+            '<button class="adm-ndel" title="Delete">×</button>';
+          var addBtn = document.getElementById('adm-add-note');
+          inner.insertBefore(d, addBtn || null);
+        });
+      }
+    }
+    if (S.hiddenPhotos && S.hiddenPhotos.length) {
+      S.hiddenPhotos.forEach(function(src) {
+        var img = document.querySelector('.gallery-img[src="' + src + '"]');
+        if (img) img.style.display = 'none';
+      });
+    }
+  })();
+
   // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -565,63 +1010,83 @@ body {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
+    const _glOverride = (function(){ try{ return JSON.parse(localStorage.getItem('bct_c')||'{}').graphLabels||{}; }catch(_){ return {}; } })();
     const NODES = [
-      { id: 'hub',        label: 'Blue Chord Tape', type: 'hub',  r: 9   },
-      { id: 'music',      label: 'Music',           type: 'main', r: 6   },
-      { id: 'guitar',     label: 'Guitar',          type: 'main', r: 6   },
-      { id: 'reading',    label: 'Reading',         type: 'main', r: 6   },
-      { id: 'photo',      label: 'Photo / Video',   type: 'main', r: 6   },
-      { id: 'spotify',      label: 'Spotify Playlist', type: 'sub',  r: 3.5 },
-      { id: 'still-reading', label: 'Still Reading',  type: 'sub',  r: 3.5, url: 'https://open.spotify.com/playlist/0xAtic0IQXykZO5M8HM1k2?si=qDIwHaStRmG95bkq7y_VJw&pi=bJg9qP4jRn2M-' },
-      { id: 'sampling',   label: 'Sampling',        type: 'sub',  r: 3.5 },
-      { id: 'lofi',       label: 'Lo-fi',           type: 'sub',  r: 3.5 },
-      { id: 'beatmaking', label: 'Beat Making',     type: 'sub',  r: 3.5 },
-      { id: 'sp404',      label: 'SP-404',          type: 'sub',  r: 3.5 },
-      { id: 'electric',   label: 'Electric',        type: 'sub',  r: 3.5 },
-      { id: 'pedals',     label: 'Pedals & FX',     type: 'sub',  r: 3.5 },
-      { id: 'books',      label: 'Books',           type: 'sub',  r: 3.5, url: '/books.html' },
-      { id: 'philosophy', label: 'Philosophy',      type: 'sub',  r: 3.5 },
-      { id: 'performance', label: 'Performance Video', type: 'sub',  r: 3.5, url: 'https://www.youtube.com/@bluechordtape' },
-      { id: 'film',       label: 'Film',            type: 'sub',  r: 3.5 },
-      { id: 'portrait',   label: 'Portrait',        type: 'sub',  r: 3.5 },
-      { id: 'cinematic',  label: 'Cinematic',       type: 'sub',  r: 3.5 },
+      { id: 'hub',          label: 'Blue Chord Tape',   type: 'hub',  r: 6   },
+      { id: 'music',        label: 'Music',             type: 'main', r: 4   },
+      { id: 'guitar',       label: 'Guitar',            type: 'main', r: 4   },
+      { id: 'reading',      label: 'Reading',           type: 'main', r: 4   },
+      { id: 'photo',        label: 'Photo / Video',     type: 'main', r: 4   },
+      { id: 'spotify',      label: 'Spotify',           type: 'sub',  r: 2.5 },
+      { id: 'still-reading', label: 'Still Reading',   type: 'sub',  r: 2.5, url: 'https://open.spotify.com/playlist/0xAtic0IQXykZO5M8HM1k2?si=qDIwHaStRmG95bkq7y_VJw&pi=bJg9qP4jRn2M-' },
+      { id: 'sampling',     label: 'Sampling',          type: 'sub',  r: 2.5 },
+      { id: 'lofi',         label: 'Lo-fi',             type: 'sub',  r: 2.5 },
+      { id: 'beatmaking',   label: 'Beat Making',       type: 'sub',  r: 2.5 },
+      { id: 'sp404',        label: 'SP-404',            type: 'sub',  r: 2.5 },
+      { id: 'electric',     label: 'Electric',          type: 'sub',  r: 2.5 },
+      { id: 'pedals',       label: 'Pedals & FX',       type: 'sub',  r: 2.5 },
+      { id: 'books',        label: 'Books',             type: 'sub',  r: 2.5, url: '/books.html' },
+      { id: 'philosophy',   label: 'Philosophy',        type: 'sub',  r: 2.5 },
+      { id: 'performance',  label: 'Performance',       type: 'sub',  r: 2.5, url: 'https://www.youtube.com/@bluechordtape' },
+      { id: 'film',         label: 'Film',              type: 'sub',  r: 2.5 },
+      { id: 'portrait',     label: 'Portrait',          type: 'sub',  r: 2.5 },
+      { id: 'cinematic',    label: 'Cinematic',         type: 'sub',  r: 2.5 },
     ];
+    NODES.forEach(n => { if (_glOverride[n.id]) n.label = _glOverride[n.id]; });
+    window._graphNodes = NODES;
 
     const EDGES = [
-      ['hub','music',140],['hub','guitar',140],['hub','reading',140],['hub','photo',140],
-      ['music','spotify',80],['spotify','still-reading',70],
-      ['music','sampling',80],['music','lofi',80],['music','beatmaking',80],['music','sp404',80],
-      ['guitar','electric',80],['guitar','pedals',80],
-      ['reading','books',80],['reading','philosophy',80],
-      ['lofi','guitar',160],['sp404','beatmaking',55],
-      ['photo','performance',80],['photo','film',80],['photo','portrait',80],['photo','cinematic',80],
-      ['cinematic','music',170],
-      ['performance','guitar',160],
+      ['hub','music',70],['hub','guitar',70],['hub','reading',70],['hub','photo',70],
+      ['music','spotify',42],['spotify','still-reading',36],
+      ['music','sampling',42],['music','lofi',42],['music','beatmaking',42],['music','sp404',42],
+      ['guitar','electric',42],['guitar','pedals',42],
+      ['reading','books',42],['reading','philosophy',42],
+      ['lofi','guitar',80],['sp404','beatmaking',28],
+      ['photo','performance',42],['photo','film',42],['photo','portrait',42],['photo','cinematic',42],
+      ['cinematic','music',85],
+      ['performance','guitar',80],
     ];
 
     const map = {};
     NODES.forEach(n => {
       n.vx = 0; n.vy = 0;
-      // coherent drift: each node slowly orbits in its own direction
       n.driftAngle = Math.random() * Math.PI * 2;
       n.driftSpeed = 0.002 + Math.random() * 0.002;
       map[n.id] = n;
     });
     const edges = EDGES.map(([s, t, d]) => ({ a: map[s], b: map[t], d }));
-    let W, H, cx, cy, hovered = null, dragged = null;
-    let dragOffX = 0, dragOffY = 0, dragVX = 0, dragVY = 0, lastMX = 0, lastMY = 0;
-    let dragStartX = 0, dragStartY = 0, dragMoved = false;
+
+    let W, H, cx, cy, springScale = 1, hovered = null, dragged = null;
+    let dragOffX = 0, dragOffY = 0, dragVX = 0, dragVY = 0;
+    let lastWX = 0, lastWY = 0, dragStartX = 0, dragStartY = 0, dragMoved = false;
+
+    // ── Zoom & pan ──
+    let zoom = 1, panX = 0, panY = 0;
+    let isPanning = false, panSX = 0, panSY = 0;
+    let pinchDist = null, pinchMX = 0, pinchMY = 0;
+    const MIN_ZOOM = 0.3, MAX_ZOOM = 5;
+
+    function sw(sx, sy) { return [(sx - panX) / zoom, (sy - panY) / zoom]; }
+
+    function zoomAt(sx, sy, f) {
+      const nz = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * f));
+      panX = sx - (sx - panX) * (nz / zoom);
+      panY = sy - (sy - panY) * (nz / zoom);
+      zoom = nz;
+    }
 
     function resize() {
       const dpr = window.devicePixelRatio || 1;
       W = canvas.parentElement.getBoundingClientRect().width;
-      H = Math.min(480, Math.max(280, W * 0.5));
+      H = Math.round(window.innerHeight * 0.72);
+      springScale = Math.min(W, H) / 280;
       canvas.style.width  = W + 'px';
       canvas.style.height = H + 'px';
       canvas.width  = W * dpr;
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = W / 2; cy = H / 2;
+      panX = 0; panY = 0; zoom = 1;
       place();
     }
 
@@ -630,79 +1095,81 @@ body {
       const mains = NODES.filter(n => n.type === 'main');
       mains.forEach((n, i) => {
         const a = (i / mains.length) * Math.PI * 2 - Math.PI / 2;
-        n.x = cx + Math.cos(a) * 135;
-        n.y = cy + Math.sin(a) * 95;
+        n.x = cx + Math.cos(a) * Math.min(W, H) * 0.32;
+        n.y = cy + Math.sin(a) * Math.min(W, H) * 0.22;
       });
       NODES.filter(n => n.type === 'sub').forEach(n => {
         const e = edges.find(e => (e.b === n && e.a.type === 'main') || (e.a === n && e.b.type === 'main'));
         const p = e ? (e.b === n ? e.a : e.b) : map.hub;
         const a = Math.random() * Math.PI * 2;
-        n.x = p.x + Math.cos(a) * 80;
-        n.y = p.y + Math.sin(a) * 80;
+        n.x = p.x + Math.cos(a) * Math.min(W, H) * 0.18;
+        n.y = p.y + Math.sin(a) * Math.min(W, H) * 0.18;
       });
     }
 
     function simulate() {
-      // Repulsion — very soft, wide softening radius to prevent any snapping
       for (let i = 0; i < NODES.length; i++) {
         for (let j = i + 1; j < NODES.length; j++) {
           const a = NODES[i], b = NODES[j];
           const dx = b.x - a.x || .01, dy = b.y - a.y || .01;
           const d2 = dx*dx + dy*dy, d = Math.sqrt(d2);
-          const f = 500 / (d2 + 300);
+          const f = 280 / (d2 + 80);
           a.vx -= dx/d*f; a.vy -= dy/d*f;
           b.vx += dx/d*f; b.vy += dy/d*f;
         }
       }
-      // Springs — very loose, barely pulls, eliminates oscillation
       edges.forEach(({ a, b, d }) => {
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-        const f = (dist - d) * 0.006;
+        const f = (dist - d * springScale) * 0.012;
         const fx = dx/dist*f, fy = dy/dist*f;
         a.vx += fx; a.vy += fy;
         b.vx -= fx; b.vy -= fy;
       });
       NODES.forEach(n => {
         if (n === dragged) return;
-        // Slow coherent drift — each node drifts in its own lazy arc
         n.driftAngle += n.driftSpeed;
         n.vx += Math.cos(n.driftAngle) * 0.007;
         n.vy += Math.sin(n.driftAngle) * 0.007;
-        // Minimal gravity — just enough to keep within bounds
-        n.vx += (cx - n.x) * 0.0003;
-        n.vy += (cy - n.y) * 0.0003;
-        // Very high damping — overdamped, no oscillation (half-life ~46 frames)
+        n.vx += (cx - n.x) * 0.0008;
+        n.vy += (cy - n.y) * 0.0008;
         n.vx *= 0.985; n.vy *= 0.985;
         n.x += n.vx; n.y += n.vy;
-        n.x = Math.max(30, Math.min(W - 30, n.x));
-        n.y = Math.max(30, Math.min(H - 30, n.y));
+        const pad = Math.min(W, H) * 0.1;
+        n.x = Math.max(pad, Math.min(W - pad, n.x));
+        n.y = Math.max(pad, Math.min(H - pad, n.y));
       });
     }
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(panX, panY);
+      ctx.scale(zoom, zoom);
+
       const active = dragged || hovered;
       const connIds = active
         ? new Set(edges.filter(e => e.a===active||e.b===active).flatMap(e => [e.a.id, e.b.id]))
         : null;
 
+      // Edges
       edges.forEach(({ a, b }) => {
         const hl = active && (a===active || b===active);
         ctx.beginPath();
         ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
         ctx.strokeStyle = hl ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.1)';
-        ctx.lineWidth = hl ? 1.2 : 0.8;
+        ctx.lineWidth = (hl ? 1.2 : 0.8) / zoom;
         ctx.stroke();
       });
 
+      // Nodes + labels (always show all labels)
       NODES.forEach(n => {
         const conn = connIds ? connIds.has(n.id) : true;
         const isActive = n === active;
         ctx.save();
         ctx.globalAlpha = active ? (conn ? 1 : 0.15) : 1;
         if (n.type === 'hub' || isActive) {
-          ctx.shadowBlur = isActive ? 22 : 16;
+          ctx.shadowBlur = (isActive ? 22 : 16) / zoom;
           ctx.shadowColor = n.type === 'hub' ? '#1a3aff' : 'rgba(255,255,255,0.9)';
         }
         ctx.beginPath();
@@ -714,17 +1181,17 @@ body {
         ctx.fill();
         ctx.restore();
 
-        const showLbl = n.type !== 'sub' || isActive || (connIds && connIds.has(n.id));
-        if (showLbl) {
-          ctx.save();
-          ctx.globalAlpha = active ? (conn ? 1 : 0.08) : (n.type === 'sub' ? 0.65 : 1);
-          ctx.fillStyle = '#fff';
-          ctx.font = `${n.type==='hub'?'500':'400'} ${n.type==='hub'?'12':'10'}px 'Public Sans',sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.fillText(n.label, n.x, n.y + n.r + 13);
-          ctx.restore();
-        }
+        // Label — always visible for all node types
+        ctx.save();
+        ctx.globalAlpha = active ? (conn ? 1 : 0.07) : (n.type === 'sub' ? 0.72 : 1);
+        ctx.fillStyle = '#fff';
+        ctx.font = `${n.type==='hub'?'500':'400'} ${n.type==='hub'?'9':'8'}px 'Public Sans',sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(n.label, n.x, n.y + n.r + 13);
+        ctx.restore();
       });
+
+      ctx.restore();
     }
 
     function loop() { simulate(); draw(); requestAnimationFrame(loop); }
@@ -735,33 +1202,40 @@ body {
       return { mx: src.clientX - rect.left, my: src.clientY - rect.top };
     }
 
-    function startDrag(mx, my) {
+    function startDrag(sx, sy) {
+      const [wx, wy] = sw(sx, sy);
       for (const n of NODES) {
-        if (Math.hypot(n.x - mx, n.y - my) < n.r + 12) {
+        if (Math.hypot(n.x - wx, n.y - wy) < n.r + 12) {
           dragged = n;
-          dragOffX = n.x - mx; dragOffY = n.y - my;
-          lastMX = mx; lastMY = my;
-          dragStartX = mx; dragStartY = my;
-          dragVX = 0; dragVY = 0;
-          dragMoved = false;
-          break;
+          dragOffX = n.x - wx; dragOffY = n.y - wy;
+          lastWX = wx; lastWY = wy;
+          dragStartX = wx; dragStartY = wy;
+          dragVX = 0; dragVY = 0; dragMoved = false;
+          return;
         }
       }
+      isPanning = true;
+      panSX = sx - panX; panSY = sy - panY;
     }
 
-    function moveDrag(mx, my) {
+    function moveDrag(sx, sy) {
       if (dragged) {
-        if (Math.hypot(mx - dragStartX, my - dragStartY) > 4) dragMoved = true;
-        dragVX = mx - lastMX; dragVY = my - lastMY;
-        lastMX = mx; lastMY = my;
-        dragged.x = mx + dragOffX;
-        dragged.y = my + dragOffY;
+        const [wx, wy] = sw(sx, sy);
+        if (Math.hypot(wx - dragStartX, wy - dragStartY) > 4) dragMoved = true;
+        dragVX = wx - lastWX; dragVY = wy - lastWY;
+        lastWX = wx; lastWY = wy;
+        dragged.x = wx + dragOffX;
+        dragged.y = wy + dragOffY;
         dragged.vx = 0; dragged.vy = 0;
         canvas.style.cursor = 'grabbing';
+      } else if (isPanning) {
+        panX = sx - panSX; panY = sy - panSY;
+        canvas.style.cursor = 'grabbing';
       } else {
+        const [wx, wy] = sw(sx, sy);
         hovered = null;
         for (const n of NODES) {
-          if (Math.hypot(n.x - mx, n.y - my) < n.r + 10) { hovered = n; break; }
+          if (Math.hypot(n.x - wx, n.y - wy) < n.r + 10) { hovered = n; break; }
         }
         canvas.style.cursor = hovered ? (hovered.url ? 'pointer' : 'grab') : 'default';
       }
@@ -774,21 +1248,113 @@ body {
         dragged.vy = dragVY * 0.3;
         dragged = null;
       }
+      isPanning = false;
       canvas.style.cursor = hovered ? (hovered.url ? 'pointer' : 'grab') : 'default';
     }
 
+    // Mouse
     canvas.addEventListener('mousedown',  e => { const {mx,my} = getPos(e); startDrag(mx,my); });
     canvas.addEventListener('mousemove',  e => { const {mx,my} = getPos(e); moveDrag(mx,my); });
     canvas.addEventListener('mouseup',    () => endDrag());
-    canvas.addEventListener('mouseleave', () => { hovered = null; endDrag(); });
+    canvas.addEventListener('mouseleave', () => { hovered = null; isPanning = false; endDrag(); });
 
-    canvas.addEventListener('touchstart',  e => { e.preventDefault(); const {mx,my} = getPos(e); startDrag(mx,my); }, { passive: false });
-    canvas.addEventListener('touchmove',   e => { e.preventDefault(); const {mx,my} = getPos(e); moveDrag(mx,my); },  { passive: false });
-    canvas.addEventListener('touchend',    () => endDrag());
+    // Wheel zoom (desktop)
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      zoomAt(e.clientX - rect.left, e.clientY - rect.top, e.deltaY < 0 ? 1.12 : 1 / 1.12);
+    }, { passive: false });
+
+    // Touch — single finger drag/tap nodes; two fingers pinch-zoom + pan
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      if (e.touches.length === 2) {
+        dragged = null; isPanning = false;
+        const rect = canvas.getBoundingClientRect();
+        const t0 = e.touches[0], t1 = e.touches[1];
+        pinchDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        pinchMX = (t0.clientX + t1.clientX) / 2 - rect.left;
+        pinchMY = (t0.clientY + t1.clientY) / 2 - rect.top;
+      } else {
+        pinchDist = null;
+        const {mx, my} = getPos(e); startDrag(mx, my);
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (e.touches.length === 2) {
+        const rect = canvas.getBoundingClientRect();
+        const t0 = e.touches[0], t1 = e.touches[1];
+        const d  = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        const mx = (t0.clientX + t1.clientX) / 2 - rect.left;
+        const my = (t0.clientY + t1.clientY) / 2 - rect.top;
+        if (pinchDist) {
+          zoomAt(mx, my, d / pinchDist);
+          panX += mx - pinchMX;
+          panY += my - pinchMY;
+        }
+        pinchDist = d; pinchMX = mx; pinchMY = my;
+      } else {
+        const {mx, my} = getPos(e); moveDrag(mx, my);
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', e => {
+      if (e.touches.length < 2) pinchDist = null;
+      if (e.touches.length === 0) endDrag();
+    });
+
+    // Zoom buttons
 
     window.addEventListener('resize', resize);
     resize();
     loop();
+  })();
+
+  // Gallery pagination + lightbox
+  (function() {
+    const pages = Array.from(document.querySelectorAll('.gallery-page'));
+    const prevBtn = document.getElementById('gallery-prev');
+    const nextBtn = document.getElementById('gallery-next');
+    const counter = document.getElementById('gallery-counter');
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbClose = document.getElementById('lightbox-close');
+    if (!pages.length) return;
+
+    let cur = 0;
+    const total = pages.length;
+
+    function goTo(i) {
+      if (i < 0 || i >= total) return;
+      pages[cur].style.display = 'none';
+      cur = i;
+      pages[cur].style.display = 'grid';
+      if (counter) counter.textContent = (cur + 1) + ' / ' + total;
+      if (prevBtn) { prevBtn.disabled = cur === 0; prevBtn.style.opacity = cur === 0 ? '0.25' : '1'; }
+      if (nextBtn) { nextBtn.disabled = cur === total - 1; nextBtn.style.opacity = cur === total - 1 ? '0.25' : '1'; }
+    }
+
+    // init
+    pages.forEach((p, i) => { p.style.display = i === 0 ? 'grid' : 'none'; });
+    if (prevBtn) { prevBtn.disabled = true; prevBtn.style.opacity = '0.25'; }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(cur - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(cur + 1));
+
+    // Lightbox
+    if (!lightbox) return;
+    const closeLb = () => { lightbox.classList.remove('open'); lbImg.src = ''; };
+    document.querySelectorAll('.gallery-img').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.dataset.full || img.src;
+        lightbox.classList.add('open');
+      });
+    });
+    if (lbClose) lbClose.addEventListener('click', closeLb);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLb(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
   })();
 
   // Guestbook form
@@ -816,7 +1382,315 @@ body {
       btn.disabled = false;
     }
   });
+
+  // ── ADMIN MODE ────────────────────────────────────────────────────
+  (function() {
+    'use strict';
+    var PASS = 'bct2026';
+    var KEY  = 'bct_c';
+    var S    = {};
+    try { S = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(_) {}
+    function save() { localStorage.setItem(KEY, JSON.stringify(S)); }
+
+    var on = false;
+    var textOn = false;
+    var textEls = [];
+
+    // ── Activate ─────────────────────────────────────────────────
+    function activate() {
+      var p = prompt('Admin password:');
+      if (!p) return;
+      if (p !== PASS) { alert('Incorrect password'); return; }
+      on = true;
+      document.getElementById('adm-bar').classList.add('open');
+      document.body.classList.add('adm');
+      injectNoteControls();
+    }
+
+    function deactivate() {
+      on = false;
+      document.getElementById('adm-bar').classList.remove('open');
+      document.body.classList.remove('adm');
+      disableText();
+      closeAllPanels();
+      ['adm-text-btn','adm-graph-btn','adm-gallery-btn'].forEach(function(id) {
+        document.getElementById(id).classList.remove('on');
+      });
+    }
+
+    // Shortcut: Shift+Alt+A
+    document.addEventListener('keydown', function(e) {
+      if (e.shiftKey && e.altKey && e.key.toLowerCase() === 'a' && !on) activate();
+    });
+
+    document.getElementById('adm-exit').addEventListener('click', deactivate);
+
+    // ── Text editing ──────────────────────────────────────────────
+    function enableText() {
+      textOn = true;
+      document.querySelectorAll('[data-ae]').forEach(function(el) {
+        el.contentEditable = 'true';
+        el._adm = function() {
+          if (!S.texts) S.texts = {};
+          S.texts[el.dataset.ae] = el.textContent.trim();
+          save();
+        };
+        el.addEventListener('input', el._adm);
+        textEls.push(el);
+      });
+      enableNoteTextEdit();
+    }
+
+    function disableText() {
+      textOn = false;
+      textEls.forEach(function(el) {
+        el.contentEditable = 'false';
+        if (el._adm) el.removeEventListener('input', el._adm);
+      });
+      textEls = [];
+      disableNoteTextEdit();
+    }
+
+    document.getElementById('adm-text-btn').addEventListener('click', function() {
+      var a = this.classList.toggle('on');
+      a ? enableText() : disableText();
+    });
+
+    // ── Notes ─────────────────────────────────────────────────────
+    function injectNoteControls() {
+      document.querySelectorAll('.work-row').forEach(function(row) {
+        if (row.querySelector('.adm-ndel')) return;
+        var btn = document.createElement('button');
+        btn.className = 'adm-ndel';
+        btn.title = 'Delete';
+        btn.textContent = '×';
+        btn.addEventListener('click', function() {
+          if (confirm('Delete this note?')) { row.remove(); saveNotes(); }
+        });
+        row.appendChild(btn);
+      });
+      if (textOn) enableNoteTextEdit();
+    }
+
+    function enableNoteTextEdit() {
+      document.querySelectorAll('.work-title, .work-desc, .work-year').forEach(function(el) {
+        el.contentEditable = 'true';
+        el._admNote = function() { saveNotes(); };
+        el.addEventListener('input', el._admNote);
+      });
+    }
+
+    function disableNoteTextEdit() {
+      document.querySelectorAll('.work-title, .work-desc, .work-year').forEach(function(el) {
+        el.contentEditable = 'false';
+        if (el._admNote) el.removeEventListener('input', el._admNote);
+      });
+    }
+
+    function saveNotes() {
+      S.notes = Array.from(document.querySelectorAll('.work-row')).map(function(r) {
+        return {
+          num:   r.querySelector('.work-num')   ? r.querySelector('.work-num').textContent   : '',
+          title: r.querySelector('.work-title') ? r.querySelector('.work-title').textContent : '',
+          desc:  r.querySelector('.work-desc')  ? r.querySelector('.work-desc').textContent  : '',
+          year:  r.querySelector('.work-year')  ? r.querySelector('.work-year').textContent  : '',
+        };
+      });
+      save();
+    }
+
+    document.getElementById('adm-add-note').addEventListener('click', function(e) {
+      e.preventDefault();
+      var inner = document.querySelector('.section-works-inner');
+      if (!inner) return;
+      var num = String(document.querySelectorAll('.work-row').length + 1).padStart(3, '0');
+      var yr = new Date().getFullYear().toString();
+      var div = document.createElement('div');
+      div.className = 'work-row';
+      div.style.cssText = 'opacity:1;transform:none;border-bottom:1px solid #e2e0db;display:flex;align-items:flex-start;justify-content:space-between;padding:32px 0;gap:32px';
+      div.innerHTML =
+        '<div class="work-row-left">' +
+          '<span class="work-num">' + num + '</span>' +
+          '<div>' +
+            '<div class="work-title" contenteditable="true" style="outline:2px solid var(--primary);padding:2px 4px">New Note</div>' +
+            '<div class="work-desc" contenteditable="true" style="outline:1px dashed rgba(40,120,255,0.3);padding:2px 4px;margin-top:4px">Description...</div>' +
+          '</div>' +
+        '</div>' +
+        '<span class="work-year" contenteditable="true" style="outline:1px dashed rgba(40,120,255,0.3);padding:2px 4px">' + yr + '</span>' +
+        '<button class="adm-ndel" type="button" title="Delete" style="display:inline-block">×</button>';
+      div.querySelector('.adm-ndel').addEventListener('click', function() {
+        if (confirm('Delete this note?')) { div.remove(); saveNotes(); }
+      });
+      div.querySelectorAll('[contenteditable=true]').forEach(function(el) {
+        el._admNote = function() { saveNotes(); };
+        el.addEventListener('input', el._admNote);
+      });
+      var addBtn = document.getElementById('adm-add-note');
+      inner.insertBefore(div, addBtn);
+      saveNotes();
+      var title = div.querySelector('.work-title');
+      if (title) {
+        title.focus();
+        try {
+          var range = document.createRange();
+          range.selectNodeContents(title);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch(_) {}
+      }
+      div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    // ── Graph panel ───────────────────────────────────────────────
+    function buildGraphPanel() {
+      var list = document.getElementById('adm-nodes-list');
+      if (!list) return;
+      list.innerHTML = '';
+      (window._graphNodes || []).forEach(function(n) {
+        var row = document.createElement('div');
+        row.className = 'adm-nrow';
+        row.innerHTML =
+          '<span class="adm-nbadge">' + n.type.slice(0, 3) + '</span>' +
+          '<input class="adm-ni" type="text" value="' + n.label.replace(/"/g,'&quot;') + '" data-nid="' + n.id + '">';
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('adm-save-graph').addEventListener('click', function() {
+      if (!S.graphLabels) S.graphLabels = {};
+      document.querySelectorAll('.adm-ni[data-nid]').forEach(function(inp) {
+        var id = inp.dataset.nid;
+        S.graphLabels[id] = inp.value;
+        var n = (window._graphNodes || []).find(function(x) { return x.id === id; });
+        if (n) n.label = inp.value;
+      });
+      save();
+      var self = this;
+      var orig = self.textContent;
+      self.textContent = 'Saved ✓';
+      setTimeout(function() { self.textContent = orig; }, 1800);
+    });
+
+    // ── Gallery panel ─────────────────────────────────────────────
+    function buildGalleryPanel() {
+      var list = document.getElementById('adm-photos-list');
+      if (!list) return;
+      list.innerHTML = '';
+      document.querySelectorAll('.gallery-img').forEach(function(img) {
+        var src = img.getAttribute('src');
+        var fname = src.split('/').pop();
+        var isHid = (S.hiddenPhotos || []).includes(src);
+        var row = document.createElement('div');
+        row.className = 'adm-prow';
+        row.innerHTML =
+          '<img class="adm-pthumb' + (isHid ? ' hid' : '') + '" src="' + src + '" alt="">' +
+          '<span class="adm-pname">' + fname + '</span>' +
+          '<button class="adm-ptog' + (isHid ? ' hid' : '') + '">' + (isHid ? 'Show' : 'Hide') + '</button>';
+        var toggleBtn = row.querySelector('.adm-ptog');
+        var thumb = row.querySelector('.adm-pthumb');
+        toggleBtn.addEventListener('click', function() {
+          var hide = !toggleBtn.classList.contains('hid');
+          toggleBtn.classList.toggle('hid', hide);
+          thumb.classList.toggle('hid', hide);
+          toggleBtn.textContent = hide ? 'Show' : 'Hide';
+          img.style.display = hide ? 'none' : '';
+          if (!S.hiddenPhotos) S.hiddenPhotos = [];
+          if (hide) {
+            if (!S.hiddenPhotos.includes(src)) S.hiddenPhotos.push(src);
+          } else {
+            S.hiddenPhotos = S.hiddenPhotos.filter(function(s) { return s !== src; });
+          }
+          save();
+        });
+        list.appendChild(row);
+      });
+    }
+
+    // ── Panel toggles ─────────────────────────────────────────────
+    function closeAllPanels() {
+      document.getElementById('adm-graph-panel').classList.remove('open');
+      document.getElementById('adm-gallery-panel').classList.remove('open');
+    }
+
+    document.getElementById('adm-graph-btn').addEventListener('click', function() {
+      document.getElementById('adm-gallery-panel').classList.remove('open');
+      document.getElementById('adm-gallery-btn').classList.remove('on');
+      var open = document.getElementById('adm-graph-panel').classList.toggle('open');
+      this.classList.toggle('on', open);
+      if (open) buildGraphPanel();
+    });
+
+    document.getElementById('adm-gallery-btn').addEventListener('click', function() {
+      document.getElementById('adm-graph-panel').classList.remove('open');
+      document.getElementById('adm-graph-btn').classList.remove('on');
+      var open = document.getElementById('adm-gallery-panel').classList.toggle('open');
+      this.classList.toggle('on', open);
+      if (open) buildGalleryPanel();
+    });
+
+    // ── Export ────────────────────────────────────────────────────
+    document.getElementById('adm-export').addEventListener('click', function() {
+      var clone = document.documentElement.cloneNode(true);
+      ['adm-bar', 'adm-graph-panel', 'adm-gallery-panel'].forEach(function(id) {
+        var el = clone.querySelector('#' + id);
+        if (el) el.remove();
+      });
+      clone.querySelector('body').classList.remove('adm');
+      var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      var blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    });
+
+    // ── Reset ─────────────────────────────────────────────────────
+    document.getElementById('adm-reset').addEventListener('click', function() {
+      if (confirm('Reset ALL admin changes and reload?')) {
+        localStorage.removeItem(KEY);
+        location.reload();
+      }
+    });
+
+  })();
 </script>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <button id="lightbox-close">×</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- ── ADMIN BAR ─────────────────────────────────────────── -->
+<div id="adm-bar">
+  <span class="adm-lbl">⚙ Admin</span>
+  <div class="adm-sep"></div>
+  <button class="ab" id="adm-text-btn">Edit Text</button>
+  <button class="ab" id="adm-graph-btn">Graph</button>
+  <button class="ab" id="adm-gallery-btn">Gallery</button>
+  <div class="adm-sp"></div>
+  <button class="ab" id="adm-export">Export HTML ↓</button>
+  <button class="ab r" id="adm-reset">Reset All</button>
+  <div class="adm-sep"></div>
+  <button class="ab r" id="adm-exit">✕ Exit</button>
+</div>
+
+<!-- ── GRAPH EDIT PANEL ──────────────────────────────────── -->
+<div class="adm-panel" id="adm-graph-panel">
+  <span class="adm-ph">Edit Node Labels</span>
+  <div id="adm-nodes-list"></div>
+  <button class="adm-save" id="adm-save-graph">Save Labels</button>
+</div>
+
+<!-- ── GALLERY EDIT PANEL ────────────────────────────────── -->
+<div class="adm-panel" id="adm-gallery-panel">
+  <span class="adm-ph">Gallery Photos</span>
+  <div id="adm-photos-list"></div>
+</div>
 
 </body>
 </html>
