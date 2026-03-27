@@ -1099,17 +1099,19 @@ body.adm { padding-bottom: 56px; }
     function place() {
       map.hub.x = cx; map.hub.y = cy;
       const mains = NODES.filter(n => n.type === 'main');
+      const r = Math.min(W, H) * 0.28;
       mains.forEach((n, i) => {
         const a = (i / mains.length) * Math.PI * 2 - Math.PI / 2;
-        n.x = cx + Math.cos(a) * Math.min(W, H) * 0.32;
-        n.y = cy + Math.sin(a) * Math.min(W, H) * 0.22;
+        n.x = cx + Math.cos(a) * r;
+        n.y = cy + Math.sin(a) * r * 0.75;
       });
       NODES.filter(n => n.type === 'sub').forEach(n => {
         const e = edges.find(e => (e.b === n && e.a.type === 'main') || (e.a === n && e.b.type === 'main'));
         const p = e ? (e.b === n ? e.a : e.b) : map.hub;
         const a = Math.random() * Math.PI * 2;
-        n.x = p.x + Math.cos(a) * Math.min(W, H) * 0.18;
-        n.y = p.y + Math.sin(a) * Math.min(W, H) * 0.18;
+        const d = Math.min(W, H) * 0.13;
+        n.x = p.x + Math.cos(a) * d;
+        n.y = p.y + Math.sin(a) * d;
       });
     }
 
