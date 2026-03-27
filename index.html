@@ -1091,7 +1091,7 @@ body.adm { padding-bottom: 56px; }
       canvas.width  = W * dpr;
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cx = W / 2; cy = H / 2;
+      cx = W * 0.6; cy = H * 0.48;
       panX = 0; panY = 0; zoom = 1;
       place();
       // 워밍업 — 노드가 중앙 안정 위치에서 시작
