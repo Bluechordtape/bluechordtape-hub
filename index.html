@@ -595,7 +595,7 @@ body {
 /* ─── SECTION: UNIVERSE / GRAPH ──────────────────────────── */
 .section-graph {
   background: #07111e;
-  padding: 56px 0 16px;
+  padding: 0;
   height: 100vh;
   box-sizing: border-box;
   overflow: hidden;
@@ -605,7 +605,7 @@ body {
   height: 100%;
 }
 .graph-header {
-  padding: 0 40px;
+  padding: 20px 40px 0;
   margin-bottom: 0;
 }
 #graph-canvas {
@@ -1083,7 +1083,7 @@ body.adm { padding-bottom: 56px; }
     function resize() {
       const dpr = window.devicePixelRatio || 1;
       const sec = canvas.closest('.section-graph') || canvas.parentElement.parentElement;
-      W = canvas.parentElement.getBoundingClientRect().width;
+      W = sec ? sec.getBoundingClientRect().width : canvas.parentElement.getBoundingClientRect().width;
       H = sec ? sec.offsetHeight : window.innerHeight;
       springScale = Math.min(W, H) / 280;
       canvas.style.width  = W + 'px';
