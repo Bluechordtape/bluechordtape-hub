@@ -1692,5 +1692,83 @@ body.adm { padding-bottom: 56px; }
   <div id="adm-photos-list"></div>
 </div>
 
+  <script>
+(function() {
+  'use strict';
+  var BCT_API = 'https://bct-backend-production.up.railway.app';
+
+  function loadAbout() {
+    return fetch(BCT_API + '/about')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var el = document.querySelector('[data-ae="about"]');
+        if (el && data.body) el.textContent = data.body;
+      })
+      .catch(function() {});
+  }
+
+  var NOW_MAP = { listening: 'nowVal0', reading: 'nowVal1', making: 'nowVal2' };
+
+  function loadNow() {
+    return fetch(BCT_API + '/now')
+      .then(function(r) { return r.json(); })
+      .then(function(items) {
+        items.forEach(function(item) {
+          var key = NOW_MAP[item.category];
+          if (!key) return;
+          var el = document.querySelector('[data-ae="' + key + '"]');
+          if (el) {
+            el.textContent = item.content;
+            if (item.comment) el.title = item.comment;
+          }
+        });
+      })
+      .catch(function() {});
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function loadNotes() {
+    return fetch(BCT_API + '/notes')
+      .then(function(r) { return r.json(); })
+      .then(function(notes) {
+        if (!notes || !notes.length) return;
+        var inner = document.querySelector('.section-works-inner');
+        if (!inner) return;
+        inner.querySelectorAll('.work-row').forEach(function(r) { r.remove(); });
+        var addBtn = document.getElementById('adm-add-note');
+        notes.forEach(function(note) {
+          var div = document.createElement('div');
+          div.className = 'work-row reveal';
+          var year = note.created_at ? new Date(note.created_at).getFullYear() : '';
+          div.innerHTML = '<div class="work-row-left"><span class="work-num">' + escHtml(note.num) + '</span><div><div class="work-title">' + escHtml(note.title) + '</div><div class="work-desc">' + escHtml(note.body) + '</div></div></div><span class="work-year">' + year + '</span>';
+          inner.insertBefore(div, addBtn || null);
+        });
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry, i) {
+            if (entry.isIntersecting) {
+              setTimeout(function() { entry.target.classList.add('visible'); }, i * 80);
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        inner.querySelectorAll('.work-row.reveal').forEach(function(el) { obs.observe(el); });
+      })
+      .catch(function() {});
+  }
+
+  function init() {
+    Promise.all([loadAbout(), loadNow(), loadNotes()]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+  </script>
 </body>
 </html>
