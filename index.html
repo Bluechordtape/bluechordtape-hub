@@ -1137,13 +1137,13 @@ body.adm { padding-bottom: 56px; }
       NODES.forEach(n => {
         if (n === dragged) return;
         n.driftAngle += n.driftSpeed;
-        n.vx += Math.cos(n.driftAngle) * 0.007;
-        n.vy += Math.sin(n.driftAngle) * 0.007;
-        n.vx += (cx - n.x) * 0.0008;
-        n.vy += (cy - n.y) * 0.0008;
+        n.vx += Math.cos(n.driftAngle) * 0.003;
+        n.vy += Math.sin(n.driftAngle) * 0.003;
+        n.vx += (cx - n.x) * 0.002;
+        n.vy += (cy - n.y) * 0.002;
         n.vx *= 0.985; n.vy *= 0.985;
         n.x += n.vx; n.y += n.vy;
-        const pad = Math.min(W, H) * 0.1;
+        const pad = Math.min(W, H) * 0.05;
         n.x = Math.max(pad, Math.min(W - pad, n.x));
         n.y = Math.max(pad, Math.min(H - pad, n.y));
       });
