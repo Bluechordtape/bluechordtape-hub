@@ -1272,8 +1272,24 @@ body.adm { padding-bottom: 56px; }
     canvas.addEventListener('mouseleave', () => { hovered = null; isPanning = false; endDrag(); });
 
 
+    // Wheel zoom — hovered 노드 위에서만 작동
+    canvas.addEventListener('wheel', e => {
+      if (!hovered) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      zoomAt(e.clientX - rect.left, e.clientY - rect.top, e.deltaY < 0 ? 1.12 : 1 / 1.12);
+    }, { passive: false });
+
     // Touch — single finger drag/tap nodes; two fingers pinch-zoom + pan
     canvas.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const mx = (t.clientX - rect.left - panX) / zoom;
+        const my = (t.clientY - rect.top  - panY) / zoom;
+        const hit = NODES.find(n => Math.hypot(n.x - mx, n.y - my) < (n.r || 8) * 2.5);
+        if (!hit) return;
+      }
       e.preventDefault();
       if (e.touches.length === 2) {
         dragged = null; isPanning = false;
