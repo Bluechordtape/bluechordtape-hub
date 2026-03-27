@@ -1271,20 +1271,6 @@ body.adm { padding-bottom: 56px; }
     canvas.addEventListener('mouseup',    () => endDrag());
     canvas.addEventListener('mouseleave', () => { hovered = null; isPanning = false; endDrag(); });
 
-    // section 전체에서 스크롤 중 줌 방지
-    const graphSection = canvas.closest('.section-graph');
-    if (graphSection) {
-      graphSection.addEventListener('wheel', (e) => {
-        e.preventDefault();
-      }, { passive: false });
-    }
-
-    // Wheel zoom (desktop)
-    canvas.addEventListener('wheel', e => {
-      e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      zoomAt(e.clientX - rect.left, e.clientY - rect.top, e.deltaY < 0 ? 1.12 : 1 / 1.12);
-    }, { passive: false });
 
     // Touch — single finger drag/tap nodes; two fingers pinch-zoom + pan
     canvas.addEventListener('touchstart', e => {
