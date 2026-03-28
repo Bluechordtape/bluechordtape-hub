@@ -1103,15 +1103,13 @@ body.adm { padding-bottom: 56px; }
       cx = W / 2; cy = H / 2;
       panX = 0; panY = 0; zoom = 1;
       place();
-      // 워밍업 — 노드가 중앙 안정 위치에서 시작
-      for (let i = 0; i < 10; i++) simulate();
     }
 
     function place() {
       map.hub.x = cx; map.hub.y = cy;
       const mains = NODES.filter(n => n.type === 'main');
-      const rx = W * 0.46;
-      const ry = H * 0.44;
+      const rx = W * 0.48;
+      const ry = H * 0.46;
       mains.forEach((n, i) => {
         const a = (i / mains.length) * Math.PI * 2 - Math.PI / 2;
         n.x = cx + Math.cos(a) * rx;
@@ -1122,7 +1120,7 @@ body.adm { padding-bottom: 56px; }
         const e = edges.find(e => (e.b === n && e.a.type === 'main') || (e.a === n && e.b.type === 'main'));
         const p = e ? (e.b === n ? e.a : e.b) : map.hub;
         const a = Math.random() * Math.PI * 2;
-        const d = Math.min(W, H) * 0.22;
+        const d = Math.min(W, H) * 0.24;
         n.x = p.x + Math.cos(a) * d;
         n.y = p.y + Math.sin(a) * d;
         n.vx = 0; n.vy = 0;
@@ -1130,32 +1128,11 @@ body.adm { padding-bottom: 56px; }
     }
 
     function simulate() {
-      for (let i = 0; i < NODES.length; i++) {
-        for (let j = i + 1; j < NODES.length; j++) {
-          const a = NODES[i], b = NODES[j];
-          const dx = b.x - a.x || .01, dy = b.y - a.y || .01;
-          const d2 = dx*dx + dy*dy, d = Math.sqrt(d2);
-          const f = 280 / (d2 + 80);
-          a.vx -= dx/d*f; a.vy -= dy/d*f;
-          b.vx += dx/d*f; b.vy += dy/d*f;
-        }
-      }
-      edges.forEach(({ a, b, d }) => {
-        const dx = b.x - a.x, dy = b.y - a.y;
-        const dist = Math.hypot(dx, dy) || 1;
-        const force = (dist - d) * 0.003;
-        const fx = (dx / dist) * force;
-        const fy = (dy / dist) * force;
-        a.vx += fx; a.vy += fy;
-        b.vx -= fx; b.vy -= fy;
-      });
       NODES.forEach(n => {
         if (n === dragged) return;
         n.driftAngle += n.driftSpeed;
         n.vx += Math.cos(n.driftAngle) * 0.003;
         n.vy += Math.sin(n.driftAngle) * 0.003;
-        n.vx += (cx - n.x) * 0.0002;
-        n.vy += (cy - n.y) * 0.0002;
         n.vx *= 0.985; n.vy *= 0.985;
         n.x += n.vx; n.y += n.vy;
         const pad = Math.min(W, H) * 0.05;
