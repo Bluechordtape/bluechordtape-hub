@@ -759,6 +759,7 @@ body.adm { padding-bottom: 56px; }
       <span class="section-label reveal" style="color:rgba(255,255,255,0.3)">— Universe —</span>
     </div>
     <canvas id="graph-canvas" style="display:block"></canvas>
+    <div id="graph-tooltip" style="position:absolute;display:none;background:rgba(0,0,0,0.75);color:#fff;font-size:11px;letter-spacing:.08em;padding:5px 10px;border-radius:4px;pointer-events:none;transform:translate(-50%,-130%);white-space:nowrap;z-index:10"></div>
     <p style="text-align:center;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:14px;padding-bottom:8px">drag · scroll to explore</p>
   </div>
 </section>
@@ -1262,6 +1263,19 @@ body.adm { padding-bottom: 56px; }
           if (Math.hypot(n.x - wx, n.y - wy) < n.r + 10) { hovered = n; break; }
         }
         canvas.style.cursor = hovered ? (hovered.url ? 'pointer' : 'grab') : 'default';
+        const tip = document.getElementById('graph-tooltip');
+        if (tip) {
+          if (hovered && hovered.tooltip) {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            tip.textContent = hovered.tooltip;
+            tip.style.display = 'block';
+            tip.style.left = (hovered.x * zoom + panX) + 'px';
+            tip.style.top  = (hovered.y * zoom + panY) + 'px';
+          } else {
+            tip.style.display = 'none';
+          }
+        }
       }
     }
 
@@ -1280,7 +1294,11 @@ body.adm { padding-bottom: 56px; }
     canvas.addEventListener('mousedown',  e => { const {mx,my} = getPos(e); startDrag(mx,my); });
     canvas.addEventListener('mousemove',  e => { const {mx,my} = getPos(e); moveDrag(mx,my); });
     canvas.addEventListener('mouseup',    () => endDrag());
-    canvas.addEventListener('mouseleave', () => { hovered = null; isPanning = false; endDrag(); });
+    canvas.addEventListener('mouseleave', () => {
+      hovered = null; isPanning = false; endDrag();
+      const tip = document.getElementById('graph-tooltip');
+      if (tip) tip.style.display = 'none';
+    });
 
 
     // Wheel zoom — hovered 노드 위에서만 작동
