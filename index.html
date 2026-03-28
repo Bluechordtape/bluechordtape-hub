@@ -1223,10 +1223,12 @@ body.adm { padding-bottom: 56px; }
       const tip = document.getElementById('graph-tooltip');
       if (tip) {
         if (hovered && hovered.tooltip) {
+          const ox = canvas.offsetLeft;
+          const oy = canvas.offsetTop;
           tip.textContent = hovered.tooltip;
-          tip.style.left = (canvas.offsetLeft + hovered.x * zoom + panX) + 'px';
-          tip.style.top  = (canvas.offsetTop  + hovered.y * zoom + panY - hovered.r * zoom - 14) + 'px';
           tip.style.display = 'block';
+          tip.style.left = (ox + hovered.x * zoom + panX) + 'px';
+          tip.style.top  = (oy + hovered.y * zoom + panY - (hovered.r || 4) * zoom - 20) + 'px';
         } else {
           tip.style.display = 'none';
         }
