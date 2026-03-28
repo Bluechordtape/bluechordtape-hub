@@ -438,7 +438,7 @@ body {
 .section-contact {
   background: var(--dark);
   color: #fff;
-  padding: 56px 24px;
+  padding: 72px 40px;
 }
 
 .section-contact-inner {
@@ -447,6 +447,7 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 64px;
+  align-items: start;
 }
 
 @media (min-width: 768px) {
@@ -473,7 +474,8 @@ body {
   margin-bottom: 36px;
 }
 
-.contact-info a {
+.contact-info a,
+.contact-info span {
   font-size: 13px;
   letter-spacing: 0.03em;
   color: rgba(255,255,255,0.8);
@@ -484,26 +486,18 @@ body {
 
 .social-links {
   display: flex;
-  gap: 0;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
 .social-links a {
   font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.4);
   text-decoration: none;
   transition: color 0.15s;
-  padding-right: 16px;
-  margin-right: 16px;
-  border-right: 1px solid rgba(255,255,255,0.12);
   line-height: 1.8;
-}
-.social-links a:last-child {
-  border-right: none;
-  padding-right: 0;
-  margin-right: 0;
 }
 .social-links a:hover { color: rgba(255,255,255,0.9); }
 
@@ -566,21 +560,20 @@ body {
   font-size: 11px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #fff;
+  color: rgba(255,255,255,0.7);
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 12px 32px;
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 9px 24px;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 .btn-send:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.5);
   color: #fff;
 }
 .btn-send:active {
-  background: #0f27cc;
-  border-color: #0f27cc;
+  background: rgba(255,255,255,0.12);
 }
 
 #guestbook-success {
@@ -955,14 +948,14 @@ body.adm { padding-bottom: 56px; }
       <form id="guestbook-form" action="https://formspree.io/f/xlgpjjwb" method="POST">
         <div class="form-field">
           <label for="field-name">Name</label>
-          <input id="field-name" type="text" name="name" required autocomplete="off"/>
+          <input id="field-name" type="text" name="name" placeholder="이름" required autocomplete="off"/>
         </div>
         <div class="form-field">
           <label for="field-message">Message</label>
-          <textarea id="field-message" name="message" required rows="4"></textarea>
+          <textarea id="field-message" name="message" placeholder="메시지를 남겨주세요." required rows="4"></textarea>
         </div>
         <div class="form-submit">
-          <button type="submit" class="btn-send">Send</button>
+          <button type="submit" class="btn-send">보내기</button>
         </div>
       </form>
 
