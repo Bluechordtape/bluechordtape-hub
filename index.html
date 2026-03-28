@@ -1101,10 +1101,27 @@ body.adm { padding-bottom: 56px; }
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = W / 2; cy = H / 2;
-      zoom = 1.4;
-      panX = cx - cx * zoom;
-      panY = cy - cy * zoom;
       place();
+      fitToScreen();
+    }
+
+    function fitToScreen() {
+      if (!NODES.length) return;
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      NODES.forEach(n => {
+        minX = Math.min(minX, n.x);
+        maxX = Math.max(maxX, n.x);
+        minY = Math.min(minY, n.y);
+        maxY = Math.max(maxY, n.y);
+      });
+      const pad = 60;
+      const graphW = maxX - minX + pad * 2;
+      const graphH = maxY - minY + pad * 2;
+      const scaleX = W / graphW;
+      const scaleY = H / graphH;
+      zoom = Math.min(scaleX, scaleY, 1.6);
+      panX = (W / 2) - ((minX + maxX) / 2) * zoom;
+      panY = (H / 2) - ((minY + maxY) / 2) * zoom;
     }
 
     function place() {
