@@ -181,7 +181,7 @@ body {
   color: #aaa; margin-bottom: 20px;
 }
 .about-text {
-  font-size: clamp(18px, 2.4vw, 24px); line-height: 1.75; color: #1a1a1a; font-weight: 300;
+  font-size: clamp(14px, 1.9vw, 19px); line-height: 1.75; color: #1a1a1a; font-weight: 300;
 }
 .now-list { list-style: none; display: flex; flex-direction: column; gap: 20px; margin-top: 0; }
 .now-item {}
@@ -1101,7 +1101,7 @@ body.adm { padding-bottom: 56px; }
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = W / 2; cy = H / 2;
-      panX = 0; panY = 0; zoom = 1;
+      panX = 0; panY = 0; zoom = 2;
       place();
       // 워밍업 — 노드가 중앙 안정 위치에서 시작
       for (let i = 0; i < 50; i++) simulate();
