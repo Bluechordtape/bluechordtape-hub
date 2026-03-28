@@ -1267,12 +1267,10 @@ body.adm { padding-bottom: 56px; }
         const tip = document.getElementById('graph-tooltip');
         if (tip) {
           if (hovered && hovered.tooltip) {
-            const rect = canvas.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
             tip.textContent = hovered.tooltip;
             tip.style.display = 'block';
             tip.style.left = (hovered.x * zoom + panX) + 'px';
-            tip.style.top  = (hovered.y * zoom + panY) + 'px';
+            tip.style.top  = (hovered.y * zoom + panY - hovered.r * zoom - 8) + 'px';
           } else {
             tip.style.display = 'none';
           }
