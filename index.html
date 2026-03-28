@@ -1147,12 +1147,21 @@ body.adm { padding-bottom: 56px; }
     }
 
     function simulate() {
+      edges.forEach(({ a, b, d }) => {
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const force = (dist - d) * 0.008;
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+        if (a !== dragged) { a.vx += fx; a.vy += fy; }
+        if (b !== dragged) { b.vx -= fx; b.vy -= fy; }
+      });
       NODES.forEach(n => {
         if (n === dragged) return;
         n.driftAngle += n.driftSpeed;
         n.vx += Math.cos(n.driftAngle) * 0.003;
         n.vy += Math.sin(n.driftAngle) * 0.003;
-        n.vx *= 0.985; n.vy *= 0.985;
+        n.vx *= 0.92; n.vy *= 0.92;
         n.x += n.vx; n.y += n.vy;
         const pad = Math.min(W, H) * 0.05;
         n.x = Math.max(pad, Math.min(W - pad, n.x));
