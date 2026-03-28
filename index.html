@@ -1101,7 +1101,9 @@ body.adm { padding-bottom: 56px; }
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = W / 2; cy = H / 2;
-      zoom = 1.4; panX = cx * (1 - 1.4); panY = cy * (1 - 1.4);
+      zoom = 1.4;
+      panX = cx - cx * zoom;
+      panY = cy - cy * zoom;
       place();
     }
 
