@@ -1025,50 +1025,30 @@ body.adm { padding-bottom: 56px; }
     const ctx = canvas.getContext('2d');
 
     const _glOverride = (function(){ try{ return JSON.parse(localStorage.getItem('bct_c')||'{}').graphLabels||{}; }catch(_){ return {}; } })();
-    const NODES = [
-      { id: 'hub',          label: 'Blue Chord Tape',   type: 'hub',  r: 10  },
-      { id: 'music',        label: 'Music',             type: 'main', r: 7   },
-      { id: 'guitar',       label: 'Guitar',            type: 'main', r: 7   },
-      { id: 'reading',      label: 'Reading',           type: 'main', r: 7   },
-      { id: 'photo',        label: 'Photo / Video',     type: 'main', r: 7   },
-      { id: 'spotify',      label: 'Spotify',           type: 'sub',  r: 4   },
-      { id: 'still-reading', label: 'Still Reading ♪', type: 'sub',  r: 4,   tooltip: '플레이리스트', url: 'https://open.spotify.com/playlist/0xAtic0IQXykZO5M8HM1k2?si=qDIwHaStRmG95bkq7y_VJw&pi=bJg9qP4jRn2M-' },
-      { id: 'sampling',     label: 'Sampling',          type: 'sub',  r: 4   },
-      { id: 'lofi',         label: 'Lo-fi',             type: 'sub',  r: 4   },
-      { id: 'beatmaking',   label: 'Beat Making',       type: 'sub',  r: 4   },
-      { id: 'sp404',        label: 'SP-404',            type: 'sub',  r: 4   },
-      { id: 'electric',     label: 'Electric',          type: 'sub',  r: 4   },
-      { id: 'pedals',       label: 'Pedals & FX',       type: 'sub',  r: 4   },
-      { id: 'books',        label: 'Books',             type: 'sub',  r: 4,   url: '/books.html' },
-      { id: 'philosophy',   label: 'Philosophy',        type: 'sub',  r: 4   },
-      { id: 'performance',  label: 'Performance',       type: 'sub',  r: 4,   url: 'https://www.youtube.com/@bluechordtape' },
-      { id: 'film',         label: 'Film',              type: 'sub',  r: 4   },
-      { id: 'portrait',     label: 'Portrait',          type: 'sub',  r: 4   },
-      { id: 'cinematic',    label: 'Cinematic',         type: 'sub',  r: 4   },
-    ];
-    NODES.forEach(n => { if (_glOverride[n.id]) n.label = _glOverride[n.id]; });
-    window._graphNodes = NODES;
-
-    const EDGES = [
-      ['hub','music',210],['hub','guitar',210],['hub','reading',210],['hub','photo',210],
-      ['music','spotify',126],['spotify','still-reading',108],
-      ['music','sampling',126],['music','lofi',126],['music','beatmaking',126],['music','sp404',126],
-      ['guitar','electric',126],['guitar','pedals',126],
-      ['reading','books',126],['reading','philosophy',126],
-      ['lofi','guitar',240],['sp404','beatmaking',84],
-      ['photo','performance',126],['photo','film',126],['photo','portrait',126],['photo','cinematic',126],
-      ['cinematic','music',255],
-      ['performance','guitar',240],
-    ];
-
+    let NODES = [];
+    let edges = [];
     const map = {};
-    NODES.forEach(n => {
-      n.vx = 0; n.vy = 0;
-      n.driftAngle = Math.random() * Math.PI * 2;
-      n.driftSpeed = 0.002 + Math.random() * 0.002;
-      map[n.id] = n;
-    });
-    const edges = EDGES.map(([s, t, d]) => ({ a: map[s], b: map[t], d }));
+
+    async function initGraph() {
+      try {
+        const res = await fetch('https://bct-backend-production.up.railway.app/graph');
+        const data = await res.json();
+        NODES = (data.nodes || []).map(n => Object.assign({}, n, {
+          vx: 0, vy: 0,
+          driftAngle: Math.random() * Math.PI * 2,
+          driftSpeed: 0.002 + Math.random() * 0.002,
+        }));
+        NODES.forEach(n => {
+          if (_glOverride[n.id]) n.label = _glOverride[n.id];
+          map[n.id] = n;
+        });
+        window._graphNodes = NODES;
+        edges = (data.edges || []).map(e => ({ a: map[e.node_a], b: map[e.node_b], d: e.len })).filter(e => e.a && e.b);
+        resize();
+      } catch (err) {
+        console.error('그래프 데이터 로드 실패:', err);
+      }
+    }
 
     let W, H, cx, cy, springScale = 1, hovered = null, dragged = null;
     let dragOffX = 0, dragOffY = 0, dragVX = 0, dragVY = 0;
@@ -1381,7 +1361,7 @@ body.adm { padding-bottom: 56px; }
     // Zoom buttons
 
     window.addEventListener('resize', resize);
-    resize();
+    initGraph();
     loop();
   })();
 
